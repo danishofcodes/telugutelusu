@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telugu Chaduvuko</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0f172a;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+
+        /* --- NAV --- */
+        .nav {
+            display: flex;
+            background: #1e293b;
+            border-bottom: 1px solid #334155;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .nav button {
+            flex: 1; padding: 14px 0;
+            background: none; border: none; color: #94a3b8;
+            font-size: 15px; font-weight: 600; cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+        .nav button.active { color: #38bdf8; border-bottom-color: #38bdf8; }
+
+        /* --- PAGES --- */
+        .page { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+        .page.active { display: block; }
+
+        /* --- QUIZ PAGE --- */
+        .mode-toggle {
+            display: flex; border-radius: 8px; overflow: hidden;
+            border: 1px solid #334155; margin-bottom: 16px;
+        }
+        .mode-toggle button {
+            flex: 1; padding: 10px; background: #1e293b; border: none;
+            color: #94a3b8; font-size: 13px; font-weight: 600; cursor: pointer;
+        }
+        .mode-toggle button.active { background: #38bdf8; color: #0f172a; }
+
+        .progress-bar-wrap {
+            background: #1e293b; border-radius: 8px; height: 8px;
+            margin-bottom: 6px; overflow: hidden;
+        }
+        .progress-bar {
+            height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8);
+            border-radius: 8px; transition: width 0.4s ease;
+        }
+        .progress-label {
+            font-size: 12px; color: #64748b; margin-bottom: 16px;
+            display: flex; justify-content: space-between;
+        }
+
+        .quiz-row {
+            display: flex; align-items: center; gap: 12px;
+            padding: 12px; margin-bottom: 10px;
+            background: #1e293b; border-radius: 10px;
+            border: 1px solid #334155;
+        }
+        .quiz-row .num {
+            color: #475569; font-weight: 700; font-size: 13px;
+            min-width: 24px; text-align: center;
+        }
+        .quiz-row .word-label {
+            flex: 1; font-weight: 600; font-size: 16px; color: #f1f5f9;
+        }
+        .quiz-row input {
+            flex: 1.2; padding: 10px 12px;
+            background: #0f172a; border: 2px solid #334155;
+            border-radius: 8px; color: #e2e8f0; font-size: 15px;
+            outline: none; transition: border-color 0.2s;
+        }
+        .quiz-row input:focus { border-color: #38bdf8; }
+        .quiz-row input.correct { border-color: #22c55e; background: #052e16; }
+        .quiz-row input.incorrect { border-color: #ef4444; background: #450a0a; }
+        .answer-text { font-size: 12px; color: #f87171; margin-top: 4px; display: none; }
+
+        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        .btn {
+            flex: 1; padding: 14px; border: none; border-radius: 10px;
+            font-size: 16px; font-weight: 700; cursor: pointer;
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-check { background: #f59e0b; color: #0f172a; }
+        .btn-next { background: #38bdf8; color: #0f172a; }
+
+        /* --- CHECKPOINT --- */
+        .checkpoint {
+            text-align: center; padding: 40px 16px;
+        }
+        .checkpoint h2 { font-size: 22px; margin-bottom: 10px; }
+        .checkpoint .big-score {
+            font-size: 56px; font-weight: 800; margin: 16px 0;
+        }
+        .checkpoint .big-score.pass { color: #22c55e; }
+        .checkpoint .big-score.fail { color: #ef4444; }
+        .checkpoint p { color: #94a3b8; font-size: 15px; margin-bottom: 24px; line-height: 1.6; }
+        .checkpoint .btn { max-width: 280px; margin: 0 auto; display: block; }
+
+        /* --- FINISH --- */
+        .finish { text-align: center; padding: 40px 16px; }
+        .finish h2 { font-size: 24px; color: #22c55e; margin-bottom: 10px; }
+        .finish .big-score { font-size: 56px; font-weight: 800; color: #38bdf8; margin: 16px 0; }
+        .finish p { color: #94a3b8; margin-bottom: 24px; }
+
+        /* --- NOTES PAGE --- */
+        .search-box {
+            width: 100%; padding: 12px 16px;
+            background: #1e293b; border: 1px solid #334155;
+            border-radius: 10px; color: #e2e8f0; font-size: 15px;
+            outline: none; margin-bottom: 16px;
+        }
+        .search-box:focus { border-color: #38bdf8; }
+        .notes-grid {
+            display: grid; grid-template-columns: 1fr;
+            gap: 6px;
+        }
+        .note-card {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 14px; background: #1e293b;
+            border-radius: 8px; border: 1px solid #334155;
+        }
+        .note-card .en { font-weight: 600; color: #f1f5f9; font-size: 15px; }
+        .note-card .te { color: #38bdf8; font-size: 15px; font-weight: 500; }
+        .note-card .idx { color: #475569; font-size: 12px; min-width: 28px; }
+        .section-header {
+            padding: 10px 0 6px; font-size: 13px; font-weight: 700;
+            color: #64748b; text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 1px solid #1e293b; margin-top: 10px;
+        }
+
+        @media (min-width: 500px) {
+            .notes-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="nav">
+    <button id="nav-quiz" class="active" onclick="showPage('quiz')">Quiz</button>
+    <button id="nav-notes" onclick="showPage('notes')">Notes (All Words)</button>
+</div>
+
+<!-- ====== QUIZ PAGE ====== -->
+<div class="page active" id="page-quiz">
+    <div class="mode-toggle">
+        <button id="mode-en" class="active" onclick="setMode('en2te')">English &#8594; Telugu</button>
+        <button id="mode-te" onclick="setMode('te2en')">Telugu &#8594; English</button>
+    </div>
+    <div class="progress-bar-wrap"><div class="progress-bar" id="pbar"></div></div>
+    <div class="progress-label">
+        <span id="plabel-left"></span>
+        <span id="plabel-right"></span>
+    </div>
+    <div id="quiz-area"></div>
+</div>
+
+<!-- ====== NOTES PAGE ====== -->
+<div class="page" id="page-notes">
+    <input type="text" class="search-box" id="search-box" placeholder="Search words..." oninput="filterNotes()">
+    <div id="notes-list"></div>
+</div>
+
+<script>
+// ============================================================
+// DICTIONARY — 300 words
+// ============================================================
+var W = [
+    {en:"I",te:"nenu"},{en:"you",te:"nuvvu"},{en:"he",te:"athanu"},{en:"she",te:"aame"},{en:"it",te:"adhi"},
+    {en:"we",te:"manam"},{en:"they",te:"vaallu"},{en:"this",te:"idhi"},{en:"that",te:"adhi"},{en:"here",te:"ikkada"},
+    {en:"there",te:"akkada"},{en:"who",te:"evaru"},{en:"what",te:"enti"},{en:"where",te:"ekkada"},{en:"when",te:"eppudu"},
+    {en:"why",te:"enduku"},{en:"how",te:"ela"},{en:"which",te:"edi"},{en:"yes",te:"avunu"},{en:"no",te:"kadu"},
+    {en:"one",te:"okati"},{en:"two",te:"rendu"},{en:"three",te:"moodu"},{en:"four",te:"nalugu"},{en:"five",te:"aidu"},
+    {en:"six",te:"aaru"},{en:"seven",te:"eedu"},{en:"eight",te:"enimidi"},{en:"nine",te:"thommidi"},{en:"ten",te:"padi"},
+    // 31-60
+    {en:"boy",te:"abbayi"},{en:"girl",te:"ammayi"},{en:"man",te:"magaadu"},{en:"woman",te:"aadadi"},{en:"father",te:"nanna"},
+    {en:"mother",te:"amma"},{en:"brother",te:"anna"},{en:"sister",te:"akka"},{en:"friend",te:"snehitudu"},{en:"water",te:"neellu"},
+    {en:"food",te:"annam"},{en:"house",te:"illu"},{en:"book",te:"pustakam"},{en:"pen",te:"kalam"},{en:"sun",te:"suryudu"},
+    {en:"moon",te:"chandrudu"},{en:"star",te:"nakshatram"},{en:"sky",te:"akasam"},{en:"tree",te:"chettu"},{en:"dog",te:"kukka"},
+    {en:"cat",te:"pilli"},{en:"cow",te:"aavu"},{en:"bird",te:"pakshi"},{en:"fish",te:"chepa"},{en:"good",te:"manchi"},
+    {en:"bad",te:"chedda"},{en:"big",te:"pedda"},{en:"small",te:"chinna"},{en:"long",te:"podavu"},{en:"short",te:"potti"},
+    // 61-90
+    {en:"hot",te:"vedi"},{en:"cold",te:"chali"},{en:"new",te:"kotha"},{en:"old",te:"paata"},{en:"happy",te:"santhosham"},
+    {en:"sad",te:"badha"},{en:"come",te:"raa"},{en:"go",te:"vellu"},{en:"eat",te:"tinu"},{en:"drink",te:"taagu"},
+    {en:"sleep",te:"paduko"},{en:"sit",te:"kurcho"},{en:"stand",te:"nilucho"},{en:"read",te:"chaduvu"},{en:"write",te:"rayu"},
+    {en:"speak",te:"matladu"},{en:"hear",te:"vinu"},{en:"see",te:"chudu"},{en:"give",te:"ivvu"},{en:"take",te:"teesuko"},
+    {en:"do",te:"cheyu"},{en:"buy",te:"konu"},{en:"sell",te:"ammu"},{en:"run",te:"parigettu"},{en:"walk",te:"nadachu"},
+    {en:"play",te:"aadu"},{en:"stop",te:"aagu"},{en:"know",te:"telusu"},{en:"want",te:"kavali"},{en:"like",te:"ishtam"},
+    // 91-120
+    {en:"love",te:"prema"},{en:"name",te:"peru"},{en:"time",te:"samayam"},{en:"day",te:"roju"},{en:"night",te:"ratri"},
+    {en:"morning",te:"udayam"},{en:"evening",te:"sayantram"},{en:"today",te:"eroju"},{en:"tomorrow",te:"repu"},{en:"yesterday",te:"ninna"},
+    {en:"week",te:"vaaram"},{en:"month",te:"nela"},{en:"year",te:"samvatsaram"},{en:"hand",te:"cheyi"},{en:"leg",te:"kaalu"},
+    {en:"head",te:"thala"},{en:"eye",te:"kannu"},{en:"ear",te:"chevi"},{en:"nose",te:"mukku"},{en:"mouth",te:"noru"},
+    {en:"tooth",te:"pannu"},{en:"hair",te:"juttu"},{en:"face",te:"mukham"},{en:"heart",te:"hrudayam"},{en:"blood",te:"raktham"},
+    {en:"body",te:"sareeram"},{en:"mind",te:"manassu"},{en:"word",te:"padam"},{en:"work",te:"pani"},{en:"money",te:"dabbu"},
+    // 121-150
+    {en:"price",te:"vela"},{en:"color",te:"rangu"},{en:"red",te:"erupu"},{en:"blue",te:"neelam"},{en:"green",te:"akupacha"},
+    {en:"yellow",te:"pasupu"},{en:"white",te:"telupu"},{en:"black",te:"nalupu"},{en:"door",te:"talupu"},{en:"window",te:"kitiki"},
+    {en:"table",te:"balla"},{en:"chair",te:"kurchi"},{en:"bed",te:"mancham"},{en:"room",te:"gadi"},{en:"road",te:"dhaari"},
+    {en:"street",te:"veedhi"},{en:"village",te:"ooru"},{en:"city",te:"nagaram"},{en:"country",te:"desam"},{en:"world",te:"prapancham"},
+    {en:"light",te:"velugu"},{en:"dark",te:"cheekati"},{en:"fire",te:"nippu"},{en:"air",te:"gaali"},{en:"earth",te:"bhoomi"},
+    {en:"animal",te:"jantuvu"},{en:"plant",te:"mokka"},{en:"flower",te:"puvvu"},{en:"fruit",te:"pandu"},{en:"leaf",te:"aaku"},
+    // 151-180
+    {en:"stone",te:"rayi"},{en:"sand",te:"isuka"},{en:"mud",te:"matti"},{en:"river",te:"nadi"},{en:"sea",te:"samudram"},
+    {en:"mountain",te:"konda"},{en:"rain",te:"varsham"},{en:"cloud",te:"mabbu"},{en:"fast",te:"twaraga"},{en:"slow",te:"nemmadiga"},
+    {en:"loud",te:"gattiga"},{en:"soft",te:"mettaga"},{en:"hard",te:"katinam"},{en:"easy",te:"sulabham"},{en:"difficult",te:"kashtam"},
+    {en:"true",te:"nijam"},{en:"false",te:"abaddham"},{en:"right",te:"kudi"},{en:"left",te:"edama"},{en:"near",te:"daggara"},
+    {en:"far",te:"dooram"},{en:"up",te:"paina"},{en:"down",te:"kinda"},{en:"inside",te:"lopala"},{en:"outside",te:"bayata"},
+    {en:"front",te:"mundu"},{en:"back",te:"venaka"},{en:"middle",te:"madhya"},{en:"always",te:"ellappudu"},{en:"never",te:"eppuduledu"},
+    // 181-210
+    {en:"now",te:"ippudu"},{en:"then",te:"appudu"},{en:"later",te:"tarvata"},{en:"soon",te:"twaralo"},{en:"very",te:"chala"},
+    {en:"also",te:"kuda"},{en:"only",te:"matrame"},{en:"all",te:"antha"},{en:"some",te:"konni"},{en:"many",te:"chala"},
+    {en:"few",te:"konni"},{en:"more",te:"inka"},{en:"less",te:"thakkuva"},{en:"enough",te:"chaalu"},{en:"much",te:"ekkuva"},
+    {en:"ask",te:"adugu"},{en:"answer",te:"javaabu"},{en:"help",te:"sahayam"},{en:"fear",te:"bhayam"},{en:"anger",te:"kopam"},
+    {en:"hunger",te:"aakali"},{en:"thirst",te:"daham"},{en:"pain",te:"noppi"},{en:"medicine",te:"mandhu"},{en:"sick",te:"jabu"},
+    {en:"healthy",te:"aarogyam"},{en:"clean",te:"subhram"},{en:"dirty",te:"muraiki"},{en:"beautiful",te:"andham"},{en:"ugly",te:"vikrutham"},
+    // 211-240
+    {en:"tall",te:"podugu"},{en:"fat",te:"lavvu"},{en:"thin",te:"sannamu"},{en:"strong",te:"balamu"},{en:"weak",te:"balaheenam"},
+    {en:"rich",te:"dhanavanthudu"},{en:"poor",te:"peda"},{en:"full",te:"nimdu"},{en:"empty",te:"khalee"},{en:"open",te:"terachu"},
+    {en:"close",te:"muyyu"},{en:"push",te:"thoyu"},{en:"pull",te:"laagu"},{en:"cut",te:"kottu"},{en:"break",te:"virachu"},
+    {en:"build",te:"kattu"},{en:"send",te:"pampu"},{en:"bring",te:"teesukoraa"},{en:"keep",te:"pettu"},{en:"throw",te:"visuru"},
+    {en:"catch",te:"pattu"},{en:"hold",te:"pattukoraa"},{en:"search",te:"vetuku"},{en:"find",te:"kanugu"},{en:"hide",te:"daagu"},
+    {en:"show",te:"choopinchu"},{en:"teach",te:"nerpinchu"},{en:"learn",te:"nerchuko"},{en:"think",te:"aalochinchu"},{en:"remember",te:"gurthu"},
+    // 241-270
+    {en:"forget",te:"marchipovu"},{en:"wait",te:"aagu"},{en:"hurry",te:"tondara"},{en:"laugh",te:"navvu"},{en:"cry",te:"eadu"},
+    {en:"sing",te:"paadu"},{en:"dance",te:"aadu"},{en:"cook",te:"vandu"},{en:"wash",te:"utuku"},{en:"wear",te:"vesuko"},
+    {en:"shirt",te:"chokka"},{en:"pants",te:"pantu"},{en:"shoe",te:"chappal"},{en:"hat",te:"topi"},{en:"bag",te:"sanchee"},
+    {en:"rice",te:"biyyam"},{en:"milk",te:"paalu"},{en:"sugar",te:"chakkera"},{en:"salt",te:"uppu"},{en:"oil",te:"noone"},
+    {en:"egg",te:"guddu"},{en:"chicken",te:"kodi"},{en:"vegetable",te:"koora"},{en:"fruit",te:"pandu"},{en:"mango",te:"maamidi"},
+    {en:"banana",te:"arati"},{en:"coconut",te:"kobbari"},{en:"chili",te:"mirapa"},{en:"onion",te:"ullipaya"},{en:"potato",te:"bangaladumpa"},
+    // 271-300
+    {en:"tomato",te:"tamata"},{en:"school",te:"badi"},{en:"teacher",te:"guruvu"},{en:"student",te:"vidyarthi"},{en:"class",te:"targathu"},
+    {en:"exam",te:"pareeksha"},{en:"pass",te:"pass"},{en:"fail",te:"fail"},{en:"win",te:"gelavu"},{en:"lose",te:"odipovu"},
+    {en:"fight",te:"godava"},{en:"peace",te:"shanthi"},{en:"god",te:"bhagavanthudu"},{en:"temple",te:"gudi"},{en:"prayer",te:"prarthana"},
+    {en:"story",te:"katha"},{en:"song",te:"paata"},{en:"movie",te:"cinema"},{en:"game",te:"aata"},{en:"phone",te:"phone"},
+    {en:"car",te:"kaaru"},{en:"bus",te:"bus"},{en:"train",te:"raillu"},{en:"bicycle",te:"cycle"},{en:"boat",te:"padava"},
+    {en:"hundred",te:"nooru"},{en:"thousand",te:"veyyi"},{en:"market",te:"bazaar"},{en:"shop",te:"kadhu"},{en:"king",te:"raju"}
+];
+
+var TOTAL = W.length;         // 300
+var PER_SET = 10;
+var PER_CHECKPOINT = 30;      // checkpoint every 30 words
+var PASS_SCORE = 20;          // need 20/30 to pass
+
+var mode = "en2te";
+var currentWordIndex = 0;     // global word pointer
+var checked = false;
+var cpScore = 0;              // score within current checkpoint block
+var cpWordsAnswered = 0;      // words answered in current checkpoint block
+
+// ============================================================
+// NAV
+// ============================================================
+function showPage(name) {
+    document.getElementById("page-quiz").className = "page" + (name === "quiz" ? " active" : "");
+    document.getElementById("page-notes").className = "page" + (name === "notes" ? " active" : "");
+    document.getElementById("nav-quiz").className = name === "quiz" ? "active" : "";
+    document.getElementById("nav-notes").className = name === "notes" ? "active" : "";
+    if (name === "notes") buildNotes();
+}
+
+// ============================================================
+// MODE TOGGLE
+// ============================================================
+function setMode(m) {
+    mode = m;
+    document.getElementById("mode-en").className = m === "en2te" ? "active" : "";
+    document.getElementById("mode-te").className = m === "te2en" ? "active" : "";
+    if (!checked) renderSet();
+}
+
+// ============================================================
+// PROGRESS
+// ============================================================
+function updateProgress() {
+    var pct = Math.min(100, Math.round((currentWordIndex / TOTAL) * 100));
+    document.getElementById("pbar").style.width = pct + "%";
+    document.getElementById("plabel-left").innerText = currentWordIndex + " / " + TOTAL + " words";
+    var cpNum = Math.floor(currentWordIndex / PER_CHECKPOINT) + 1;
+    var totalCp = Math.ceil(TOTAL / PER_CHECKPOINT);
+    document.getElementById("plabel-right").innerText = "Checkpoint " + cpNum + " / " + totalCp;
+}
+
+// ============================================================
+// RENDER 10 WORDS
+// ============================================================
+function renderSet() {
+    var area = document.getElementById("quiz-area");
+    area.innerHTML = "";
+
+    if (currentWordIndex >= TOTAL) { showFinish(); return; }
+
+    var end = Math.min(currentWordIndex + PER_SET, TOTAL);
+    var words = W.slice(currentWordIndex, end);
+
+    updateProgress();
+
+    var container = document.createElement("div");
+    for (var i = 0; i < words.length; i++) {
+        var w = words[i];
+        var label = (mode === "en2te") ? w.en : w.te;
+        var answer = (mode === "en2te") ? w.te : w.en;
+        var ph = (mode === "en2te") ? "Type Telugu..." : "Type English...";
+
+        var row = document.createElement("div");
+        row.className = "quiz-row";
+        row.id = "row-" + i;
+
+        var num = document.createElement("span");
+        num.className = "num";
+        num.textContent = (currentWordIndex + i + 1);
+
+        var lbl = document.createElement("div");
+        lbl.className = "word-label";
+        lbl.textContent = label;
+
+        var leftWrap = document.createElement("div");
+        leftWrap.style.flex = "1";
+
+        var ansText = document.createElement("div");
+        ansText.className = "answer-text";
+        ansText.id = "ans-" + i;
+        ansText.textContent = "✓ " + answer;
+
+        leftWrap.appendChild(lbl);
+        leftWrap.appendChild(ansText);
+
+        var inp = document.createElement("input");
+        inp.type = "text";
+        inp.id = "input-" + i;
+        inp.placeholder = ph;
+        inp.autocomplete = "off";
+
+        row.appendChild(num);
+        row.appendChild(leftWrap);
+        row.appendChild(inp);
+        container.appendChild(row);
+    }
+    area.appendChild(container);
+
+    var btnRow = document.createElement("div");
+    btnRow.className = "btn-row";
+
+    var btnCheck = document.createElement("button");
+    btnCheck.className = "btn btn-check";
+    btnCheck.id = "btn-check";
+    btnCheck.textContent = "Check";
+    btnCheck.onclick = checkAnswers;
+
+    var btnNext = document.createElement("button");
+    btnNext.className = "btn btn-next";
+    btnNext.id = "btn-next";
+    btnNext.textContent = "Next 10 →";
+    btnNext.disabled = true;
+    btnNext.onclick = nextSet;
+
+    btnRow.appendChild(btnCheck);
+    btnRow.appendChild(btnNext);
+    area.appendChild(btnRow);
+
+    checked = false;
+
+    // auto focus first input
+    var first = document.getElementById("input-0");
+    if (first) first.focus();
+}
+
+// ============================================================
+// CHECK
+// ============================================================
+function normalizeStr(s) {
+    return s.toLowerCase().trim().replace(/[^a-z]/g, "");
+}
+
+function checkAnswers() {
+    if (checked) return;
+    var end = Math.min(currentWordIndex + PER_SET, TOTAL);
+    var words = W.slice(currentWordIndex, end);
+    var setScore = 0;
+
+    for (var i = 0; i < words.length; i++) {
+        var w = words[i];
+        var inp = document.getElementById("input-" + i);
+        var userVal = normalizeStr(inp.value);
+        var correctStr = (mode === "en2te") ? w.te : w.en;
+        var acceptable = correctStr.toLowerCase().split("/");
+        inp.readOnly = true;
+        var ok = false;
+        for (var j = 0; j < acceptable.length; j++) {
+            if (userVal !== "" && normalizeStr(acceptable[j]) === userVal) { ok = true; break; }
+        }
+        if (ok) {
+            inp.classList.add("correct");
+            setScore++;
+        } else {
+            inp.classList.add("incorrect");
+            var ans = document.getElementById("ans-" + i);
+            ans.style.display = "block";
+            ans.style.color = "#f87171";
+            ans.textContent = "✗ " + correctStr;
+        }
+    }
+
+    cpScore += setScore;
+    cpWordsAnswered += words.length;
+    checked = true;
+
+    document.getElementById("btn-check").disabled = true;
+    document.getElementById("btn-next").disabled = false;
+}
+
+// ============================================================
+// NEXT SET / CHECKPOINT
+// ============================================================
+function nextSet() {
+    var end = Math.min(currentWordIndex + PER_SET, TOTAL);
+    currentWordIndex = end;
+
+    // Check if we hit a checkpoint boundary
+    if (cpWordsAnswered >= PER_CHECKPOINT) {
+        showCheckpoint();
+    } else if (currentWordIndex >= TOTAL) {
+        // Final checkpoint if remaining
+        if (cpWordsAnswered > 0) {
+            showCheckpoint();
+        } else {
+            showFinish();
+        }
+    } else {
+        renderSet();
+    }
+}
+
+function showCheckpoint() {
+    var area = document.getElementById("quiz-area");
+    area.innerHTML = "";
+    updateProgress();
+
+    var passed = cpScore >= PASS_SCORE;
+    var cpBlock = Math.ceil(currentWordIndex / PER_CHECKPOINT);
+
+    var div = document.createElement("div");
+    div.className = "checkpoint";
+
+    var h2 = document.createElement("h2");
+    h2.textContent = "Checkpoint " + cpBlock;
+
+    var score = document.createElement("div");
+    score.className = "big-score " + (passed ? "pass" : "fail");
+    score.textContent = cpScore + " / " + cpWordsAnswered;
+
+    var p = document.createElement("p");
+    var btn = document.createElement("button");
+
+    if (passed) {
+        p.innerHTML = "Great work! You scored <b>" + cpScore + "</b> out of " + cpWordsAnswered + ".<br>You need " + PASS_SCORE + " to pass. Keep going!";
+        btn.className = "btn btn-next";
+        if (currentWordIndex >= TOTAL) {
+            btn.textContent = "See Final Results";
+            btn.onclick = showFinish;
+        } else {
+            btn.textContent = "Continue to Next 30 →";
+            btn.onclick = function() { cpScore = 0; cpWordsAnswered = 0; renderSet(); };
+        }
+    } else {
+        p.innerHTML = "You scored <b>" + cpScore + "</b> out of " + cpWordsAnswered + ".<br>You need at least <b>" + PASS_SCORE + "</b> points to continue.<br>Go to the <b>Notes</b> tab to study, then retry!";
+        btn.className = "btn btn-check";
+        btn.textContent = "Retry This Block";
+        btn.onclick = function() {
+            currentWordIndex = currentWordIndex - cpWordsAnswered;
+            cpScore = 0;
+            cpWordsAnswered = 0;
+            renderSet();
+        };
+    }
+
+    div.appendChild(h2);
+    div.appendChild(score);
+    div.appendChild(p);
+    div.appendChild(btn);
+    area.appendChild(div);
+}
+
+function showFinish() {
+    var area = document.getElementById("quiz-area");
+    area.innerHTML = "";
+
+    var div = document.createElement("div");
+    div.className = "finish";
+
+    var h2 = document.createElement("h2");
+    h2.textContent = "Congratulations!";
+
+    var p1 = document.createElement("p");
+    p1.textContent = "You completed all " + TOTAL + " words!";
+
+    var btn = document.createElement("button");
+    btn.className = "btn btn-next";
+    btn.textContent = "Start Over";
+    btn.onclick = function() {
+        currentWordIndex = 0; cpScore = 0; cpWordsAnswered = 0;
+        renderSet();
+    };
+
+    div.appendChild(h2);
+    div.appendChild(p1);
+    div.appendChild(btn);
+    area.appendChild(div);
+}
+
+// ============================================================
+// NOTES PAGE
+// ============================================================
+function buildNotes() {
+    var container = document.getElementById("notes-list");
+    var query = normalizeStr(document.getElementById("search-box").value);
+    container.innerHTML = "";
+
+    var grid = document.createElement("div");
+    grid.className = "notes-grid";
+
+    var cpNum = 0;
+    for (var i = 0; i < W.length; i++) {
+        // section header every 30 words
+        if (i % PER_CHECKPOINT === 0) {
+            cpNum++;
+            var hdr = document.createElement("div");
+            hdr.className = "section-header";
+            hdr.style.gridColumn = "1 / -1";
+            hdr.textContent = "Block " + cpNum + "  (Words " + (i + 1) + " – " + Math.min(i + PER_CHECKPOINT, TOTAL) + ")";
+            grid.appendChild(hdr);
+        }
+
+        var w = W[i];
+        // filter
+        if (query && normalizeStr(w.en).indexOf(query) === -1 && normalizeStr(w.te).indexOf(query) === -1) {
+            continue;
+        }
+
+        var card = document.createElement("div");
+        card.className = "note-card";
+
+        var idx = document.createElement("span");
+        idx.className = "idx";
+        idx.textContent = (i + 1);
+
+        var en = document.createElement("span");
+        en.className = "en";
+        en.textContent = w.en;
+
+        var te = document.createElement("span");
+        te.className = "te";
+        te.textContent = w.te;
+
+        card.appendChild(idx);
+        card.appendChild(en);
+        card.appendChild(te);
+        grid.appendChild(card);
+    }
+    container.appendChild(grid);
+}
+
+function filterNotes() { buildNotes(); }
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = function() {
+    renderSet();
+    buildNotes();
+};
+</script>
+</body>
+</html>
