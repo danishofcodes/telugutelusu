@@ -4,486 +4,798 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telugu Chaduvuko</title>
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0f172a;
-            color: #e2e8f0;
+            font-family: 'Nunito', 'Rounded Mplus 1c', -apple-system, sans-serif;
+            background: #f0f0f0;
+            color: #4b4b4b;
             min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        /* --- NAV --- */
+        /* ---- NAV BAR ---- */
         .nav {
-            display: flex;
-            background: #1e293b;
-            border-bottom: 1px solid #334155;
+            display: flex; background: #fff;
+            border-bottom: 2px solid #e5e5e5;
             position: sticky; top: 0; z-index: 10;
         }
         .nav button {
-            flex: 1; padding: 14px 0;
-            background: none; border: none; color: #94a3b8;
-            font-size: 15px; font-weight: 600; cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
+            flex: 1; padding: 14px 0; background: none; border: none;
+            color: #afafaf; font-family: inherit;
+            font-size: 15px; font-weight: 800; cursor: pointer;
+            border-bottom: 3px solid transparent; transition: all 0.2s;
+            text-transform: uppercase; letter-spacing: 0.5px;
         }
-        .nav button.active { color: #38bdf8; border-bottom-color: #38bdf8; }
+        .nav button.active { color: #58cc02; border-bottom-color: #58cc02; }
 
-        /* --- PAGES --- */
-        .page { display: none; padding: 16px; max-width: 600px; margin: 0 auto; }
+        /* ---- PAGE CONTAINERS ---- */
+        .page { display: none; padding: 16px; max-width: 580px; margin: 0 auto; padding-bottom: 100px; }
         .page.active { display: block; }
 
-        /* --- QUIZ PAGE --- */
-        .mode-toggle {
-            display: flex; border-radius: 8px; overflow: hidden;
-            border: 1px solid #334155; margin-bottom: 16px;
+        /* ---- DUOLINGO BUTTONS ---- */
+        .duo-btn {
+            display: block; width: 100%; padding: 14px;
+            border: none; border-radius: 16px;
+            font-family: inherit; font-size: 16px; font-weight: 800;
+            cursor: pointer; text-transform: uppercase;
+            letter-spacing: 1px; transition: all 0.1s;
+            position: relative; top: 0;
         }
-        .mode-toggle button {
-            flex: 1; padding: 10px; background: #1e293b; border: none;
-            color: #94a3b8; font-size: 13px; font-weight: 600; cursor: pointer;
+        .duo-btn:active { top: 3px; box-shadow: none !important; }
+        .duo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .duo-btn-green {
+            background: #58cc02; color: #fff;
+            box-shadow: 0 4px 0 #46a302;
         }
-        .mode-toggle button.active { background: #38bdf8; color: #0f172a; }
+        .duo-btn-green:active { box-shadow: 0 1px 0 #46a302; }
+        .duo-btn-blue {
+            background: #1cb0f6; color: #fff;
+            box-shadow: 0 4px 0 #1899d6;
+        }
+        .duo-btn-blue:active { box-shadow: 0 1px 0 #1899d6; }
+        .duo-btn-orange {
+            background: #ff9600; color: #fff;
+            box-shadow: 0 4px 0 #e08600;
+        }
+        .duo-btn-orange:active { box-shadow: 0 1px 0 #e08600; }
+        .duo-btn-white {
+            background: #fff; color: #1cb0f6;
+            border: 2px solid #e5e5e5;
+            box-shadow: 0 4px 0 #e5e5e5;
+        }
+        .duo-btn-white:active { box-shadow: 0 1px 0 #e5e5e5; }
+        .duo-btn-red {
+            background: #ff4b4b; color: #fff;
+            box-shadow: 0 4px 0 #e04343;
+        }
 
-        .progress-bar-wrap {
-            background: #1e293b; border-radius: 8px; height: 8px;
+        /* ---- MODE TOGGLE ---- */
+        .mode-bar {
+            display: flex; gap: 8px; margin-bottom: 16px;
+        }
+        .mode-pill {
+            flex: 1; padding: 10px 8px;
+            border-radius: 12px; border: 2px solid #e5e5e5;
+            background: #fff; color: #afafaf;
+            font-family: inherit; font-size: 13px; font-weight: 800;
+            cursor: pointer; text-align: center; transition: all 0.2s;
+        }
+        .mode-pill.active {
+            border-color: #84d8ff; background: #ddf4ff; color: #1cb0f6;
+        }
+
+        /* ---- PROGRESS ---- */
+        .progress-wrap {
+            background: #e5e5e5; border-radius: 10px; height: 14px;
             margin-bottom: 6px; overflow: hidden;
         }
-        .progress-bar {
-            height: 100%; background: linear-gradient(90deg, #38bdf8, #818cf8);
-            border-radius: 8px; transition: width 0.4s ease;
+        .progress-fill {
+            height: 100%; background: #58cc02; border-radius: 10px;
+            transition: width 0.5s ease;
         }
-        .progress-label {
-            font-size: 12px; color: #64748b; margin-bottom: 16px;
+        .progress-labels {
             display: flex; justify-content: space-between;
+            font-size: 13px; font-weight: 700; color: #afafaf;
+            margin-bottom: 18px;
         }
 
-        .quiz-row {
+        /* ---- QUIZ ROW ---- */
+        .quiz-card {
+            background: #fff; border-radius: 16px;
+            border: 2px solid #e5e5e5;
+            padding: 14px 16px; margin-bottom: 10px;
             display: flex; align-items: center; gap: 12px;
-            padding: 12px; margin-bottom: 10px;
-            background: #1e293b; border-radius: 10px;
-            border: 1px solid #334155;
         }
-        .quiz-row .num {
-            color: #475569; font-weight: 700; font-size: 13px;
-            min-width: 24px; text-align: center;
+        .quiz-card .num {
+            background: #e5e5e5; color: #afafaf;
+            font-weight: 900; font-size: 12px;
+            width: 28px; height: 28px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
         }
-        .quiz-row .word-label {
-            flex: 1; font-weight: 600; font-size: 16px; color: #f1f5f9;
+        .quiz-card .word-col { flex: 1; }
+        .quiz-card .word-main {
+            font-size: 17px; font-weight: 800; color: #4b4b4b;
         }
-        .quiz-row input {
-            flex: 1.2; padding: 10px 12px;
-            background: #0f172a; border: 2px solid #334155;
-            border-radius: 8px; color: #e2e8f0; font-size: 15px;
+        .quiz-card .word-phonetic {
+            font-size: 12px; font-weight: 600; color: #afafaf;
+            margin-top: 2px; font-style: italic;
+        }
+        .quiz-card .answer-hint {
+            font-size: 12px; font-weight: 700; margin-top: 4px;
+            display: none;
+        }
+        .quiz-card .answer-hint.correct { color: #58cc02; display: block; }
+        .quiz-card .answer-hint.wrong { color: #ff4b4b; display: block; }
+        .quiz-card input {
+            flex: 1.1; padding: 10px 14px;
+            background: #f7f7f7; border: 2px solid #e5e5e5;
+            border-radius: 12px; font-family: inherit;
+            font-size: 15px; font-weight: 600; color: #4b4b4b;
             outline: none; transition: border-color 0.2s;
         }
-        .quiz-row input:focus { border-color: #38bdf8; }
-        .quiz-row input.correct { border-color: #22c55e; background: #052e16; }
-        .quiz-row input.incorrect { border-color: #ef4444; background: #450a0a; }
-        .answer-text { font-size: 12px; color: #f87171; margin-top: 4px; display: none; }
+        .quiz-card input:focus { border-color: #1cb0f6; background: #fff; }
+        .quiz-card input.correct { border-color: #58cc02; background: #d7ffb8; }
+        .quiz-card input.incorrect { border-color: #ff4b4b; background: #ffdfe0; }
 
         .btn-row { display: flex; gap: 10px; margin-top: 20px; }
-        .btn {
-            flex: 1; padding: 14px; border: none; border-radius: 10px;
-            font-size: 16px; font-weight: 700; cursor: pointer;
-            transition: transform 0.1s, opacity 0.2s;
-        }
-        .btn:active { transform: scale(0.97); }
-        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
-        .btn-check { background: #f59e0b; color: #0f172a; }
-        .btn-next { background: #38bdf8; color: #0f172a; }
+        .btn-row .duo-btn { flex: 1; }
 
-        /* --- CHECKPOINT --- */
-        .checkpoint {
-            text-align: center; padding: 40px 16px;
+        /* ---- CHECKPOINT ---- */
+        .checkpoint { text-align: center; padding: 30px 10px; }
+        .checkpoint .emoji { font-size: 64px; margin-bottom: 10px; }
+        .checkpoint h2 { font-size: 24px; font-weight: 900; color: #4b4b4b; margin-bottom: 6px; }
+        .checkpoint .score-big {
+            font-size: 52px; font-weight: 900; margin: 12px 0;
         }
-        .checkpoint h2 { font-size: 22px; margin-bottom: 10px; }
-        .checkpoint .big-score {
-            font-size: 56px; font-weight: 800; margin: 16px 0;
+        .checkpoint .score-big.pass { color: #58cc02; }
+        .checkpoint .score-big.fail { color: #ff4b4b; }
+        .checkpoint p {
+            color: #777; font-size: 15px; font-weight: 600;
+            line-height: 1.7; margin-bottom: 24px;
         }
-        .checkpoint .big-score.pass { color: #22c55e; }
-        .checkpoint .big-score.fail { color: #ef4444; }
-        .checkpoint p { color: #94a3b8; font-size: 15px; margin-bottom: 24px; line-height: 1.6; }
-        .checkpoint .btn { max-width: 280px; margin: 0 auto; display: block; }
+        .checkpoint .duo-btn { max-width: 300px; margin: 8px auto; }
 
-        /* --- FINISH --- */
-        .finish { text-align: center; padding: 40px 16px; }
-        .finish h2 { font-size: 24px; color: #22c55e; margin-bottom: 10px; }
-        .finish .big-score { font-size: 56px; font-weight: 800; color: #38bdf8; margin: 16px 0; }
-        .finish p { color: #94a3b8; margin-bottom: 24px; }
+        /* ---- FINISH ---- */
+        .finish { text-align: center; padding: 30px 10px; }
+        .finish .emoji { font-size: 72px; margin-bottom: 10px; }
+        .finish h2 { font-size: 26px; font-weight: 900; color: #58cc02; }
+        .finish p { color: #777; font-size: 16px; font-weight: 600; margin: 12px 0 24px; }
+        .finish .duo-btn { max-width: 300px; margin: 0 auto; }
 
-        /* --- NOTES PAGE --- */
-        .search-box {
+        /* ---- NOTES PAGE ---- */
+        .notes-header {
+            text-align: center; padding: 10px 0 16px;
+        }
+        .notes-header h2 {
+            font-size: 22px; font-weight: 900; color: #4b4b4b;
+        }
+        .notes-header p { font-size: 13px; color: #afafaf; font-weight: 700; }
+
+        .search-input {
             width: 100%; padding: 12px 16px;
-            background: #1e293b; border: 1px solid #334155;
-            border-radius: 10px; color: #e2e8f0; font-size: 15px;
+            background: #fff; border: 2px solid #e5e5e5;
+            border-radius: 14px; font-family: inherit;
+            font-size: 15px; font-weight: 600; color: #4b4b4b;
             outline: none; margin-bottom: 16px;
         }
-        .search-box:focus { border-color: #38bdf8; }
-        .notes-grid {
-            display: grid; grid-template-columns: 1fr;
-            gap: 6px;
+        .search-input:focus { border-color: #1cb0f6; }
+
+        .pron-guide {
+            background: #ddf4ff; border: 2px solid #84d8ff;
+            border-radius: 14px; padding: 14px 16px;
+            margin-bottom: 16px; font-size: 13px; font-weight: 600;
+            color: #1899d6; line-height: 1.8;
         }
-        .note-card {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 12px 14px; background: #1e293b;
-            border-radius: 8px; border: 1px solid #334155;
-        }
-        .note-card .en { font-weight: 600; color: #f1f5f9; font-size: 15px; }
-        .note-card .te { color: #38bdf8; font-size: 15px; font-weight: 500; }
-        .note-card .idx { color: #475569; font-size: 12px; min-width: 28px; }
-        .section-header {
-            padding: 10px 0 6px; font-size: 13px; font-weight: 700;
-            color: #64748b; text-transform: uppercase; letter-spacing: 1px;
-            border-bottom: 1px solid #1e293b; margin-top: 10px;
+        .pron-guide b { color: #1478a7; }
+
+        .block-header {
+            padding: 12px 0 6px;
+            font-size: 14px; font-weight: 900; color: #58cc02;
+            text-transform: uppercase; letter-spacing: 1px;
+            border-bottom: 2px solid #e5e5e5;
+            margin-top: 12px; margin-bottom: 8px;
         }
 
-        @media (min-width: 500px) {
+        .notes-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
+        .note-row {
+            display: flex; align-items: center;
+            background: #fff; border: 2px solid #e5e5e5;
+            border-radius: 12px; padding: 10px 14px; gap: 10px;
+        }
+        .note-row .n-idx {
+            background: #e5e5e5; color: #afafaf;
+            font-weight: 900; font-size: 11px;
+            width: 26px; height: 26px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .note-row .n-en { flex: 1; font-weight: 800; font-size: 15px; color: #4b4b4b; }
+        .note-row .n-right { text-align: right; flex: 1.2; }
+        .note-row .n-te { font-weight: 800; font-size: 15px; color: #1cb0f6; }
+        .note-row .n-ph { font-size: 11px; font-weight: 600; color: #afafaf; font-style: italic; }
+
+        @media (min-width: 480px) {
             .notes-grid { grid-template-columns: 1fr 1fr; }
+            .block-header { grid-column: 1 / -1; }
         }
     </style>
 </head>
 <body>
 
 <div class="nav">
-    <button id="nav-quiz" class="active" onclick="showPage('quiz')">Quiz</button>
-    <button id="nav-notes" onclick="showPage('notes')">Notes (All Words)</button>
+    <button id="nav-quiz" class="active" onclick="showPage('quiz')">📝 Quiz</button>
+    <button id="nav-notes" onclick="showPage('notes')">📖 Notes</button>
 </div>
 
-<!-- ====== QUIZ PAGE ====== -->
 <div class="page active" id="page-quiz">
-    <div class="mode-toggle">
-        <button id="mode-en" class="active" onclick="setMode('en2te')">English &#8594; Telugu</button>
-        <button id="mode-te" onclick="setMode('te2en')">Telugu &#8594; English</button>
+    <div class="mode-bar">
+        <button class="mode-pill active" id="mode-en" onclick="setMode('en2te')">English → Telugu</button>
+        <button class="mode-pill" id="mode-te" onclick="setMode('te2en')">Telugu → English</button>
     </div>
-    <div class="progress-bar-wrap"><div class="progress-bar" id="pbar"></div></div>
-    <div class="progress-label">
-        <span id="plabel-left"></span>
-        <span id="plabel-right"></span>
+    <div class="progress-wrap"><div class="progress-fill" id="pbar"></div></div>
+    <div class="progress-labels">
+        <span id="plabel-l"></span><span id="plabel-r"></span>
     </div>
     <div id="quiz-area"></div>
 </div>
 
-<!-- ====== NOTES PAGE ====== -->
 <div class="page" id="page-notes">
-    <input type="text" class="search-box" id="search-box" placeholder="Search words..." oninput="filterNotes()">
+    <div class="notes-header">
+        <h2>📖 Word Reference</h2>
+        <p>Study these before each checkpoint!</p>
+    </div>
+    <div class="pron-guide">
+        <b>Pronunciation Key:</b><br>
+        <b>aa</b> = long 'a' (f<u>a</u>ther) &nbsp;·&nbsp;
+        <b>ee</b> = long 'e' (s<u>ee</u>) &nbsp;·&nbsp;
+        <b>oo</b> = long 'o' (f<u>oo</u>d)<br>
+        <b>th</b> = soft dental 't' &nbsp;·&nbsp;
+        <b>dh</b> = soft dental 'd' &nbsp;·&nbsp;
+        <b>ch</b> = as in '<u>ch</u>air'<br>
+        <b>sh</b> = as in '<u>sh</u>ip' &nbsp;·&nbsp;
+        <b>zh</b> = retroflex 'l' &nbsp;·&nbsp;
+        Stress is on <b>CAPS</b> syllable
+    </div>
+    <input type="text" class="search-input" id="search-box" placeholder="🔍 Search any word..." oninput="buildNotes()">
     <div id="notes-list"></div>
 </div>
 
 <script>
 // ============================================================
-// DICTIONARY — 300 words
+// DICTIONARY — 300 words with phonetics
+// p = phonetic pronunciation guide
 // ============================================================
-var W = [
-    {en:"I",te:"nenu"},{en:"you",te:"nuvvu"},{en:"he",te:"athanu"},{en:"she",te:"aame"},{en:"it",te:"adhi"},
-    {en:"we",te:"manam"},{en:"they",te:"vaallu"},{en:"this",te:"idhi"},{en:"that",te:"adhi"},{en:"here",te:"ikkada"},
-    {en:"there",te:"akkada"},{en:"who",te:"evaru"},{en:"what",te:"enti"},{en:"where",te:"ekkada"},{en:"when",te:"eppudu"},
-    {en:"why",te:"enduku"},{en:"how",te:"ela"},{en:"which",te:"edi"},{en:"yes",te:"avunu"},{en:"no",te:"kadu"},
-    {en:"one",te:"okati"},{en:"two",te:"rendu"},{en:"three",te:"moodu"},{en:"four",te:"nalugu"},{en:"five",te:"aidu"},
-    {en:"six",te:"aaru"},{en:"seven",te:"eedu"},{en:"eight",te:"enimidi"},{en:"nine",te:"thommidi"},{en:"ten",te:"padi"},
-    // 31-60
-    {en:"boy",te:"abbayi"},{en:"girl",te:"ammayi"},{en:"man",te:"magaadu"},{en:"woman",te:"aadadi"},{en:"father",te:"nanna"},
-    {en:"mother",te:"amma"},{en:"brother",te:"anna"},{en:"sister",te:"akka"},{en:"friend",te:"snehitudu"},{en:"water",te:"neellu"},
-    {en:"food",te:"annam"},{en:"house",te:"illu"},{en:"book",te:"pustakam"},{en:"pen",te:"kalam"},{en:"sun",te:"suryudu"},
-    {en:"moon",te:"chandrudu"},{en:"star",te:"nakshatram"},{en:"sky",te:"akasam"},{en:"tree",te:"chettu"},{en:"dog",te:"kukka"},
-    {en:"cat",te:"pilli"},{en:"cow",te:"aavu"},{en:"bird",te:"pakshi"},{en:"fish",te:"chepa"},{en:"good",te:"manchi"},
-    {en:"bad",te:"chedda"},{en:"big",te:"pedda"},{en:"small",te:"chinna"},{en:"long",te:"podavu"},{en:"short",te:"potti"},
-    // 61-90
-    {en:"hot",te:"vedi"},{en:"cold",te:"chali"},{en:"new",te:"kotha"},{en:"old",te:"paata"},{en:"happy",te:"santhosham"},
-    {en:"sad",te:"badha"},{en:"come",te:"raa"},{en:"go",te:"vellu"},{en:"eat",te:"tinu"},{en:"drink",te:"taagu"},
-    {en:"sleep",te:"paduko"},{en:"sit",te:"kurcho"},{en:"stand",te:"nilucho"},{en:"read",te:"chaduvu"},{en:"write",te:"rayu"},
-    {en:"speak",te:"matladu"},{en:"hear",te:"vinu"},{en:"see",te:"chudu"},{en:"give",te:"ivvu"},{en:"take",te:"teesuko"},
-    {en:"do",te:"cheyu"},{en:"buy",te:"konu"},{en:"sell",te:"ammu"},{en:"run",te:"parigettu"},{en:"walk",te:"nadachu"},
-    {en:"play",te:"aadu"},{en:"stop",te:"aagu"},{en:"know",te:"telusu"},{en:"want",te:"kavali"},{en:"like",te:"ishtam"},
-    // 91-120
-    {en:"love",te:"prema"},{en:"name",te:"peru"},{en:"time",te:"samayam"},{en:"day",te:"roju"},{en:"night",te:"ratri"},
-    {en:"morning",te:"udayam"},{en:"evening",te:"sayantram"},{en:"today",te:"eroju"},{en:"tomorrow",te:"repu"},{en:"yesterday",te:"ninna"},
-    {en:"week",te:"vaaram"},{en:"month",te:"nela"},{en:"year",te:"samvatsaram"},{en:"hand",te:"cheyi"},{en:"leg",te:"kaalu"},
-    {en:"head",te:"thala"},{en:"eye",te:"kannu"},{en:"ear",te:"chevi"},{en:"nose",te:"mukku"},{en:"mouth",te:"noru"},
-    {en:"tooth",te:"pannu"},{en:"hair",te:"juttu"},{en:"face",te:"mukham"},{en:"heart",te:"hrudayam"},{en:"blood",te:"raktham"},
-    {en:"body",te:"sareeram"},{en:"mind",te:"manassu"},{en:"word",te:"padam"},{en:"work",te:"pani"},{en:"money",te:"dabbu"},
-    // 121-150
-    {en:"price",te:"vela"},{en:"color",te:"rangu"},{en:"red",te:"erupu"},{en:"blue",te:"neelam"},{en:"green",te:"akupacha"},
-    {en:"yellow",te:"pasupu"},{en:"white",te:"telupu"},{en:"black",te:"nalupu"},{en:"door",te:"talupu"},{en:"window",te:"kitiki"},
-    {en:"table",te:"balla"},{en:"chair",te:"kurchi"},{en:"bed",te:"mancham"},{en:"room",te:"gadi"},{en:"road",te:"dhaari"},
-    {en:"street",te:"veedhi"},{en:"village",te:"ooru"},{en:"city",te:"nagaram"},{en:"country",te:"desam"},{en:"world",te:"prapancham"},
-    {en:"light",te:"velugu"},{en:"dark",te:"cheekati"},{en:"fire",te:"nippu"},{en:"air",te:"gaali"},{en:"earth",te:"bhoomi"},
-    {en:"animal",te:"jantuvu"},{en:"plant",te:"mokka"},{en:"flower",te:"puvvu"},{en:"fruit",te:"pandu"},{en:"leaf",te:"aaku"},
-    // 151-180
-    {en:"stone",te:"rayi"},{en:"sand",te:"isuka"},{en:"mud",te:"matti"},{en:"river",te:"nadi"},{en:"sea",te:"samudram"},
-    {en:"mountain",te:"konda"},{en:"rain",te:"varsham"},{en:"cloud",te:"mabbu"},{en:"fast",te:"twaraga"},{en:"slow",te:"nemmadiga"},
-    {en:"loud",te:"gattiga"},{en:"soft",te:"mettaga"},{en:"hard",te:"katinam"},{en:"easy",te:"sulabham"},{en:"difficult",te:"kashtam"},
-    {en:"true",te:"nijam"},{en:"false",te:"abaddham"},{en:"right",te:"kudi"},{en:"left",te:"edama"},{en:"near",te:"daggara"},
-    {en:"far",te:"dooram"},{en:"up",te:"paina"},{en:"down",te:"kinda"},{en:"inside",te:"lopala"},{en:"outside",te:"bayata"},
-    {en:"front",te:"mundu"},{en:"back",te:"venaka"},{en:"middle",te:"madhya"},{en:"always",te:"ellappudu"},{en:"never",te:"eppuduledu"},
-    // 181-210
-    {en:"now",te:"ippudu"},{en:"then",te:"appudu"},{en:"later",te:"tarvata"},{en:"soon",te:"twaralo"},{en:"very",te:"chala"},
-    {en:"also",te:"kuda"},{en:"only",te:"matrame"},{en:"all",te:"antha"},{en:"some",te:"konni"},{en:"many",te:"chala"},
-    {en:"few",te:"konni"},{en:"more",te:"inka"},{en:"less",te:"thakkuva"},{en:"enough",te:"chaalu"},{en:"much",te:"ekkuva"},
-    {en:"ask",te:"adugu"},{en:"answer",te:"javaabu"},{en:"help",te:"sahayam"},{en:"fear",te:"bhayam"},{en:"anger",te:"kopam"},
-    {en:"hunger",te:"aakali"},{en:"thirst",te:"daham"},{en:"pain",te:"noppi"},{en:"medicine",te:"mandhu"},{en:"sick",te:"jabu"},
-    {en:"healthy",te:"aarogyam"},{en:"clean",te:"subhram"},{en:"dirty",te:"muraiki"},{en:"beautiful",te:"andham"},{en:"ugly",te:"vikrutham"},
-    // 211-240
-    {en:"tall",te:"podugu"},{en:"fat",te:"lavvu"},{en:"thin",te:"sannamu"},{en:"strong",te:"balamu"},{en:"weak",te:"balaheenam"},
-    {en:"rich",te:"dhanavanthudu"},{en:"poor",te:"peda"},{en:"full",te:"nimdu"},{en:"empty",te:"khalee"},{en:"open",te:"terachu"},
-    {en:"close",te:"muyyu"},{en:"push",te:"thoyu"},{en:"pull",te:"laagu"},{en:"cut",te:"kottu"},{en:"break",te:"virachu"},
-    {en:"build",te:"kattu"},{en:"send",te:"pampu"},{en:"bring",te:"teesukoraa"},{en:"keep",te:"pettu"},{en:"throw",te:"visuru"},
-    {en:"catch",te:"pattu"},{en:"hold",te:"pattukoraa"},{en:"search",te:"vetuku"},{en:"find",te:"kanugu"},{en:"hide",te:"daagu"},
-    {en:"show",te:"choopinchu"},{en:"teach",te:"nerpinchu"},{en:"learn",te:"nerchuko"},{en:"think",te:"aalochinchu"},{en:"remember",te:"gurthu"},
-    // 241-270
-    {en:"forget",te:"marchipovu"},{en:"wait",te:"aagu"},{en:"hurry",te:"tondara"},{en:"laugh",te:"navvu"},{en:"cry",te:"eadu"},
-    {en:"sing",te:"paadu"},{en:"dance",te:"aadu"},{en:"cook",te:"vandu"},{en:"wash",te:"utuku"},{en:"wear",te:"vesuko"},
-    {en:"shirt",te:"chokka"},{en:"pants",te:"pantu"},{en:"shoe",te:"chappal"},{en:"hat",te:"topi"},{en:"bag",te:"sanchee"},
-    {en:"rice",te:"biyyam"},{en:"milk",te:"paalu"},{en:"sugar",te:"chakkera"},{en:"salt",te:"uppu"},{en:"oil",te:"noone"},
-    {en:"egg",te:"guddu"},{en:"chicken",te:"kodi"},{en:"vegetable",te:"koora"},{en:"fruit",te:"pandu"},{en:"mango",te:"maamidi"},
-    {en:"banana",te:"arati"},{en:"coconut",te:"kobbari"},{en:"chili",te:"mirapa"},{en:"onion",te:"ullipaya"},{en:"potato",te:"bangaladumpa"},
-    // 271-300
-    {en:"tomato",te:"tamata"},{en:"school",te:"badi"},{en:"teacher",te:"guruvu"},{en:"student",te:"vidyarthi"},{en:"class",te:"targathu"},
-    {en:"exam",te:"pareeksha"},{en:"pass",te:"pass"},{en:"fail",te:"fail"},{en:"win",te:"gelavu"},{en:"lose",te:"odipovu"},
-    {en:"fight",te:"godava"},{en:"peace",te:"shanthi"},{en:"god",te:"bhagavanthudu"},{en:"temple",te:"gudi"},{en:"prayer",te:"prarthana"},
-    {en:"story",te:"katha"},{en:"song",te:"paata"},{en:"movie",te:"cinema"},{en:"game",te:"aata"},{en:"phone",te:"phone"},
-    {en:"car",te:"kaaru"},{en:"bus",te:"bus"},{en:"train",te:"raillu"},{en:"bicycle",te:"cycle"},{en:"boat",te:"padava"},
-    {en:"hundred",te:"nooru"},{en:"thousand",te:"veyyi"},{en:"market",te:"bazaar"},{en:"shop",te:"kadhu"},{en:"king",te:"raju"}
+var W=[
+{en:"I",te:"nenu",p:"NEH-noo"},
+{en:"you",te:"nuvvu",p:"NOOV-voo"},
+{en:"he",te:"athanu",p:"AH-thah-noo"},
+{en:"she",te:"aame",p:"AA-meh"},
+{en:"it",te:"adhi",p:"AH-dhi"},
+{en:"we",te:"manam",p:"MAH-nahm"},
+{en:"they",te:"vaallu",p:"VAAL-loo"},
+{en:"this",te:"idhi",p:"IH-dhi"},
+{en:"that",te:"adhi",p:"AH-dhi"},
+{en:"here",te:"ikkada",p:"IK-kah-dah"},
+{en:"there",te:"akkada",p:"AK-kah-dah"},
+{en:"who",te:"evaru",p:"EH-vah-roo"},
+{en:"what",te:"enti",p:"EN-tee"},
+{en:"where",te:"ekkada",p:"EK-kah-dah"},
+{en:"when",te:"eppudu",p:"EP-poo-doo"},
+{en:"why",te:"enduku",p:"EN-doo-koo"},
+{en:"how",te:"ela",p:"EH-lah"},
+{en:"which",te:"edi",p:"EH-dee"},
+{en:"yes",te:"avunu",p:"AH-voo-noo"},
+{en:"no",te:"kadu",p:"KAA-doo"},
+{en:"one",te:"okati",p:"OH-kah-tee"},
+{en:"two",te:"rendu",p:"REN-doo"},
+{en:"three",te:"moodu",p:"MOO-doo"},
+{en:"four",te:"nalugu",p:"NAH-loo-goo"},
+{en:"five",te:"aidu",p:"AI-doo"},
+{en:"six",te:"aaru",p:"AA-roo"},
+{en:"seven",te:"eedu",p:"EE-doo"},
+{en:"eight",te:"enimidi",p:"EH-nee-mee-dee"},
+{en:"nine",te:"thommidi",p:"THOM-mee-dee"},
+{en:"ten",te:"padi",p:"PAH-dee"},
+// 31-60
+{en:"boy",te:"abbayi",p:"AB-baa-yee"},
+{en:"girl",te:"ammayi",p:"AM-maa-yee"},
+{en:"man",te:"magaadu",p:"MAH-gaa-doo"},
+{en:"woman",te:"aadadi",p:"AA-dah-dee"},
+{en:"father",te:"nanna",p:"NUN-nah"},
+{en:"mother",te:"amma",p:"AM-mah"},
+{en:"brother",te:"anna",p:"AN-nah"},
+{en:"sister",te:"akka",p:"AK-kah"},
+{en:"friend",te:"snehitudu",p:"SNEH-hee-too-doo"},
+{en:"water",te:"neellu",p:"NEEL-loo"},
+{en:"food",te:"annam",p:"AN-nahm"},
+{en:"house",te:"illu",p:"IL-loo"},
+{en:"book",te:"pustakam",p:"POOS-thah-kahm"},
+{en:"pen",te:"kalam",p:"KAH-lahm"},
+{en:"sun",te:"suryudu",p:"SOOR-yoo-doo"},
+{en:"moon",te:"chandrudu",p:"CHAN-droo-doo"},
+{en:"star",te:"nakshatram",p:"NAHK-shah-trahm"},
+{en:"sky",te:"akasam",p:"AA-kaa-sahm"},
+{en:"tree",te:"chettu",p:"CHET-too"},
+{en:"dog",te:"kukka",p:"KOOK-kah"},
+{en:"cat",te:"pilli",p:"PIL-lee"},
+{en:"cow",te:"aavu",p:"AA-voo"},
+{en:"bird",te:"pakshi",p:"PAHK-shee"},
+{en:"fish",te:"chepa",p:"CHEH-pah"},
+{en:"good",te:"manchi",p:"MAN-chee"},
+{en:"bad",te:"chedda",p:"CHED-dah"},
+{en:"big",te:"pedda",p:"PED-dah"},
+{en:"small",te:"chinna",p:"CHIN-nah"},
+{en:"long",te:"podavu",p:"POH-dah-voo"},
+{en:"short",te:"potti",p:"POT-tee"},
+// 61-90
+{en:"hot",te:"vedi",p:"VEH-dee"},
+{en:"cold",te:"chali",p:"CHAH-lee"},
+{en:"new",te:"kotha",p:"KOH-thah"},
+{en:"old",te:"paata",p:"PAA-tah"},
+{en:"happy",te:"santhosham",p:"SAN-thoh-shahm"},
+{en:"sad",te:"badha",p:"BAA-dhah"},
+{en:"come",te:"raa",p:"RAA"},
+{en:"go",te:"vellu",p:"VEL-loo"},
+{en:"eat",te:"tinu",p:"THEE-noo"},
+{en:"drink",te:"taagu",p:"TAA-goo"},
+{en:"sleep",te:"paduko",p:"PAH-doo-koh"},
+{en:"sit",te:"kurcho",p:"KOOR-choh"},
+{en:"stand",te:"nilucho",p:"NIH-loo-choh"},
+{en:"read",te:"chaduvu",p:"CHAH-doo-voo"},
+{en:"write",te:"rayu",p:"RAA-yoo"},
+{en:"speak",te:"matladu",p:"MAHT-laa-doo"},
+{en:"hear",te:"vinu",p:"VEE-noo"},
+{en:"see",te:"chudu",p:"CHOO-doo"},
+{en:"give",te:"ivvu",p:"IV-voo"},
+{en:"take",te:"teesuko",p:"TEE-soo-koh"},
+{en:"do",te:"cheyu",p:"CHEH-yoo"},
+{en:"buy",te:"konu",p:"KOH-noo"},
+{en:"sell",te:"ammu",p:"AM-moo"},
+{en:"run",te:"parigettu",p:"PAH-ree-GET-too"},
+{en:"walk",te:"nadachu",p:"NAH-dah-choo"},
+{en:"play",te:"aadu",p:"AA-doo"},
+{en:"stop",te:"aagu",p:"AA-goo"},
+{en:"know",te:"telusu",p:"TEH-loo-soo"},
+{en:"want",te:"kavali",p:"KAH-vah-lee"},
+{en:"like",te:"ishtam",p:"ISH-tahm"},
+// 91-120
+{en:"love",te:"prema",p:"PREH-mah"},
+{en:"name",te:"peru",p:"PEH-roo"},
+{en:"time",te:"samayam",p:"SAH-mah-yahm"},
+{en:"day",te:"roju",p:"ROH-joo"},
+{en:"night",te:"ratri",p:"RAA-three"},
+{en:"morning",te:"udayam",p:"OO-dah-yahm"},
+{en:"evening",te:"sayantram",p:"SAA-yan-trahm"},
+{en:"today",te:"eroju",p:"EH-roh-joo"},
+{en:"tomorrow",te:"repu",p:"REH-poo"},
+{en:"yesterday",te:"ninna",p:"NIN-nah"},
+{en:"week",te:"vaaram",p:"VAA-rahm"},
+{en:"month",te:"nela",p:"NEH-lah"},
+{en:"year",te:"samvatsaram",p:"sahm-VAT-sah-rahm"},
+{en:"hand",te:"cheyi",p:"CHEH-yee"},
+{en:"leg",te:"kaalu",p:"KAA-loo"},
+{en:"head",te:"thala",p:"THAH-lah"},
+{en:"eye",te:"kannu",p:"KAN-noo"},
+{en:"ear",te:"chevi",p:"CHEH-vee"},
+{en:"nose",te:"mukku",p:"MOOK-koo"},
+{en:"mouth",te:"noru",p:"NOH-roo"},
+{en:"tooth",te:"pannu",p:"PAN-noo"},
+{en:"hair",te:"juttu",p:"JUT-too"},
+{en:"face",te:"mukham",p:"MOO-khahm"},
+{en:"heart",te:"hrudayam",p:"HROO-dah-yahm"},
+{en:"blood",te:"raktham",p:"RAHK-thahm"},
+{en:"body",te:"sareeram",p:"sah-REE-rahm"},
+{en:"mind",te:"manassu",p:"MAH-nahs-soo"},
+{en:"word",te:"padam",p:"PAH-dahm"},
+{en:"work",te:"pani",p:"PAH-nee"},
+{en:"money",te:"dabbu",p:"DAB-boo"},
+// 121-150
+{en:"price",te:"vela",p:"VEH-lah"},
+{en:"color",te:"rangu",p:"RAHN-goo"},
+{en:"red",te:"erupu",p:"EH-roo-poo"},
+{en:"blue",te:"neelam",p:"NEE-lahm"},
+{en:"green",te:"akupacha",p:"AH-koo-PAH-chah"},
+{en:"yellow",te:"pasupu",p:"PAH-soo-poo"},
+{en:"white",te:"telupu",p:"TEH-loo-poo"},
+{en:"black",te:"nalupu",p:"NAH-loo-poo"},
+{en:"door",te:"talupu",p:"TAH-loo-poo"},
+{en:"window",te:"kitiki",p:"KIH-tee-kee"},
+{en:"table",te:"balla",p:"BAL-lah"},
+{en:"chair",te:"kurchi",p:"KOOR-chee"},
+{en:"bed",te:"mancham",p:"MAN-chahm"},
+{en:"room",te:"gadi",p:"GAH-dee"},
+{en:"road",te:"dhaari",p:"DHAA-ree"},
+{en:"street",te:"veedhi",p:"VEE-dhee"},
+{en:"village",te:"ooru",p:"OO-roo"},
+{en:"city",te:"nagaram",p:"NAH-gah-rahm"},
+{en:"country",te:"desam",p:"DEH-shahm"},
+{en:"world",te:"prapancham",p:"prah-PAN-chahm"},
+{en:"light",te:"velugu",p:"VEH-loo-goo"},
+{en:"dark",te:"cheekati",p:"CHEE-kah-tee"},
+{en:"fire",te:"nippu",p:"NIP-poo"},
+{en:"air",te:"gaali",p:"GAA-lee"},
+{en:"earth",te:"bhoomi",p:"BHOO-mee"},
+{en:"animal",te:"jantuvu",p:"JAN-too-voo"},
+{en:"plant",te:"mokka",p:"MOK-kah"},
+{en:"flower",te:"puvvu",p:"POOV-voo"},
+{en:"fruit",te:"pandu",p:"PAN-doo"},
+{en:"leaf",te:"aaku",p:"AA-koo"},
+// 151-180
+{en:"stone",te:"rayi",p:"RAA-yee"},
+{en:"sand",te:"isuka",p:"IH-soo-kah"},
+{en:"mud",te:"matti",p:"MAT-tee"},
+{en:"river",te:"nadi",p:"NAH-dee"},
+{en:"sea",te:"samudram",p:"sah-MOOD-rahm"},
+{en:"mountain",te:"konda",p:"KON-dah"},
+{en:"rain",te:"varsham",p:"VAR-shahm"},
+{en:"cloud",te:"mabbu",p:"MAB-boo"},
+{en:"fast",te:"twaraga",p:"TWAH-rah-gah"},
+{en:"slow",te:"nemmadiga",p:"nem-MAH-dee-gah"},
+{en:"loud",te:"gattiga",p:"GAT-tee-gah"},
+{en:"soft",te:"mettaga",p:"MET-tah-gah"},
+{en:"hard",te:"katinam",p:"KAH-tee-nahm"},
+{en:"easy",te:"sulabham",p:"SOO-lah-bhahm"},
+{en:"difficult",te:"kashtam",p:"KAHSH-tahm"},
+{en:"true",te:"nijam",p:"NEE-jahm"},
+{en:"false",te:"abaddham",p:"ah-BAD-dhahm"},
+{en:"right",te:"kudi",p:"KOO-dee"},
+{en:"left",te:"edama",p:"EH-dah-mah"},
+{en:"near",te:"daggara",p:"DAG-gah-rah"},
+{en:"far",te:"dooram",p:"DOO-rahm"},
+{en:"up",te:"paina",p:"PAI-nah"},
+{en:"down",te:"kinda",p:"KIN-dah"},
+{en:"inside",te:"lopala",p:"LOH-pah-lah"},
+{en:"outside",te:"bayata",p:"BAH-yah-tah"},
+{en:"front",te:"mundu",p:"MOON-doo"},
+{en:"back",te:"venaka",p:"VEH-nah-kah"},
+{en:"middle",te:"madhya",p:"MAHD-yah"},
+{en:"always",te:"ellappudu",p:"EL-lahp-poo-doo"},
+{en:"never",te:"eppuduledu",p:"EP-poo-doo-LEH-doo"},
+// 181-210
+{en:"now",te:"ippudu",p:"IP-poo-doo"},
+{en:"then",te:"appudu",p:"AP-poo-doo"},
+{en:"later",te:"tarvata",p:"TAR-vaa-tah"},
+{en:"soon",te:"twaralo",p:"TWAH-rah-loh"},
+{en:"very",te:"chala",p:"CHAH-lah"},
+{en:"also",te:"kuda",p:"KOO-dah"},
+{en:"only",te:"matrame",p:"MAHT-rah-meh"},
+{en:"all",te:"antha",p:"AN-thah"},
+{en:"some",te:"konni",p:"KON-nee"},
+{en:"many",te:"chala",p:"CHAH-lah"},
+{en:"few",te:"konni",p:"KON-nee"},
+{en:"more",te:"inka",p:"IN-kah"},
+{en:"less",te:"thakkuva",p:"THAK-koo-vah"},
+{en:"enough",te:"chaalu",p:"CHAA-loo"},
+{en:"much",te:"ekkuva",p:"EK-koo-vah"},
+{en:"ask",te:"adugu",p:"AH-doo-goo"},
+{en:"answer",te:"javaabu",p:"jah-VAA-boo"},
+{en:"help",te:"sahayam",p:"sah-HAA-yahm"},
+{en:"fear",te:"bhayam",p:"BHAH-yahm"},
+{en:"anger",te:"kopam",p:"KOH-pahm"},
+{en:"hunger",te:"aakali",p:"AA-kah-lee"},
+{en:"thirst",te:"daham",p:"DAH-hahm"},
+{en:"pain",te:"noppi",p:"NOP-pee"},
+{en:"medicine",te:"mandhu",p:"MAN-dhoo"},
+{en:"sick",te:"jabu",p:"JAH-boo"},
+{en:"healthy",te:"aarogyam",p:"AA-rohg-yahm"},
+{en:"clean",te:"subhram",p:"SHOOB-hrahm"},
+{en:"dirty",te:"muraiki",p:"moo-RAI-kee"},
+{en:"beautiful",te:"andham",p:"AN-dhahm"},
+{en:"ugly",te:"vikrutham",p:"vih-KROO-thahm"},
+// 211-240
+{en:"tall",te:"podugu",p:"POH-doo-goo"},
+{en:"fat",te:"lavvu",p:"LAV-voo"},
+{en:"thin",te:"sannamu",p:"SAN-nah-moo"},
+{en:"strong",te:"balamu",p:"BAH-lah-moo"},
+{en:"weak",te:"balaheenam",p:"bah-lah-HEE-nahm"},
+{en:"rich",te:"dhanavanthudu",p:"dhah-nah-VAN-thoo-doo"},
+{en:"poor",te:"peda",p:"PEH-dah"},
+{en:"full",te:"nimdu",p:"NIM-doo"},
+{en:"empty",te:"khalee",p:"KHAH-lee"},
+{en:"open",te:"terachu",p:"TEH-rah-choo"},
+{en:"close",te:"muyyu",p:"MOOY-yoo"},
+{en:"push",te:"thoyu",p:"THOH-yoo"},
+{en:"pull",te:"laagu",p:"LAA-goo"},
+{en:"cut",te:"kottu",p:"KOT-too"},
+{en:"break",te:"virachu",p:"VEE-rah-choo"},
+{en:"build",te:"kattu",p:"KAT-too"},
+{en:"send",te:"pampu",p:"PAM-poo"},
+{en:"bring",te:"teesukoraa",p:"TEE-soo-koh-raa"},
+{en:"keep",te:"pettu",p:"PET-too"},
+{en:"throw",te:"visuru",p:"VEE-soo-roo"},
+{en:"catch",te:"pattu",p:"PAT-too"},
+{en:"hold",te:"pattukoraa",p:"PAT-too-koh-raa"},
+{en:"search",te:"vetuku",p:"VEH-too-koo"},
+{en:"find",te:"kanugu",p:"KAH-noo-goo"},
+{en:"hide",te:"daagu",p:"DAA-goo"},
+{en:"show",te:"choopinchu",p:"CHOO-pin-choo"},
+{en:"teach",te:"nerpinchu",p:"NER-pin-choo"},
+{en:"learn",te:"nerchuko",p:"NER-choo-koh"},
+{en:"think",te:"aalochinchu",p:"AA-loh-chin-choo"},
+{en:"remember",te:"gurthu",p:"GOOR-thoo"},
+// 241-270
+{en:"forget",te:"marchipovu",p:"MAR-chee-poh-voo"},
+{en:"wait",te:"aagu",p:"AA-goo"},
+{en:"hurry",te:"tondara",p:"TON-dah-rah"},
+{en:"laugh",te:"navvu",p:"NAV-voo"},
+{en:"cry",te:"eadu",p:"EH-doo"},
+{en:"sing",te:"paadu",p:"PAA-doo"},
+{en:"dance",te:"aadu",p:"AA-doo"},
+{en:"cook",te:"vandu",p:"VAN-doo"},
+{en:"wash",te:"utuku",p:"OO-too-koo"},
+{en:"wear",te:"vesuko",p:"VEH-soo-koh"},
+{en:"shirt",te:"chokka",p:"CHOK-kah"},
+{en:"pants",te:"pantu",p:"PAN-too"},
+{en:"shoe",te:"chappal",p:"CHAP-pal"},
+{en:"hat",te:"topi",p:"TOH-pee"},
+{en:"bag",te:"sanchee",p:"SAN-chee"},
+{en:"rice",te:"biyyam",p:"BIY-yahm"},
+{en:"milk",te:"paalu",p:"PAA-loo"},
+{en:"sugar",te:"chakkera",p:"CHAHK-keh-rah"},
+{en:"salt",te:"uppu",p:"OOP-poo"},
+{en:"oil",te:"noone",p:"NOO-neh"},
+{en:"egg",te:"guddu",p:"GOOD-doo"},
+{en:"chicken",te:"kodi",p:"KOH-dee"},
+{en:"vegetable",te:"koora",p:"KOO-rah"},
+{en:"fruit",te:"pandu",p:"PAN-doo"},
+{en:"mango",te:"maamidi",p:"MAA-mee-dee"},
+{en:"banana",te:"arati",p:"AH-rah-tee"},
+{en:"coconut",te:"kobbari",p:"KOB-bah-ree"},
+{en:"chili",te:"mirapa",p:"MEE-rah-pah"},
+{en:"onion",te:"ullipaya",p:"OOL-lee-PAH-yah"},
+{en:"potato",te:"bangaladumpa",p:"BAN-gah-lah-DOOM-pah"},
+// 271-300
+{en:"tomato",te:"tamata",p:"TAH-mah-tah"},
+{en:"school",te:"badi",p:"BAH-dee"},
+{en:"teacher",te:"guruvu",p:"GOO-roo-voo"},
+{en:"student",te:"vidyarthi",p:"vid-YAR-thee"},
+{en:"class",te:"targathu",p:"TAR-gah-thoo"},
+{en:"exam",te:"pareeksha",p:"pah-REEK-shah"},
+{en:"pass",te:"pass",p:"PASS"},
+{en:"fail",te:"fail",p:"FAIL"},
+{en:"win",te:"gelavu",p:"GEH-lah-voo"},
+{en:"lose",te:"odipovu",p:"OH-dee-POH-voo"},
+{en:"fight",te:"godava",p:"GOH-dah-vah"},
+{en:"peace",te:"shanthi",p:"SHAN-thee"},
+{en:"god",te:"bhagavanthudu",p:"BHAH-gah-VAN-thoo-doo"},
+{en:"temple",te:"gudi",p:"GOO-dee"},
+{en:"prayer",te:"prarthana",p:"PRAAR-thah-nah"},
+{en:"story",te:"katha",p:"KAH-thah"},
+{en:"song",te:"paata",p:"PAA-tah"},
+{en:"movie",te:"cinema",p:"SIH-neh-mah"},
+{en:"game",te:"aata",p:"AA-tah"},
+{en:"phone",te:"phone",p:"PHONE"},
+{en:"car",te:"kaaru",p:"KAA-roo"},
+{en:"bus",te:"bus",p:"BUS"},
+{en:"train",te:"raillu",p:"RAIL-loo"},
+{en:"bicycle",te:"cycle",p:"CYCLE"},
+{en:"boat",te:"padava",p:"PAH-dah-vah"},
+{en:"hundred",te:"nooru",p:"NOO-roo"},
+{en:"thousand",te:"veyyi",p:"VEY-yee"},
+{en:"market",te:"bazaar",p:"bah-ZAAR"},
+{en:"shop",te:"kadhu",p:"KAH-dhoo"},
+{en:"king",te:"raju",p:"RAA-joo"}
 ];
 
-var TOTAL = W.length;         // 300
+var TOTAL = W.length;
 var PER_SET = 10;
-var PER_CHECKPOINT = 30;      // checkpoint every 30 words
-var PASS_SCORE = 20;          // need 20/30 to pass
+var PER_CP = 30;
+var PASS = 20;
 
 var mode = "en2te";
-var currentWordIndex = 0;     // global word pointer
+var wi = 0;            // word index
 var checked = false;
-var cpScore = 0;              // score within current checkpoint block
-var cpWordsAnswered = 0;      // words answered in current checkpoint block
+var cpScore = 0;
+var cpDone = 0;
 
-// ============================================================
-// NAV
-// ============================================================
-function showPage(name) {
-    document.getElementById("page-quiz").className = "page" + (name === "quiz" ? " active" : "");
-    document.getElementById("page-notes").className = "page" + (name === "notes" ? " active" : "");
-    document.getElementById("nav-quiz").className = name === "quiz" ? "active" : "";
-    document.getElementById("nav-notes").className = name === "notes" ? "active" : "";
-    if (name === "notes") buildNotes();
+// ---- NAV ----
+function showPage(n) {
+    document.getElementById("page-quiz").className = "page" + (n==="quiz"?" active":"");
+    document.getElementById("page-notes").className = "page" + (n==="notes"?" active":"");
+    document.getElementById("nav-quiz").className = n==="quiz"?"active":"";
+    document.getElementById("nav-notes").className = n==="notes"?"active":"";
+    if (n==="notes") buildNotes();
 }
 
-// ============================================================
-// MODE TOGGLE
-// ============================================================
 function setMode(m) {
     mode = m;
-    document.getElementById("mode-en").className = m === "en2te" ? "active" : "";
-    document.getElementById("mode-te").className = m === "te2en" ? "active" : "";
+    document.getElementById("mode-en").className = "mode-pill"+(m==="en2te"?" active":"");
+    document.getElementById("mode-te").className = "mode-pill"+(m==="te2en"?" active":"");
     if (!checked) renderSet();
 }
 
-// ============================================================
-// PROGRESS
-// ============================================================
 function updateProgress() {
-    var pct = Math.min(100, Math.round((currentWordIndex / TOTAL) * 100));
-    document.getElementById("pbar").style.width = pct + "%";
-    document.getElementById("plabel-left").innerText = currentWordIndex + " / " + TOTAL + " words";
-    var cpNum = Math.floor(currentWordIndex / PER_CHECKPOINT) + 1;
-    var totalCp = Math.ceil(TOTAL / PER_CHECKPOINT);
-    document.getElementById("plabel-right").innerText = "Checkpoint " + cpNum + " / " + totalCp;
+    var pct = Math.min(100, Math.round((wi/TOTAL)*100));
+    document.getElementById("pbar").style.width = pct+"%";
+    document.getElementById("plabel-l").innerText = wi+" / "+TOTAL+" words";
+    var cn = Math.floor(wi/PER_CP)+1;
+    document.getElementById("plabel-r").innerText = "Checkpoint "+cn+" / "+Math.ceil(TOTAL/PER_CP);
 }
 
-// ============================================================
-// RENDER 10 WORDS
-// ============================================================
+// ---- RENDER SET ----
 function renderSet() {
     var area = document.getElementById("quiz-area");
     area.innerHTML = "";
+    if (wi >= TOTAL) { showFinish(); return; }
 
-    if (currentWordIndex >= TOTAL) { showFinish(); return; }
-
-    var end = Math.min(currentWordIndex + PER_SET, TOTAL);
-    var words = W.slice(currentWordIndex, end);
-
+    var end = Math.min(wi+PER_SET, TOTAL);
+    var words = W.slice(wi, end);
     updateProgress();
 
-    var container = document.createElement("div");
-    for (var i = 0; i < words.length; i++) {
+    for (var i=0; i<words.length; i++) {
         var w = words[i];
-        var label = (mode === "en2te") ? w.en : w.te;
-        var answer = (mode === "en2te") ? w.te : w.en;
-        var ph = (mode === "en2te") ? "Type Telugu..." : "Type English...";
+        var isEn2Te = (mode==="en2te");
+        var label = isEn2Te ? w.en : w.te;
+        var answer = isEn2Te ? w.te : w.en;
+        var ph = isEn2Te ? "" : w.p;
+        var phInput = isEn2Te ? "Type Telugu..." : "Type English...";
 
-        var row = document.createElement("div");
-        row.className = "quiz-row";
-        row.id = "row-" + i;
+        var card = document.createElement("div");
+        card.className = "quiz-card";
 
+        // number badge
         var num = document.createElement("span");
         num.className = "num";
-        num.textContent = (currentWordIndex + i + 1);
+        num.textContent = wi+i+1;
 
-        var lbl = document.createElement("div");
-        lbl.className = "word-label";
-        lbl.textContent = label;
+        // left column
+        var col = document.createElement("div");
+        col.className = "word-col";
 
-        var leftWrap = document.createElement("div");
-        leftWrap.style.flex = "1";
+        var main = document.createElement("div");
+        main.className = "word-main";
+        main.textContent = label;
+        col.appendChild(main);
 
-        var ansText = document.createElement("div");
-        ansText.className = "answer-text";
-        ansText.id = "ans-" + i;
-        ansText.textContent = "✓ " + answer;
+        // show phonetic on the label side
+        if (isEn2Te) {
+            // in en→te mode, no phonetic on the English side
+        } else {
+            // in te→en mode, show phonetic under Telugu label
+            var phEl = document.createElement("div");
+            phEl.className = "word-phonetic";
+            phEl.textContent = w.p;
+            col.appendChild(phEl);
+        }
 
-        leftWrap.appendChild(lbl);
-        leftWrap.appendChild(ansText);
+        var hint = document.createElement("div");
+        hint.className = "answer-hint";
+        hint.id = "hint-"+i;
+        hint.textContent = answer;
+        col.appendChild(hint);
 
+        // input
         var inp = document.createElement("input");
         inp.type = "text";
-        inp.id = "input-" + i;
-        inp.placeholder = ph;
+        inp.id = "inp-"+i;
+        inp.placeholder = phInput;
         inp.autocomplete = "off";
 
-        row.appendChild(num);
-        row.appendChild(leftWrap);
-        row.appendChild(inp);
-        container.appendChild(row);
+        card.appendChild(num);
+        card.appendChild(col);
+        card.appendChild(inp);
+        area.appendChild(card);
     }
-    area.appendChild(container);
 
+    // buttons
     var btnRow = document.createElement("div");
     btnRow.className = "btn-row";
 
-    var btnCheck = document.createElement("button");
-    btnCheck.className = "btn btn-check";
-    btnCheck.id = "btn-check";
-    btnCheck.textContent = "Check";
-    btnCheck.onclick = checkAnswers;
+    var bc = document.createElement("button");
+    bc.className = "duo-btn duo-btn-orange";
+    bc.id = "bc";
+    bc.textContent = "CHECK";
+    bc.onclick = doCheck;
 
-    var btnNext = document.createElement("button");
-    btnNext.className = "btn btn-next";
-    btnNext.id = "btn-next";
-    btnNext.textContent = "Next 10 →";
-    btnNext.disabled = true;
-    btnNext.onclick = nextSet;
+    var bn = document.createElement("button");
+    bn.className = "duo-btn duo-btn-green";
+    bn.id = "bn";
+    bn.textContent = "NEXT →";
+    bn.disabled = true;
+    bn.onclick = doNext;
 
-    btnRow.appendChild(btnCheck);
-    btnRow.appendChild(btnNext);
+    btnRow.appendChild(bc);
+    btnRow.appendChild(bn);
     area.appendChild(btnRow);
 
     checked = false;
-
-    // auto focus first input
-    var first = document.getElementById("input-0");
-    if (first) first.focus();
+    var f = document.getElementById("inp-0");
+    if (f) f.focus();
 }
 
-// ============================================================
-// CHECK
-// ============================================================
-function normalizeStr(s) {
-    return s.toLowerCase().trim().replace(/[^a-z]/g, "");
-}
+function norm(s) { return s.toLowerCase().trim().replace(/[^a-z]/g,""); }
 
-function checkAnswers() {
+function doCheck() {
     if (checked) return;
-    var end = Math.min(currentWordIndex + PER_SET, TOTAL);
-    var words = W.slice(currentWordIndex, end);
-    var setScore = 0;
+    var end = Math.min(wi+PER_SET, TOTAL);
+    var words = W.slice(wi, end);
+    var sc = 0;
 
-    for (var i = 0; i < words.length; i++) {
+    for (var i=0; i<words.length; i++) {
         var w = words[i];
-        var inp = document.getElementById("input-" + i);
-        var userVal = normalizeStr(inp.value);
-        var correctStr = (mode === "en2te") ? w.te : w.en;
-        var acceptable = correctStr.toLowerCase().split("/");
+        var inp = document.getElementById("inp-"+i);
+        var uv = norm(inp.value);
+        var cv = (mode==="en2te") ? w.te : w.en;
+        var acc = cv.toLowerCase().split("/");
         inp.readOnly = true;
         var ok = false;
-        for (var j = 0; j < acceptable.length; j++) {
-            if (userVal !== "" && normalizeStr(acceptable[j]) === userVal) { ok = true; break; }
+        for (var j=0; j<acc.length; j++) {
+            if (uv!=="" && norm(acc[j])===uv) { ok=true; break; }
         }
+        var hint = document.getElementById("hint-"+i);
         if (ok) {
             inp.classList.add("correct");
-            setScore++;
+            hint.className = "answer-hint correct";
+            hint.textContent = "✓ " + cv;
+            // In en→te mode also show phonetic on correct
+            if (mode==="en2te") hint.textContent = "✓ " + cv + "  (" + w.p + ")";
+            sc++;
         } else {
             inp.classList.add("incorrect");
-            var ans = document.getElementById("ans-" + i);
-            ans.style.display = "block";
-            ans.style.color = "#f87171";
-            ans.textContent = "✗ " + correctStr;
+            hint.className = "answer-hint wrong";
+            hint.textContent = "✗ " + cv;
+            if (mode==="en2te") hint.textContent = "✗ " + cv + "  (" + w.p + ")";
         }
     }
 
-    cpScore += setScore;
-    cpWordsAnswered += words.length;
+    cpScore += sc;
+    cpDone += words.length;
     checked = true;
-
-    document.getElementById("btn-check").disabled = true;
-    document.getElementById("btn-next").disabled = false;
+    document.getElementById("bc").disabled = true;
+    document.getElementById("bn").disabled = false;
 }
 
-// ============================================================
-// NEXT SET / CHECKPOINT
-// ============================================================
-function nextSet() {
-    var end = Math.min(currentWordIndex + PER_SET, TOTAL);
-    currentWordIndex = end;
-
-    // Check if we hit a checkpoint boundary
-    if (cpWordsAnswered >= PER_CHECKPOINT) {
-        showCheckpoint();
-    } else if (currentWordIndex >= TOTAL) {
-        // Final checkpoint if remaining
-        if (cpWordsAnswered > 0) {
-            showCheckpoint();
-        } else {
-            showFinish();
-        }
-    } else {
-        renderSet();
-    }
+function doNext() {
+    wi = Math.min(wi+PER_SET, TOTAL);
+    if (cpDone >= PER_CP) { showCP(); }
+    else if (wi >= TOTAL) { if (cpDone>0) showCP(); else showFinish(); }
+    else renderSet();
 }
 
-function showCheckpoint() {
+function showCP() {
     var area = document.getElementById("quiz-area");
     area.innerHTML = "";
     updateProgress();
 
-    var passed = cpScore >= PASS_SCORE;
-    var cpBlock = Math.ceil(currentWordIndex / PER_CHECKPOINT);
-
+    var passed = cpScore >= PASS;
+    var cpN = Math.ceil(wi/PER_CP);
     var div = document.createElement("div");
     div.className = "checkpoint";
 
-    var h2 = document.createElement("h2");
-    h2.textContent = "Checkpoint " + cpBlock;
+    var emoji = document.createElement("div");
+    emoji.className = "emoji";
+    emoji.textContent = passed ? "🎉" : "📚";
 
-    var score = document.createElement("div");
-    score.className = "big-score " + (passed ? "pass" : "fail");
-    score.textContent = cpScore + " / " + cpWordsAnswered;
+    var h2 = document.createElement("h2");
+    h2.textContent = "Checkpoint " + cpN;
+
+    var sc = document.createElement("div");
+    sc.className = "score-big " + (passed?"pass":"fail");
+    sc.textContent = cpScore + " / " + cpDone;
 
     var p = document.createElement("p");
-    var btn = document.createElement("button");
+    var btn;
 
     if (passed) {
-        p.innerHTML = "Great work! You scored <b>" + cpScore + "</b> out of " + cpWordsAnswered + ".<br>You need " + PASS_SCORE + " to pass. Keep going!";
-        btn.className = "btn btn-next";
-        if (currentWordIndex >= TOTAL) {
-            btn.textContent = "See Final Results";
-            btn.onclick = showFinish;
-        } else {
-            btn.textContent = "Continue to Next 30 →";
-            btn.onclick = function() { cpScore = 0; cpWordsAnswered = 0; renderSet(); };
-        }
+        p.innerHTML = "Amazing! You scored <b>"+cpScore+"</b> out of "+cpDone+"!<br>You need "+PASS+" to pass. You crushed it! 💪";
+        btn = document.createElement("button");
+        btn.className = "duo-btn duo-btn-green";
+        if (wi>=TOTAL) { btn.textContent = "🏆 SEE RESULTS"; btn.onclick = showFinish; }
+        else { btn.textContent = "CONTINUE →"; btn.onclick = function(){ cpScore=0; cpDone=0; renderSet(); }; }
     } else {
-        p.innerHTML = "You scored <b>" + cpScore + "</b> out of " + cpWordsAnswered + ".<br>You need at least <b>" + PASS_SCORE + "</b> points to continue.<br>Go to the <b>Notes</b> tab to study, then retry!";
-        btn.className = "btn btn-check";
-        btn.textContent = "Retry This Block";
-        btn.onclick = function() {
-            currentWordIndex = currentWordIndex - cpWordsAnswered;
-            cpScore = 0;
-            cpWordsAnswered = 0;
-            renderSet();
-        };
+        p.innerHTML = "You scored <b>"+cpScore+"</b> out of "+cpDone+".<br>You need <b>"+PASS+"</b> to continue.<br>Study the words in <b>📖 Notes</b> tab, then retry!";
+        btn = document.createElement("button");
+        btn.className = "duo-btn duo-btn-red";
+        btn.textContent = "RETRY THIS BLOCK";
+        btn.onclick = function(){ wi-=cpDone; cpScore=0; cpDone=0; renderSet(); };
     }
 
+    div.appendChild(emoji);
     div.appendChild(h2);
-    div.appendChild(score);
+    div.appendChild(sc);
     div.appendChild(p);
     div.appendChild(btn);
     area.appendChild(div);
@@ -492,91 +804,86 @@ function showCheckpoint() {
 function showFinish() {
     var area = document.getElementById("quiz-area");
     area.innerHTML = "";
-
     var div = document.createElement("div");
     div.className = "finish";
+
+    var emoji = document.createElement("div");
+    emoji.className = "emoji";
+    emoji.textContent = "🏆";
 
     var h2 = document.createElement("h2");
     h2.textContent = "Congratulations!";
 
-    var p1 = document.createElement("p");
-    p1.textContent = "You completed all " + TOTAL + " words!";
+    var p = document.createElement("p");
+    p.textContent = "You completed all "+TOTAL+" words!";
 
     var btn = document.createElement("button");
-    btn.className = "btn btn-next";
-    btn.textContent = "Start Over";
-    btn.onclick = function() {
-        currentWordIndex = 0; cpScore = 0; cpWordsAnswered = 0;
-        renderSet();
-    };
+    btn.className = "duo-btn duo-btn-green";
+    btn.textContent = "START OVER";
+    btn.onclick = function(){ wi=0; cpScore=0; cpDone=0; renderSet(); };
 
+    div.appendChild(emoji);
     div.appendChild(h2);
-    div.appendChild(p1);
+    div.appendChild(p);
     div.appendChild(btn);
     area.appendChild(div);
 }
 
-// ============================================================
-// NOTES PAGE
-// ============================================================
+// ---- NOTES ----
 function buildNotes() {
-    var container = document.getElementById("notes-list");
-    var query = normalizeStr(document.getElementById("search-box").value);
-    container.innerHTML = "";
+    var list = document.getElementById("notes-list");
+    var q = norm(document.getElementById("search-box").value);
+    list.innerHTML = "";
 
     var grid = document.createElement("div");
     grid.className = "notes-grid";
+    var bn = 0;
 
-    var cpNum = 0;
-    for (var i = 0; i < W.length; i++) {
-        // section header every 30 words
-        if (i % PER_CHECKPOINT === 0) {
-            cpNum++;
+    for (var i=0; i<W.length; i++) {
+        if (i % PER_CP === 0) {
+            bn++;
             var hdr = document.createElement("div");
-            hdr.className = "section-header";
-            hdr.style.gridColumn = "1 / -1";
-            hdr.textContent = "Block " + cpNum + "  (Words " + (i + 1) + " – " + Math.min(i + PER_CHECKPOINT, TOTAL) + ")";
+            hdr.className = "block-header";
+            hdr.textContent = "Block "+bn+"  ·  Words "+(i+1)+"–"+Math.min(i+PER_CP,TOTAL);
             grid.appendChild(hdr);
         }
-
         var w = W[i];
-        // filter
-        if (query && normalizeStr(w.en).indexOf(query) === -1 && normalizeStr(w.te).indexOf(query) === -1) {
-            continue;
-        }
+        if (q && norm(w.en).indexOf(q)===-1 && norm(w.te).indexOf(q)===-1) continue;
 
-        var card = document.createElement("div");
-        card.className = "note-card";
+        var row = document.createElement("div");
+        row.className = "note-row";
 
         var idx = document.createElement("span");
-        idx.className = "idx";
-        idx.textContent = (i + 1);
+        idx.className = "n-idx";
+        idx.textContent = i+1;
 
         var en = document.createElement("span");
-        en.className = "en";
+        en.className = "n-en";
         en.textContent = w.en;
 
-        var te = document.createElement("span");
-        te.className = "te";
+        var right = document.createElement("div");
+        right.className = "n-right";
+
+        var te = document.createElement("div");
+        te.className = "n-te";
         te.textContent = w.te;
 
-        card.appendChild(idx);
-        card.appendChild(en);
-        card.appendChild(te);
-        grid.appendChild(card);
+        var ph = document.createElement("div");
+        ph.className = "n-ph";
+        ph.textContent = w.p;
+
+        right.appendChild(te);
+        right.appendChild(ph);
+
+        row.appendChild(idx);
+        row.appendChild(en);
+        row.appendChild(right);
+        grid.appendChild(row);
     }
-    container.appendChild(grid);
+    list.appendChild(grid);
 }
 
-function filterNotes() { buildNotes(); }
-
-// ============================================================
-// INIT
-// ============================================================
-window.onload = function() {
-    renderSet();
-    buildNotes();
-};
+window.onload = function(){ renderSet(); };
 </script>
 </body>
 </html>
