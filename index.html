@@ -8,7 +8,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
-            font-family: 'Nunito', 'Rounded Mplus 1c', -apple-system, sans-serif;
+            font-family: 'Nunito', -apple-system, sans-serif;
             background: #f0f0f0;
             color: #4b4b4b;
             min-height: 100vh;
@@ -20,11 +20,12 @@
             display: flex; background: #fff;
             border-bottom: 2px solid #e5e5e5;
             position: sticky; top: 0; z-index: 10;
+            overflow-x: auto; white-space: nowrap;
         }
         .nav button {
-            flex: 1; padding: 14px 0; background: none; border: none;
+            flex: 1; padding: 14px 12px; background: none; border: none;
             color: #afafaf; font-family: inherit;
-            font-size: 15px; font-weight: 800; cursor: pointer;
+            font-size: 14px; font-weight: 800; cursor: pointer;
             border-bottom: 3px solid transparent; transition: all 0.2s;
             text-transform: uppercase; letter-spacing: 0.5px;
         }
@@ -45,36 +46,18 @@
         }
         .duo-btn:active { top: 3px; box-shadow: none !important; }
         .duo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .duo-btn-green {
-            background: #58cc02; color: #fff;
-            box-shadow: 0 4px 0 #46a302;
-        }
+        .duo-btn-green { background: #58cc02; color: #fff; box-shadow: 0 4px 0 #46a302; }
         .duo-btn-green:active { box-shadow: 0 1px 0 #46a302; }
-        .duo-btn-blue {
-            background: #1cb0f6; color: #fff;
-            box-shadow: 0 4px 0 #1899d6;
-        }
+        .duo-btn-blue { background: #1cb0f6; color: #fff; box-shadow: 0 4px 0 #1899d6; }
         .duo-btn-blue:active { box-shadow: 0 1px 0 #1899d6; }
-        .duo-btn-orange {
-            background: #ff9600; color: #fff;
-            box-shadow: 0 4px 0 #e08600;
-        }
+        .duo-btn-orange { background: #ff9600; color: #fff; box-shadow: 0 4px 0 #e08600; }
         .duo-btn-orange:active { box-shadow: 0 1px 0 #e08600; }
-        .duo-btn-white {
-            background: #fff; color: #1cb0f6;
-            border: 2px solid #e5e5e5;
-            box-shadow: 0 4px 0 #e5e5e5;
-        }
+        .duo-btn-white { background: #fff; color: #1cb0f6; border: 2px solid #e5e5e5; box-shadow: 0 4px 0 #e5e5e5; }
         .duo-btn-white:active { box-shadow: 0 1px 0 #e5e5e5; }
-        .duo-btn-red {
-            background: #ff4b4b; color: #fff;
-            box-shadow: 0 4px 0 #e04343;
-        }
+        .duo-btn-red { background: #ff4b4b; color: #fff; box-shadow: 0 4px 0 #e04343; }
 
         /* ---- MODE TOGGLE ---- */
-        .mode-bar {
-            display: flex; gap: 8px; margin-bottom: 16px;
-        }
+        .mode-bar { display: flex; gap: 8px; margin-bottom: 16px; }
         .mode-pill {
             flex: 1; padding: 10px 8px;
             border-radius: 12px; border: 2px solid #e5e5e5;
@@ -82,140 +65,73 @@
             font-family: inherit; font-size: 13px; font-weight: 800;
             cursor: pointer; text-align: center; transition: all 0.2s;
         }
-        .mode-pill.active {
-            border-color: #84d8ff; background: #ddf4ff; color: #1cb0f6;
-        }
+        .mode-pill.active { border-color: #84d8ff; background: #ddf4ff; color: #1cb0f6; }
 
         /* ---- PROGRESS ---- */
-        .progress-wrap {
-            background: #e5e5e5; border-radius: 10px; height: 14px;
-            margin-bottom: 6px; overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%; background: #58cc02; border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-        .progress-labels {
-            display: flex; justify-content: space-between;
-            font-size: 13px; font-weight: 700; color: #afafaf;
-            margin-bottom: 18px;
-        }
+        .progress-wrap { background: #e5e5e5; border-radius: 10px; height: 14px; margin-bottom: 6px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #58cc02; border-radius: 10px; transition: width 0.5s ease; }
+        .progress-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: #afafaf; margin-bottom: 18px; }
 
         /* ---- QUIZ ROW ---- */
-        .quiz-card {
-            background: #fff; border-radius: 16px;
-            border: 2px solid #e5e5e5;
-            padding: 14px 16px; margin-bottom: 10px;
-            display: flex; align-items: center; gap: 12px;
-        }
-        .quiz-card .num {
-            background: #e5e5e5; color: #afafaf;
-            font-weight: 900; font-size: 12px;
-            width: 28px; height: 28px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
+        .quiz-card { background: #fff; border-radius: 16px; border: 2px solid #e5e5e5; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
+        .quiz-card .num { background: #e5e5e5; color: #afafaf; font-weight: 900; font-size: 12px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .quiz-card .word-col { flex: 1; }
-        .quiz-card .word-main {
-            font-size: 17px; font-weight: 800; color: #4b4b4b;
-        }
-        .quiz-card .word-phonetic {
-            font-size: 12px; font-weight: 600; color: #afafaf;
-            margin-top: 2px; font-style: italic;
-        }
-        .quiz-card .answer-hint {
-            font-size: 12px; font-weight: 700; margin-top: 4px;
-            display: none;
-        }
+        .quiz-card .word-main { font-size: 17px; font-weight: 800; color: #4b4b4b; }
+        .quiz-card .word-phonetic { font-size: 12px; font-weight: 600; color: #afafaf; margin-top: 2px; font-style: italic; }
+        .quiz-card .answer-hint { font-size: 12px; font-weight: 700; margin-top: 4px; display: none; }
         .quiz-card .answer-hint.correct { color: #58cc02; display: block; }
         .quiz-card .answer-hint.wrong { color: #ff4b4b; display: block; }
-        .quiz-card input {
-            flex: 1.1; padding: 10px 14px;
-            background: #f7f7f7; border: 2px solid #e5e5e5;
-            border-radius: 12px; font-family: inherit;
-            font-size: 15px; font-weight: 600; color: #4b4b4b;
-            outline: none; transition: border-color 0.2s;
-        }
+        .quiz-card input { flex: 1.1; padding: 10px 14px; background: #f7f7f7; border: 2px solid #e5e5e5; border-radius: 12px; font-family: inherit; font-size: 15px; font-weight: 600; color: #4b4b4b; outline: none; transition: border-color 0.2s; }
         .quiz-card input:focus { border-color: #1cb0f6; background: #fff; }
         .quiz-card input.correct { border-color: #58cc02; background: #d7ffb8; }
         .quiz-card input.incorrect { border-color: #ff4b4b; background: #ffdfe0; }
-
         .btn-row { display: flex; gap: 10px; margin-top: 20px; }
         .btn-row .duo-btn { flex: 1; }
 
-        /* ---- CHECKPOINT ---- */
-        .checkpoint { text-align: center; padding: 30px 10px; }
-        .checkpoint .emoji { font-size: 64px; margin-bottom: 10px; }
-        .checkpoint h2 { font-size: 24px; font-weight: 900; color: #4b4b4b; margin-bottom: 6px; }
-        .checkpoint .score-big {
-            font-size: 52px; font-weight: 900; margin: 12px 0;
-        }
+        /* ---- CHECKPOINT & FINISH ---- */
+        .checkpoint, .finish { text-align: center; padding: 30px 10px; }
+        .checkpoint .emoji, .finish .emoji { font-size: 64px; margin-bottom: 10px; }
+        .checkpoint h2, .finish h2 { font-size: 24px; font-weight: 900; color: #4b4b4b; margin-bottom: 6px; }
+        .checkpoint .score-big { font-size: 52px; font-weight: 900; margin: 12px 0; }
         .checkpoint .score-big.pass { color: #58cc02; }
         .checkpoint .score-big.fail { color: #ff4b4b; }
-        .checkpoint p {
-            color: #777; font-size: 15px; font-weight: 600;
-            line-height: 1.7; margin-bottom: 24px;
-        }
-        .checkpoint .duo-btn { max-width: 300px; margin: 8px auto; }
+        .checkpoint p, .finish p { color: #777; font-size: 15px; font-weight: 600; line-height: 1.7; margin-bottom: 24px; }
+        .checkpoint .duo-btn, .finish .duo-btn { max-width: 300px; margin: 8px auto; }
 
-        /* ---- FINISH ---- */
-        .finish { text-align: center; padding: 30px 10px; }
-        .finish .emoji { font-size: 72px; margin-bottom: 10px; }
-        .finish h2 { font-size: 26px; font-weight: 900; color: #58cc02; }
-        .finish p { color: #777; font-size: 16px; font-weight: 600; margin: 12px 0 24px; }
-        .finish .duo-btn { max-width: 300px; margin: 0 auto; }
-
-        /* ---- NOTES PAGE ---- */
-        .notes-header {
-            text-align: center; padding: 10px 0 16px;
-        }
-        .notes-header h2 {
-            font-size: 22px; font-weight: 900; color: #4b4b4b;
-        }
+        /* ---- NOTES / PHRASES / GRAMMAR ---- */
+        .notes-header { text-align: center; padding: 10px 0 16px; }
+        .notes-header h2 { font-size: 22px; font-weight: 900; color: #4b4b4b; margin-bottom: 8px; }
         .notes-header p { font-size: 13px; color: #afafaf; font-weight: 700; }
-
-        .search-input {
-            width: 100%; padding: 12px 16px;
-            background: #fff; border: 2px solid #e5e5e5;
-            border-radius: 14px; font-family: inherit;
-            font-size: 15px; font-weight: 600; color: #4b4b4b;
-            outline: none; margin-bottom: 16px;
-        }
+        .search-input { width: 100%; padding: 12px 16px; background: #fff; border: 2px solid #e5e5e5; border-radius: 14px; font-family: inherit; font-size: 15px; font-weight: 600; color: #4b4b4b; outline: none; margin-bottom: 16px; }
         .search-input:focus { border-color: #1cb0f6; }
+        
+        .info-box { background: #ddf4ff; border: 2px solid #84d8ff; border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; font-size: 13px; font-weight: 600; color: #1899d6; line-height: 1.8; }
+        .info-box b { color: #1478a7; }
+        .info-box h3 { font-size: 16px; margin-bottom: 6px; color: #1478a7; }
+        .info-box ul { margin-left: 20px; margin-top: 8px; }
+        .info-box li { margin-bottom: 4px; }
 
-        .pron-guide {
-            background: #ddf4ff; border: 2px solid #84d8ff;
-            border-radius: 14px; padding: 14px 16px;
-            margin-bottom: 16px; font-size: 13px; font-weight: 600;
-            color: #1899d6; line-height: 1.8;
-        }
-        .pron-guide b { color: #1478a7; }
-
-        .block-header {
-            padding: 12px 0 6px;
-            font-size: 14px; font-weight: 900; color: #58cc02;
-            text-transform: uppercase; letter-spacing: 1px;
-            border-bottom: 2px solid #e5e5e5;
-            margin-top: 12px; margin-bottom: 8px;
-        }
-
-        .notes-grid { display: grid; grid-template-columns: 1fr; gap: 6px; }
-        .note-row {
-            display: flex; align-items: center;
-            background: #fff; border: 2px solid #e5e5e5;
-            border-radius: 12px; padding: 10px 14px; gap: 10px;
-        }
-        .note-row .n-idx {
-            background: #e5e5e5; color: #afafaf;
-            font-weight: 900; font-size: 11px;
-            width: 26px; height: 26px; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            flex-shrink: 0;
-        }
+        .block-header { padding: 12px 0 6px; font-size: 14px; font-weight: 900; color: #58cc02; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #e5e5e5; margin-top: 12px; margin-bottom: 8px; }
+        .notes-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
+        .note-row { display: flex; align-items: center; background: #fff; border: 2px solid #e5e5e5; border-radius: 12px; padding: 12px 14px; gap: 10px; }
+        .note-row .n-idx { background: #e5e5e5; color: #afafaf; font-weight: 900; font-size: 11px; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .note-row .n-en { flex: 1; font-weight: 800; font-size: 15px; color: #4b4b4b; }
         .note-row .n-right { text-align: right; flex: 1.2; }
         .note-row .n-te { font-weight: 800; font-size: 15px; color: #1cb0f6; }
-        .note-row .n-ph { font-size: 11px; font-weight: 600; color: #afafaf; font-style: italic; }
+        .note-row .n-ph { font-size: 11px; font-weight: 600; color: #afafaf; font-style: italic; margin-top: 2px; }
+
+        /* ---- FLASHCARDS ---- */
+        .fc-container { perspective: 1000px; width: 100%; height: 280px; margin-bottom: 20px; }
+        .fc-card { width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
+        .fc-card.is-flipped { transform: rotateY(180deg); }
+        .fc-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; border: 3px solid #e5e5e5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
+        .fc-front { background: #fff; }
+        .fc-back { background: #ddf4ff; border-color: #84d8ff; transform: rotateY(180deg); }
+        .fc-word { font-size: 32px; font-weight: 900; color: #4b4b4b; margin-bottom: 10px; }
+        .fc-phonetic { font-size: 18px; font-weight: 700; color: #afafaf; font-style: italic; }
+        .fc-back .fc-word { color: #1cb0f6; }
+        .fc-back .fc-phonetic { color: #1899d6; }
+        .fc-hint { position: absolute; bottom: 15px; font-size: 12px; font-weight: 800; color: #afafaf; text-transform: uppercase; letter-spacing: 1px; }
 
         @media (min-width: 480px) {
             .notes-grid { grid-template-columns: 1fr 1fr; }
@@ -227,9 +143,12 @@
 
 <div class="nav">
     <button id="nav-quiz" class="active" onclick="showPage('quiz')">📝 Quiz</button>
+    <button id="nav-flash" onclick="showPage('flash')">🗂️ Cards</button>
+    <button id="nav-phrases" onclick="showPage('phrases')">💬 Phrases</button>
     <button id="nav-notes" onclick="showPage('notes')">📖 Notes</button>
 </div>
 
+<!-- QUIZ TAB -->
 <div class="page active" id="page-quiz">
     <div class="mode-bar">
         <button class="mode-pill active" id="mode-en" onclick="setMode('en2te')">English → Telugu</button>
@@ -242,22 +161,77 @@
     <div id="quiz-area"></div>
 </div>
 
+<!-- FLASHCARDS TAB -->
+<div class="page" id="page-flash">
+    <div class="notes-header">
+        <h2>🗂️ Flashcards</h2>
+        <p>Memorize words quickly. Tap card to flip!</p>
+    </div>
+    <div class="mode-bar">
+        <button class="mode-pill active" id="fc-mode-en" onclick="setFCMode('en')">Front: English</button>
+        <button class="mode-pill" id="fc-mode-te" onclick="setFCMode('te')">Front: Telugu</button>
+    </div>
+    <div class="progress-labels" style="justify-content: center; margin-top: 10px;">
+        <span id="fc-counter" style="font-size:16px;">1 / 300</span>
+    </div>
+    
+    <div class="fc-container">
+        <div class="fc-card" id="fc-card" onclick="flipCard()">
+            <div class="fc-face fc-front" id="fc-front">
+                <div class="fc-word" id="fc-front-word">Word</div>
+                <div class="fc-phonetic" id="fc-front-ph">Phonetic</div>
+                <div class="fc-hint">Tap to flip</div>
+            </div>
+            <div class="fc-face fc-back" id="fc-back">
+                <div class="fc-word" id="fc-back-word">Answer</div>
+                <div class="fc-phonetic" id="fc-back-ph">Phonetic</div>
+                <div class="fc-hint">Tap to flip</div>
+            </div>
+        </div>
+    </div>
+    <div class="btn-row">
+        <button class="duo-btn duo-btn-white" onclick="prevCard()">← PREV</button>
+        <button class="duo-btn duo-btn-blue" onclick="nextCard()">NEXT →</button>
+    </div>
+</div>
+
+<!-- PHRASES TAB -->
+<div class="page" id="page-phrases">
+    <div class="notes-header">
+        <h2>💬 Essential Phrases</h2>
+        <p>Learn whole sentences to speak faster!</p>
+    </div>
+    <div class="info-box" style="background:#fff4e5; border-color:#ffc77d; color:#e08600;">
+        <h3>🧠 Pro Grammar Tip</h3>
+        English uses <b>Subject-Verb-Object</b> (I eat apple).<br>
+        Telugu uses <b>Subject-Object-Verb</b> (I apple eat -> Nenu apple tintunnanu).<br>
+        Verbs always go at the very end of the sentence!
+    </div>
+    <div class="progress-labels" style="justify-content: center; margin-bottom: 10px;">
+        <span id="phrase-topic-label" style="font-size:16px; font-weight:800; color:#58cc02;">Topic</span>
+    </div>
+    <div class="notes-grid" id="phrases-list"></div>
+    <div class="btn-row">
+        <button class="duo-btn duo-btn-white" id="phrase-prev" onclick="prevPhraseTopic()">← PREV</button>
+        <button class="duo-btn duo-btn-blue" id="phrase-next" onclick="nextPhraseTopic()">NEXT →</button>
+    </div>
+</div>
+
+<!-- NOTES TAB -->
 <div class="page" id="page-notes">
     <div class="notes-header">
-        <h2>📖 Word Reference</h2>
+        <h2>📖 Word Dictionary</h2>
         <p>Study these before each checkpoint!</p>
     </div>
-    <div class="pron-guide">
-        <b>Pronunciation Key:</b><br>
+    <div class="info-box">
+        <h3>🗣️ Pronunciation Key</h3>
         <b>aa</b> = long 'a' (f<u>a</u>ther) &nbsp;·&nbsp;
         <b>ee</b> = long 'e' (s<u>ee</u>) &nbsp;·&nbsp;
         <b>oo</b> = long 'o' (f<u>oo</u>d)<br>
-        <b>th</b> = soft dental 't' &nbsp;·&nbsp;
-        <b>dh</b> = soft dental 'd' &nbsp;·&nbsp;
-        <b>ch</b> = as in '<u>ch</u>air'<br>
-        <b>sh</b> = as in '<u>sh</u>ip' &nbsp;·&nbsp;
-        <b>zh</b> = retroflex 'l' &nbsp;·&nbsp;
-        Stress is on <b>CAPS</b> syllable
+        <b>th/dh</b> = soft dental (tongue touching teeth)<br>
+        <b>ch</b> = '<u>ch</u>air' &nbsp;·&nbsp;
+        <b>sh</b> = '<u>sh</u>ip'<br>
+        Stress the <b>CAPITAL</b> syllables!
     </div>
     <input type="text" class="search-input" id="search-box" placeholder="🔍 Search any word..." oninput="buildNotes()">
     <div id="notes-list"></div>
@@ -266,7 +240,6 @@
 <script>
 // ============================================================
 // DICTIONARY — 300 words with phonetics
-// p = phonetic pronunciation guide
 // ============================================================
 var W=[
 {en:"I",te:"nenu",p:"NEH-noo"},
@@ -580,24 +553,109 @@ var W=[
 {en:"king",te:"raju",p:"RAA-joo"}
 ];
 
+var PHRASES = [
+    // Level 1: Greetings & Basics
+    {level: "Level 1: Greetings & Basics", en: "Hello / Namaste", te: "Namaskaram", p: "nah-mahs-KAA-rahm"},
+    {level: "Level 1: Greetings & Basics", en: "How are you?", te: "Meeru ela unnaru?", p: "MEE-roo EH-lah OON-naa-roo"},
+    {level: "Level 1: Greetings & Basics", en: "I am fine", te: "Nenu bagunnanu", p: "NEH-noo BAA-goon-naa-noo"},
+    {level: "Level 1: Greetings & Basics", en: "What is your name?", te: "Mee peru enti?", p: "MEE PEH-roo EN-tee"},
+    {level: "Level 1: Greetings & Basics", en: "My name is John", te: "Naa peru John", p: "NAA PEH-roo John"},
+    {level: "Level 1: Greetings & Basics", en: "Where are you from?", te: "Meeru ekkadi nunchi vacharu?", p: "MEE-roo EK-kah-dee NOON-chee VAH-chaa-roo"},
+    {level: "Level 1: Greetings & Basics", en: "Thank you", te: "Dhanyavadalu", p: "DHAN-yah-vaa-daa-loo"},
+    {level: "Level 1: Greetings & Basics", en: "Sorry", te: "Kshamimchandi", p: "kshah-MIN-chahn-dee"},
+    {level: "Level 1: Greetings & Basics", en: "Do you know English?", te: "Meeku English telusa?", p: "MEE-koo English TEH-loo-saa"},
+    {level: "Level 1: Greetings & Basics", en: "I don't know Telugu", te: "Naaku Telugu teleedu", p: "NAA-koo Telugu teh-LEE-doo"},
+    {level: "Level 1: Greetings & Basics", en: "Please speak slowly", te: "Koncham nemmadiga matladandi", p: "KON-chahm nem-MAH-dee-gah MAAT-laa-dahn-dee"},
+    
+    // Level 2: Actions & Directions
+    {level: "Level 2: Actions & Directions", en: "What happened?", te: "Emaindi?", p: "EH-main-dee"},
+    {level: "Level 2: Actions & Directions", en: "Come here", te: "Ikkadaki raa", p: "IK-kah-dah-kee RAA"},
+    {level: "Level 2: Actions & Directions", en: "Go there", te: "Akkadiki vellu", p: "AK-kah-dah-kee VEL-loo"},
+    {level: "Level 2: Actions & Directions", en: "What are you doing?", te: "Meeru em chestunnaru?", p: "MEE-roo EM CHEHS-toon-naa-roo"},
+    {level: "Level 2: Actions & Directions", en: "Where are you going?", te: "Meeru ekkadiki veltunnaru?", p: "MEE-roo EK-kah-dee-kee VEL-toon-naa-roo"},
+    {level: "Level 2: Actions & Directions", en: "I am going home", te: "Nenu intiki veltunnanu", p: "NEH-noo IN-tee-kee VEL-toon-naa-noo"},
+    {level: "Level 2: Actions & Directions", en: "Stop the vehicle", te: "Bandi aapu", p: "BAHN-dee AA-poo"},
+    {level: "Level 2: Actions & Directions", en: "Go straight", te: "Tinnaga vellu", p: "TIN-nah-gah VEL-loo"},
+    {level: "Level 2: Actions & Directions", en: "Turn left", te: "Edamavaipu tirugu", p: "EH-dah-mah-vai-poo TEE-roo-goo"},
+    {level: "Level 2: Actions & Directions", en: "Turn right", te: "Kudivaipu tirugu", p: "KOO-dee-vai-poo TEE-roo-goo"},
+    
+    // Level 3: Shopping & Needs
+    {level: "Level 3: Shopping & Needs", en: "How much is this?", te: "Idi entha?", p: "IH-dee EN-thah"},
+    {level: "Level 3: Shopping & Needs", en: "I want this", te: "Naaku idi kavali", p: "NAA-koo IH-dee KAA-vaa-lee"},
+    {level: "Level 3: Shopping & Needs", en: "I don't want this", te: "Naaku idi vaddu", p: "NAA-koo IH-dee VAD-doo"},
+    {level: "Level 3: Shopping & Needs", en: "Give me that", te: "Naaku adhi ivvu", p: "NAA-koo AH-dhee IV-voo"},
+    {level: "Level 3: Shopping & Needs", en: "It is too expensive", te: "Idi chala ekkuva", p: "IH-dee CHAA-lah EK-koo-vah"},
+    {level: "Level 3: Shopping & Needs", en: "Reduce the price", te: "Dhara tagginchandi", p: "DHAH-rah tag-GIN-chahn-dee"},
+    {level: "Level 3: Shopping & Needs", en: "I need water", te: "Naaku neellu kavali", p: "NAA-koo NEEL-loo KAA-vaa-lee"},
+    {level: "Level 3: Shopping & Needs", en: "Where is the shop?", te: "Shop ekkada undi?", p: "Shop EK-kah-dah OON-dee"},
+    
+    // Level 4: Food & Dining
+    {level: "Level 4: Food & Dining", en: "Did you eat?", te: "Bhojanam chesara?", p: "BHO-jah-nahm CHEH-saa-raa"},
+    {level: "Level 4: Food & Dining", en: "I am hungry", te: "Naaku aakaliga undi", p: "NAA-koo AA-kah-lee-gah OON-dee"},
+    {level: "Level 4: Food & Dining", en: "The food is very good", te: "Annam chala bagundi", p: "AN-nahm CHAA-lah BAA-goon-dee"},
+    {level: "Level 4: Food & Dining", en: "I want to eat", te: "Nenu tinali", p: "NEH-noo TEE-naa-lee"},
+    {level: "Level 4: Food & Dining", en: "Drink water", te: "Neellu taagu", p: "NEEL-loo TAA-goo"},
+    {level: "Level 4: Food & Dining", en: "It is spicy", te: "Idi karamga undi", p: "IH-dee KAA-rahm-gah OON-dee"},
+    {level: "Level 4: Food & Dining", en: "Give me some more", te: "Inkoncham ivvandi", p: "IN-kon-chahm IV-vahn-dee"},
+    {level: "Level 4: Food & Dining", en: "I don't eat meat", te: "Nenu mamsam tinanu", p: "NEH-noo MAAM-sahm TEE-nah-noo"},
+
+    // Level 5: Time, Work & Complex
+    {level: "Level 5: Time & Work", en: "What time is it?", te: "Time entha ayindi?", p: "Time EN-thah ah-YIN-dee"},
+    {level: "Level 5: Time & Work", en: "Come tomorrow", te: "Repu raa", p: "REH-poo RAA"},
+    {level: "Level 5: Time & Work", en: "I have work", te: "Naaku pani undi", p: "NAA-koo PAH-nee OON-dee"},
+    {level: "Level 5: Time & Work", en: "Are you busy?", te: "Meeru busy ga unnara?", p: "MEE-roo busy gah OON-naa-raa"},
+    {level: "Level 5: Time & Work", en: "Call me later", te: "Tarvata call cheyu", p: "TAR-vaa-tah call CHEH-yoo"},
+    {level: "Level 5: Time & Work", en: "I forgot", te: "Nenu marchipoyanu", p: "NEH-noo MAR-chee-poh-yaa-noo"},
+    {level: "Level 5: Time & Work", en: "I remember", te: "Naaku gurthundi", p: "NAA-koo GOOR-thoon-dee"},
+    {level: "Level 5: Time & Work", en: "I understand", te: "Naaku ardam ayindi", p: "NAA-koo AR-dahm ah-YIN-dee"},
+    {level: "Level 5: Time & Work", en: "I don't understand", te: "Naaku ardam kaledu", p: "NAA-koo AR-dahm kaa-LEH-doo"},
+    {level: "Level 5: Time & Work", en: "See you later", te: "Malli kaluddam", p: "MAL-lee KAH-lood-daam"}
+];
+
 var TOTAL = W.length;
 var PER_SET = 10;
 var PER_CP = 30;
 var PASS = 20;
 
 var mode = "en2te";
-var wi = 0;            // word index
+var wi = 0;
 var checked = false;
 var cpScore = 0;
 var cpDone = 0;
 
+// Flashcards state
+var fcIndex = 0;
+var fcMode = "en"; // "en" or "te"
+
+// LOAD PROGRESS FROM LOCALSTORAGE
+function loadProgress() {
+    if (localStorage.getItem("tc_wi")) {
+        wi = parseInt(localStorage.getItem("tc_wi")) || 0;
+        cpScore = parseInt(localStorage.getItem("tc_cpScore")) || 0;
+        cpDone = parseInt(localStorage.getItem("tc_cpDone")) || 0;
+    }
+}
+function saveProgress() {
+    localStorage.setItem("tc_wi", wi);
+    localStorage.setItem("tc_cpScore", cpScore);
+    localStorage.setItem("tc_cpDone", cpDone);
+}
+function resetProgress() {
+    wi = 0; cpScore = 0; cpDone = 0;
+    saveProgress();
+}
+
 // ---- NAV ----
 function showPage(n) {
-    document.getElementById("page-quiz").className = "page" + (n==="quiz"?" active":"");
-    document.getElementById("page-notes").className = "page" + (n==="notes"?" active":"");
-    document.getElementById("nav-quiz").className = n==="quiz"?"active":"";
-    document.getElementById("nav-notes").className = n==="notes"?"active":"";
-    if (n==="notes") buildNotes();
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    
+    document.getElementById("page-" + n).classList.add('active');
+    document.getElementById("nav-" + n).classList.add('active');
+    
+    if (n === "notes") buildNotes();
+    if (n === "phrases") buildPhrases();
+    if (n === "flash") updateFC();
 }
 
 function setMode(m) {
@@ -636,12 +694,10 @@ function renderSet() {
         var card = document.createElement("div");
         card.className = "quiz-card";
 
-        // number badge
         var num = document.createElement("span");
         num.className = "num";
         num.textContent = wi+i+1;
 
-        // left column
         var col = document.createElement("div");
         col.className = "word-col";
 
@@ -650,11 +706,7 @@ function renderSet() {
         main.textContent = label;
         col.appendChild(main);
 
-        // show phonetic on the label side
-        if (isEn2Te) {
-            // in en→te mode, no phonetic on the English side
-        } else {
-            // in te→en mode, show phonetic under Telugu label
+        if (!isEn2Te) {
             var phEl = document.createElement("div");
             phEl.className = "word-phonetic";
             phEl.textContent = w.p;
@@ -667,7 +719,6 @@ function renderSet() {
         hint.textContent = answer;
         col.appendChild(hint);
 
-        // input
         var inp = document.createElement("input");
         inp.type = "text";
         inp.id = "inp-"+i;
@@ -680,7 +731,6 @@ function renderSet() {
         area.appendChild(card);
     }
 
-    // buttons
     var btnRow = document.createElement("div");
     btnRow.className = "btn-row";
 
@@ -730,7 +780,6 @@ function doCheck() {
             inp.classList.add("correct");
             hint.className = "answer-hint correct";
             hint.textContent = "✓ " + cv;
-            // In en→te mode also show phonetic on correct
             if (mode==="en2te") hint.textContent = "✓ " + cv + "  (" + w.p + ")";
             sc++;
         } else {
@@ -743,6 +792,7 @@ function doCheck() {
 
     cpScore += sc;
     cpDone += words.length;
+    saveProgress();
     checked = true;
     document.getElementById("bc").disabled = true;
     document.getElementById("bn").disabled = false;
@@ -750,6 +800,7 @@ function doCheck() {
 
 function doNext() {
     wi = Math.min(wi+PER_SET, TOTAL);
+    saveProgress();
     if (cpDone >= PER_CP) { showCP(); }
     else if (wi >= TOTAL) { if (cpDone>0) showCP(); else showFinish(); }
     else renderSet();
@@ -761,7 +812,8 @@ function showCP() {
     updateProgress();
 
     var passed = cpScore >= PASS;
-    var cpN = Math.ceil(wi/PER_CP);
+    var cpN = Math.ceil((wi - 1) / PER_CP);
+    if(cpN < 1) cpN = 1;
     var div = document.createElement("div");
     div.className = "checkpoint";
 
@@ -784,13 +836,13 @@ function showCP() {
         btn = document.createElement("button");
         btn.className = "duo-btn duo-btn-green";
         if (wi>=TOTAL) { btn.textContent = "🏆 SEE RESULTS"; btn.onclick = showFinish; }
-        else { btn.textContent = "CONTINUE →"; btn.onclick = function(){ cpScore=0; cpDone=0; renderSet(); }; }
+        else { btn.textContent = "CONTINUE →"; btn.onclick = function(){ cpScore=0; cpDone=0; saveProgress(); renderSet(); }; }
     } else {
         p.innerHTML = "You scored <b>"+cpScore+"</b> out of "+cpDone+".<br>You need <b>"+PASS+"</b> to continue.<br>Study the words in <b>📖 Notes</b> tab, then retry!";
         btn = document.createElement("button");
         btn.className = "duo-btn duo-btn-red";
         btn.textContent = "RETRY THIS BLOCK";
-        btn.onclick = function(){ wi-=cpDone; cpScore=0; cpDone=0; renderSet(); };
+        btn.onclick = function(){ wi-=cpDone; cpScore=0; cpDone=0; saveProgress(); renderSet(); };
     }
 
     div.appendChild(emoji);
@@ -820,13 +872,123 @@ function showFinish() {
     var btn = document.createElement("button");
     btn.className = "duo-btn duo-btn-green";
     btn.textContent = "START OVER";
-    btn.onclick = function(){ wi=0; cpScore=0; cpDone=0; renderSet(); };
+    btn.onclick = function(){ resetProgress(); renderSet(); };
 
     div.appendChild(emoji);
     div.appendChild(h2);
     div.appendChild(p);
     div.appendChild(btn);
     area.appendChild(div);
+}
+
+// ---- FLASHCARDS ----
+function setFCMode(m) {
+    fcMode = m;
+    document.getElementById("fc-mode-en").className = "mode-pill"+(m==="en"?" active":"");
+    document.getElementById("fc-mode-te").className = "mode-pill"+(m==="te"?" active":"");
+    document.getElementById("fc-card").classList.remove('is-flipped');
+    setTimeout(updateFC, 150);
+}
+
+function updateFC() {
+    var w = W[fcIndex];
+    document.getElementById("fc-counter").innerText = (fcIndex+1) + " / " + TOTAL;
+    var frontWord = fcMode==="en" ? w.en : w.te;
+    var frontPh = fcMode==="en" ? "" : w.p;
+    var backWord = fcMode==="en" ? w.te : w.en;
+    var backPh = fcMode==="en" ? w.p : "";
+
+    document.getElementById("fc-front-word").innerText = frontWord;
+    document.getElementById("fc-front-ph").innerText = frontPh;
+    document.getElementById("fc-back-word").innerText = backWord;
+    document.getElementById("fc-back-ph").innerText = backPh;
+}
+
+function flipCard() {
+    document.getElementById("fc-card").classList.toggle('is-flipped');
+}
+
+function nextCard() {
+    if (fcIndex < TOTAL - 1) {
+        document.getElementById("fc-card").classList.remove('is-flipped');
+        fcIndex++;
+        setTimeout(updateFC, 150);
+    }
+}
+
+function prevCard() {
+    if (fcIndex > 0) {
+        document.getElementById("fc-card").classList.remove('is-flipped');
+        fcIndex--;
+        setTimeout(updateFC, 150);
+    }
+}
+
+// ---- PHRASES ----
+var phraseTopics = [];
+var currentTopicIndex = 0;
+
+function initPhraseTopics() {
+    for (var i=0; i<PHRASES.length; i++) {
+        if (phraseTopics.indexOf(PHRASES[i].level) === -1) {
+            phraseTopics.push(PHRASES[i].level);
+        }
+    }
+}
+
+function buildPhrases() {
+    if (phraseTopics.length === 0) initPhraseTopics();
+    var list = document.getElementById("phrases-list");
+    list.innerHTML = "";
+    
+    var topic = phraseTopics[currentTopicIndex];
+    document.getElementById("phrase-topic-label").innerText = topic + " (" + (currentTopicIndex+1) + "/" + phraseTopics.length + ")";
+    
+    document.getElementById("phrase-prev").disabled = (currentTopicIndex === 0);
+    document.getElementById("phrase-next").disabled = (currentTopicIndex === phraseTopics.length - 1);
+    
+    for (var i=0; i<PHRASES.length; i++) {
+        var w = PHRASES[i];
+        if (w.level !== topic) continue;
+        
+        var row = document.createElement("div");
+        row.className = "note-row";
+
+        var en = document.createElement("span");
+        en.className = "n-en";
+        en.textContent = w.en;
+
+        var right = document.createElement("div");
+        right.className = "n-right";
+
+        var te = document.createElement("div");
+        te.className = "n-te";
+        te.textContent = w.te;
+
+        var ph = document.createElement("div");
+        ph.className = "n-ph";
+        ph.textContent = w.p;
+
+        right.appendChild(te);
+        right.appendChild(ph);
+        row.appendChild(en);
+        row.appendChild(right);
+        list.appendChild(row);
+    }
+}
+
+function nextPhraseTopic() {
+    if (currentTopicIndex < phraseTopics.length - 1) {
+        currentTopicIndex++;
+        buildPhrases();
+    }
+}
+
+function prevPhraseTopic() {
+    if (currentTopicIndex > 0) {
+        currentTopicIndex--;
+        buildPhrases();
+    }
 }
 
 // ---- NOTES ----
@@ -883,7 +1045,10 @@ function buildNotes() {
     list.appendChild(grid);
 }
 
-window.onload = function(){ renderSet(); };
+window.onload = function(){ 
+    loadProgress();
+    renderSet(); 
+};
 </script>
 </body>
 </html>
