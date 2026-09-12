@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Telugu Chaduvuko</title>
-    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Telugu:wght@400;700&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body {
@@ -14,28 +15,47 @@
             min-height: 100vh;
             -webkit-tap-highlight-color: transparent;
         }
+        .te { font-family: 'Noto Sans Telugu', 'Nunito', sans-serif; }
 
-        /* ---- NAV BAR ---- */
         .nav {
             display: flex; background: #fff;
             border-bottom: 2px solid #e5e5e5;
             position: sticky; top: 0; z-index: 10;
             overflow-x: auto; white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
         }
         .nav button {
-            flex: 1; padding: 14px 12px; background: none; border: none;
-            color: #afafaf; font-family: inherit;
-            font-size: 14px; font-weight: 800; cursor: pointer;
-            border-bottom: 3px solid transparent; transition: all 0.2s;
-            text-transform: uppercase; letter-spacing: 0.5px;
+            flex: 1; min-width: 100px; padding: 14px 12px; background: none; border: none;
+            color: #777; font-family: inherit;
+            font-size: 13px; font-weight: 700; cursor: pointer;
+            border-bottom: 3px solid transparent; transition: all 0.2s ease;
+            text-transform: none; letter-spacing: 0.3px;
+            display: flex; flex-direction: column; align-items: center; gap: 6px;
         }
-        .nav button.active { color: #58cc02; border-bottom-color: #58cc02; }
+        .nav button i {
+            width: 22px;
+            height: 22px;
+            transition: transform 0.2s ease;
+        }
+        .nav button:hover {
+            color: #58cc02;
+            background: #f0f0f0;
+        }
+        .nav button:hover i {
+            transform: scale(1.1);
+        }
+        .nav button.active { 
+            color: #58cc02; 
+            border-bottom-color: #58cc02;
+            background: #f0fde4;
+        }
+        .nav button.active i {
+            stroke-width: 2.5;
+        }
 
-        /* ---- PAGE CONTAINERS ---- */
         .page { display: none; padding: 16px; max-width: 580px; margin: 0 auto; padding-bottom: 100px; }
         .page.active { display: block; }
 
-        /* ---- DUOLINGO BUTTONS ---- */
         .duo-btn {
             display: block; width: 100%; padding: 14px;
             border: none; border-radius: 16px;
@@ -47,32 +67,57 @@
         .duo-btn:active { top: 3px; box-shadow: none !important; }
         .duo-btn:disabled { opacity: 0.5; cursor: not-allowed; }
         .duo-btn-green { background: #58cc02; color: #fff; box-shadow: 0 4px 0 #46a302; }
-        .duo-btn-green:active { box-shadow: 0 1px 0 #46a302; }
         .duo-btn-blue { background: #1cb0f6; color: #fff; box-shadow: 0 4px 0 #1899d6; }
-        .duo-btn-blue:active { box-shadow: 0 1px 0 #1899d6; }
         .duo-btn-orange { background: #ff9600; color: #fff; box-shadow: 0 4px 0 #e08600; }
-        .duo-btn-orange:active { box-shadow: 0 1px 0 #e08600; }
         .duo-btn-white { background: #fff; color: #1cb0f6; border: 2px solid #e5e5e5; box-shadow: 0 4px 0 #e5e5e5; }
-        .duo-btn-white:active { box-shadow: 0 1px 0 #e5e5e5; }
         .duo-btn-red { background: #ff4b4b; color: #fff; box-shadow: 0 4px 0 #e04343; }
+        .duo-btn-pink { background: #ce82ff; color: #fff; box-shadow: 0 4px 0 #a568cc; }
 
-        /* ---- MODE TOGGLE ---- */
-        .mode-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+        .stats {
+            display: flex; gap: 8px; margin-bottom: 14px;
+        }
+        .stat {
+            flex: 1; background: #fff; border: 2px solid #e5e5e5; border-radius: 14px;
+            padding: 10px 8px; text-align: center;
+        }
+        .stat b { display: block; font-size: 18px; font-weight: 900; color: #4b4b4b; }
+        .stat span { font-size: 11px; font-weight: 800; color: #afafaf; text-transform: uppercase; }
+
+        .mode-bar { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
         .mode-pill {
-            flex: 1; padding: 10px 8px;
+            flex: 1; min-width: 30%; padding: 10px 8px;
             border-radius: 12px; border: 2px solid #e5e5e5;
             background: #fff; color: #afafaf;
-            font-family: inherit; font-size: 13px; font-weight: 800;
+            font-family: inherit; font-size: 12px; font-weight: 800;
             cursor: pointer; text-align: center; transition: all 0.2s;
         }
         .mode-pill.active { border-color: #84d8ff; background: #ddf4ff; color: #1cb0f6; }
 
-        /* ---- PROGRESS ---- */
         .progress-wrap { background: #e5e5e5; border-radius: 10px; height: 14px; margin-bottom: 6px; overflow: hidden; }
         .progress-fill { height: 100%; background: #58cc02; border-radius: 10px; transition: width 0.5s ease; }
-        .progress-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: #afafaf; margin-bottom: 18px; }
+        .progress-labels { display: flex; justify-content: space-between; font-size: 13px; font-weight: 700; color: #afafaf; margin-bottom: 14px; }
 
-        /* ---- QUIZ ROW ---- */
+        .prompt-card {
+            background: #fff; border: 2px solid #e5e5e5; border-radius: 18px;
+            padding: 22px 16px; text-align: center; margin-bottom: 14px;
+        }
+        .prompt-en { font-size: 28px; font-weight: 900; color: #4b4b4b; }
+        .prompt-te { font-size: 32px; font-weight: 700; color: #1cb0f6; }
+        .prompt-ph { font-size: 14px; font-weight: 700; color: #afafaf; font-style: italic; margin-top: 6px; }
+        .prompt-meta { font-size: 12px; font-weight: 800; color: #afafaf; text-transform: uppercase; margin-bottom: 8px; }
+
+        .choices { display: grid; gap: 10px; margin-bottom: 14px; }
+        .choice {
+            width: 100%; text-align: left; padding: 14px 16px;
+            background: #fff; border: 2px solid #e5e5e5; border-radius: 16px;
+            font-family: inherit; font-size: 16px; font-weight: 800; color: #4b4b4b;
+            cursor: pointer;
+        }
+        .choice .sub { display: block; font-size: 12px; font-weight: 700; color: #afafaf; margin-top: 3px; font-style: italic; }
+        .choice.correct { border-color: #58cc02; background: #d7ffb8; }
+        .choice.wrong { border-color: #ff4b4b; background: #ffdfe0; }
+        .choice.dim { opacity: 0.45; }
+
         .quiz-card { background: #fff; border-radius: 16px; border: 2px solid #e5e5e5; padding: 14px 16px; margin-bottom: 10px; display: flex; align-items: center; gap: 12px; }
         .quiz-card .num { background: #e5e5e5; color: #afafaf; font-weight: 900; font-size: 12px; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .quiz-card .word-col { flex: 1; }
@@ -81,57 +126,82 @@
         .quiz-card .answer-hint { font-size: 12px; font-weight: 700; margin-top: 4px; display: none; }
         .quiz-card .answer-hint.correct { color: #58cc02; display: block; }
         .quiz-card .answer-hint.wrong { color: #ff4b4b; display: block; }
-        .quiz-card input { flex: 1.1; padding: 10px 14px; background: #f7f7f7; border: 2px solid #e5e5e5; border-radius: 12px; font-family: inherit; font-size: 15px; font-weight: 600; color: #4b4b4b; outline: none; transition: border-color 0.2s; }
+        .quiz-card input { flex: 1.1; padding: 10px 14px; background: #f7f7f7; border: 2px solid #e5e5e5; border-radius: 12px; font-family: inherit; font-size: 15px; font-weight: 600; color: #4b4b4b; outline: none; }
         .quiz-card input:focus { border-color: #1cb0f6; background: #fff; }
         .quiz-card input.correct { border-color: #58cc02; background: #d7ffb8; }
         .quiz-card input.incorrect { border-color: #ff4b4b; background: #ffdfe0; }
-        .btn-row { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-row { display: flex; gap: 10px; margin-top: 16px; }
         .btn-row .duo-btn { flex: 1; }
 
-        /* ---- CHECKPOINT & FINISH ---- */
         .checkpoint, .finish { text-align: center; padding: 30px 10px; }
         .checkpoint .emoji, .finish .emoji { font-size: 64px; margin-bottom: 10px; }
-        .checkpoint h2, .finish h2 { font-size: 24px; font-weight: 900; color: #4b4b4b; margin-bottom: 6px; }
+        .checkpoint .emoji i, .finish .emoji i { font-size: 64px; }
+        .checkpoint h2, .finish h2 { font-size: 24px; font-weight: 900; margin-bottom: 6px; }
         .checkpoint .score-big { font-size: 52px; font-weight: 900; margin: 12px 0; }
         .checkpoint .score-big.pass { color: #58cc02; }
         .checkpoint .score-big.fail { color: #ff4b4b; }
         .checkpoint p, .finish p { color: #777; font-size: 15px; font-weight: 600; line-height: 1.7; margin-bottom: 24px; }
         .checkpoint .duo-btn, .finish .duo-btn { max-width: 300px; margin: 8px auto; }
 
-        /* ---- NOTES / PHRASES / GRAMMAR ---- */
-        .notes-header { text-align: center; padding: 10px 0 16px; }
-        .notes-header h2 { font-size: 22px; font-weight: 900; color: #4b4b4b; margin-bottom: 8px; }
+        .notes-header { text-align: center; padding: 6px 0 14px; }
+        .notes-header h2 { font-size: 22px; font-weight: 900; margin-bottom: 6px; }
         .notes-header p { font-size: 13px; color: #afafaf; font-weight: 700; }
-        .search-input { width: 100%; padding: 12px 16px; background: #fff; border: 2px solid #e5e5e5; border-radius: 14px; font-family: inherit; font-size: 15px; font-weight: 600; color: #4b4b4b; outline: none; margin-bottom: 16px; }
+        .search-input { width: 100%; padding: 12px 16px; background: #fff; border: 2px solid #e5e5e5; border-radius: 14px; font-family: inherit; font-size: 15px; font-weight: 600; color: #4b4b4b; outline: none; margin-bottom: 12px; }
         .search-input:focus { border-color: #1cb0f6; }
-        
+
         .info-box { background: #ddf4ff; border: 2px solid #84d8ff; border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; font-size: 13px; font-weight: 600; color: #1899d6; line-height: 1.8; }
         .info-box b { color: #1478a7; }
-        .info-box h3 { font-size: 16px; margin-bottom: 6px; color: #1478a7; }
-        .info-box ul { margin-left: 20px; margin-top: 8px; }
-        .info-box li { margin-bottom: 4px; }
+        .info-box h3 { font-size: 16px; margin-bottom: 6px; color: #1478a7; display: flex; align-items: center; gap: 8px; }
+        .info-box h3 i { font-size: 18px; }
+        .info-box.tip { background:#fff4e5; border-color:#ffc77d; color:#e08600; }
+        .info-box.tip h3, .info-box.tip b { color:#c87800; }
+        .info-box.ok { background:#d7ffb8; border-color:#9be15d; color:#58a700; }
+        .info-box.ok h3, .info-box.ok b { color:#3d7c00; }
 
         .block-header { padding: 12px 0 6px; font-size: 14px; font-weight: 900; color: #58cc02; text-transform: uppercase; letter-spacing: 1px; border-bottom: 2px solid #e5e5e5; margin-top: 12px; margin-bottom: 8px; }
         .notes-grid { display: grid; grid-template-columns: 1fr; gap: 8px; }
         .note-row { display: flex; align-items: center; background: #fff; border: 2px solid #e5e5e5; border-radius: 12px; padding: 12px 14px; gap: 10px; }
         .note-row .n-idx { background: #e5e5e5; color: #afafaf; font-weight: 900; font-size: 11px; width: 26px; height: 26px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
         .note-row .n-en { flex: 1; font-weight: 800; font-size: 15px; color: #4b4b4b; }
-        .note-row .n-right { text-align: right; flex: 1.2; }
-        .note-row .n-te { font-weight: 800; font-size: 15px; color: #1cb0f6; }
+        .note-row .n-right { text-align: right; flex: 1.3; }
+        .note-row .n-te { font-weight: 800; font-size: 16px; color: #1cb0f6; }
         .note-row .n-ph { font-size: 11px; font-weight: 600; color: #afafaf; font-style: italic; margin-top: 2px; }
 
-        /* ---- FLASHCARDS ---- */
-        .fc-container { perspective: 1000px; width: 100%; height: 280px; margin-bottom: 20px; }
+
+        .fc-container { perspective: 1000px; width: 100%; height: 280px; margin-bottom: 16px; }
         .fc-card { width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; cursor: pointer; }
         .fc-card.is-flipped { transform: rotateY(180deg); }
         .fc-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 20px; border: 3px solid #e5e5e5; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 20px; text-align: center; }
         .fc-front { background: #fff; }
         .fc-back { background: #ddf4ff; border-color: #84d8ff; transform: rotateY(180deg); }
-        .fc-word { font-size: 32px; font-weight: 900; color: #4b4b4b; margin-bottom: 10px; }
-        .fc-phonetic { font-size: 18px; font-weight: 700; color: #afafaf; font-style: italic; }
+        .fc-word { font-size: 32px; font-weight: 900; color: #4b4b4b; margin-bottom: 8px; }
+        .fc-phonetic { font-size: 16px; font-weight: 700; color: #afafaf; font-style: italic; }
         .fc-back .fc-word { color: #1cb0f6; }
-        .fc-back .fc-phonetic { color: #1899d6; }
         .fc-hint { position: absolute; bottom: 15px; font-size: 12px; font-weight: 800; color: #afafaf; text-transform: uppercase; letter-spacing: 1px; }
+        .fc-cat { position: absolute; top: 14px; font-size: 11px; font-weight: 800; color: #afafaf; text-transform: uppercase; }
+
+        .g-table { width: 100%; border-collapse: collapse; background: #fff; border: 2px solid #e5e5e5; border-radius: 14px; overflow: hidden; margin-bottom: 16px; }
+        .g-table th { background: #ddf4ff; text-align: left; padding: 10px; font-size: 12px; font-weight: 900; color: #1478a7; }
+        .g-table td { padding: 10px; border-top: 1px solid #e5e5e5; font-size: 14px; font-weight: 700; vertical-align: top; }
+        .g-table .te { color: #1cb0f6; }
+
+        .cat-row { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px; }
+        .cat-chip {
+            flex-shrink: 0; padding: 7px 12px; border-radius: 20px; border: 2px solid #e5e5e5;
+            background: #fff; font-family: inherit; font-size: 12px; font-weight: 800; color: #777; cursor: pointer;
+        }
+        .cat-chip.active { border-color: #58cc02; background: #d7ffb8; color: #3d7c00; }
+
+        .jump { width: 100%; padding: 10px 12px; border-radius: 12px; border: 2px solid #e5e5e5; background: #fff; font-family: inherit; font-size: 14px; font-weight: 800; color: #4b4b4b; margin-bottom: 12px; }
+
+        .build-zone { min-height: 80px; background: #fff; border: 3px dashed #1cb0f6; border-radius: 16px; padding: 16px; margin-bottom: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: center; }
+        .build-zone.correct { border-color: #58cc02; background: #d7ffb8; }
+        .build-zone.wrong { border-color: #ff4b4b; background: #ffdfe0; }
+        .word-chip { padding: 10px 16px; background: #ddf4ff; border: 2px solid #1cb0f6; border-radius: 12px; font-size: 16px; font-weight: 800; color: #1cb0f6; cursor: pointer; transition: all 0.2s; }
+        .word-chip:hover { background: #1cb0f6; color: #fff; transform: translateY(-2px); }
+        .word-chip.placed { background: #1cb0f6; color: #fff; }
+        .word-chip.disabled { opacity: 0.3; pointer-events: none; }
+        .word-bank { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 16px; }
 
         @media (min-width: 480px) {
             .notes-grid { grid-template-columns: 1fr 1fr; }
@@ -142,18 +212,51 @@
 <body>
 
 <div class="nav">
-    <button id="nav-quiz" class="active" onclick="showPage('quiz')">📝 Quiz</button>
-    <button id="nav-flash" onclick="showPage('flash')">🗂️ Cards</button>
-    <button id="nav-phrases" onclick="showPage('phrases')">💬 Phrases</button>
-    <button id="nav-notes" onclick="showPage('notes')">📖 Notes</button>
+    <button id="nav-quiz" class="active" onclick="showPage('quiz')">
+        <i data-lucide="graduation-cap"></i>
+        <span>Learn</span>
+    </button>
+    <button id="nav-review" onclick="showPage('review')">
+        <i data-lucide="repeat"></i>
+        <span>Review</span>
+    </button>
+    <button id="nav-flash" onclick="showPage('flash')">
+        <i data-lucide="layers"></i>
+        <span>Cards</span>
+    </button>
+    <button id="nav-phrases" onclick="showPage('phrases')">
+        <i data-lucide="message-circle"></i>
+        <span>Speak</span>
+    </button>
+    <button id="nav-grammar" onclick="showPage('grammar')">
+        <i data-lucide="puzzle"></i>
+        <span>Grammar</span>
+    </button>
+    <button id="nav-notes" onclick="showPage('notes')">
+        <i data-lucide="book-open"></i>
+        <span>Words</span>
+    </button>
 </div>
 
-<!-- QUIZ TAB -->
 <div class="page active" id="page-quiz">
+    <div class="info-box" style="margin-bottom:12px;">
+        <b><i data-lucide="book" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Study tip:</b> Try all 3 modes! <b>Tap answer</b> (recognition) → <b>Build sentence</b> (word order) → <b>Type it</b> (production). Research shows varied practice = 80% better retention.
+    </div>
+    <div class="stats">
+        <div class="stat"><b id="stat-streak">0</b><span>Day streak</span></div>
+        <div class="stat"><b id="stat-due">0</b><span>Due today</span></div>
+        <div class="stat"><b id="stat-weak">0</b><span>Weak words</span></div>
+    </div>
+    <div class="mode-bar">
+        <button class="mode-pill active" id="qstyle-mc" onclick="setQStyle('mc')">Tap answer</button>
+        <button class="mode-pill" id="qstyle-type" onclick="setQStyle('type')">Type it</button>
+        <button class="mode-pill" id="qstyle-build" onclick="setQStyle('build')">Build sentence</button>
+    </div>
     <div class="mode-bar">
         <button class="mode-pill active" id="mode-en" onclick="setMode('en2te')">English → Telugu</button>
         <button class="mode-pill" id="mode-te" onclick="setMode('te2en')">Telugu → English</button>
     </div>
+    <select class="jump" id="block-jump" onchange="jumpBlock(this.value)"></select>
     <div class="progress-wrap"><div class="progress-fill" id="pbar"></div></div>
     <div class="progress-labels">
         <span id="plabel-l"></span><span id="plabel-r"></span>
@@ -161,30 +264,45 @@
     <div id="quiz-area"></div>
 </div>
 
-<!-- FLASHCARDS TAB -->
+<div class="page" id="page-review">
+    <div class="notes-header">
+        <h2><i data-lucide="repeat" style="color:#1cb0f6; width:24px; height:24px; display:inline-block; vertical-align:middle; margin-right:8px;"></i> Spaced review</h2>
+        <p>Missed and due words first. Tap the card, then grade yourself.</p>
+    </div>
+    <div class="info-box ok" style="margin-bottom:12px;">
+        <h3><i data-lucide="flask-conical"></i> Why This Works (Science!)</h3>
+        Your brain strengthens memories each time you <b>actively recall</b> (not just recognize). Spacing reviews over days = <b>400% better</b> long-term retention than cramming. Grade honestly—mistakes now = strength later!
+    </div>
+    <div id="review-area"></div>
+</div>
+
 <div class="page" id="page-flash">
     <div class="notes-header">
-        <h2>🗂️ Flashcards</h2>
-        <p>Memorize words quickly. Tap card to flip!</p>
+        <h2><i data-lucide="layers" style="color:#ce82ff; width:24px; height:24px; display:inline-block; vertical-align:middle; margin-right:8px;"></i> Flashcards</h2>
+        <p>Browse any topic. Tap to flip.</p>
     </div>
+    <div class="info-box tip" style="margin-bottom:12px;">
+        <b><i data-lucide="sparkles" style="width:16px;height:16px;display:inline-block;vertical-align:middle;"></i> Pro Strategy:</b> Don't just flip and move on! <b>Try to recall</b> before flipping. Active retrieval = 3x stronger than passive review. Try both EN→TE and TE→EN for bidirectional fluency!
+    </div>
+    <div class="cat-row" id="fc-cats"></div>
     <div class="mode-bar">
         <button class="mode-pill active" id="fc-mode-en" onclick="setFCMode('en')">Front: English</button>
         <button class="mode-pill" id="fc-mode-te" onclick="setFCMode('te')">Front: Telugu</button>
     </div>
-    <div class="progress-labels" style="justify-content: center; margin-top: 10px;">
-        <span id="fc-counter" style="font-size:16px;">1 / 300</span>
+    <div class="progress-labels" style="justify-content: center;">
+        <span id="fc-counter" style="font-size:16px;">1 / 1</span>
     </div>
-    
     <div class="fc-container">
         <div class="fc-card" id="fc-card" onclick="flipCard()">
-            <div class="fc-face fc-front" id="fc-front">
+            <div class="fc-face fc-front">
+                <div class="fc-cat" id="fc-cat"></div>
                 <div class="fc-word" id="fc-front-word">Word</div>
-                <div class="fc-phonetic" id="fc-front-ph">Phonetic</div>
+                <div class="fc-phonetic" id="fc-front-ph"></div>
                 <div class="fc-hint">Tap to flip</div>
             </div>
-            <div class="fc-face fc-back" id="fc-back">
-                <div class="fc-word" id="fc-back-word">Answer</div>
-                <div class="fc-phonetic" id="fc-back-ph">Phonetic</div>
+            <div class="fc-face fc-back">
+                <div class="fc-word te" id="fc-back-word">Answer</div>
+                <div class="fc-phonetic" id="fc-back-ph"></div>
                 <div class="fc-hint">Tap to flip</div>
             </div>
         </div>
@@ -193,19 +311,28 @@
         <button class="duo-btn duo-btn-white" onclick="prevCard()">← PREV</button>
         <button class="duo-btn duo-btn-blue" onclick="nextCard()">NEXT →</button>
     </div>
+    <div class="btn-row">
+        <button class="duo-btn duo-btn-red" onclick="gradeBrowse(false)">AGAIN</button>
+        <button class="duo-btn duo-btn-green" onclick="gradeBrowse(true)">GOT IT</button>
+    </div>
 </div>
 
-<!-- PHRASES TAB -->
 <div class="page" id="page-phrases">
     <div class="notes-header">
-        <h2>💬 Essential Phrases</h2>
-        <p>Learn whole sentences to speak faster!</p>
+        <h2><i data-lucide="message-circle" style="color:#ff9600; width:24px; height:24px; display:inline-block; vertical-align:middle; margin-right:8px;"></i> Speak in sentences</h2>
+        <p>Whole lines you can use today. Formal (F) with elders, informal (I) with friends.</p>
     </div>
-    <div class="info-box" style="background:#fff4e5; border-color:#ffc77d; color:#e08600;">
-        <h3>🧠 Pro Grammar Tip</h3>
-        English uses <b>Subject-Verb-Object</b> (I eat apple).<br>
-        Telugu uses <b>Subject-Object-Verb</b> (I apple eat -> Nenu apple tintunnanu).<br>
-        Verbs always go at the very end of the sentence!
+    <div class="info-box tip">
+        <h3>Word order that unlocks speaking</h3>
+        English: <b>I eat rice</b>. Telugu: <b>Nenu annam tintunnanu</b> — subject, object, verb last.
+    </div>
+    <div class="info-box" style="margin-top:12px;">
+        <h3><i data-lucide="brain"></i> How Your Brain Learns Telugu Best</h3>
+        <b>1. Chunks over grammar:</b> Memorize "నాకు _ కావాలి" (I need _) and plug in words<br>
+        <b>2. Use మీరు when unsure:</b> Formal/polite is always safe with strangers & elders<br>
+        <b>3. Context = memory:</b> "అన్నం తిన్నావా?" sticks better than just "అన్నం"<br>
+        <b>4. SOV muscle memory:</b> Always think "I + rice + eat" NOT "I eat rice"<br>
+        <b>5. Production > recognition:</b> Try "build sentence" mode—active recall is 3x stronger!
     </div>
     <div class="progress-labels" style="justify-content: center; margin-bottom: 10px;">
         <span id="phrase-topic-label" style="font-size:16px; font-weight:800; color:#58cc02;">Topic</span>
@@ -213,841 +340,1441 @@
     <div class="notes-grid" id="phrases-list"></div>
     <div class="btn-row">
         <button class="duo-btn duo-btn-white" id="phrase-prev" onclick="prevPhraseTopic()">← PREV</button>
+        <button class="duo-btn duo-btn-orange" onclick="practicePhrases()">PRACTICE</button>
         <button class="duo-btn duo-btn-blue" id="phrase-next" onclick="nextPhraseTopic()">NEXT →</button>
     </div>
 </div>
 
-<!-- NOTES TAB -->
+<div class="page" id="page-grammar">
+    <div class="notes-header">
+        <h2><i data-lucide="puzzle" style="color:#58cc02; width:24px; height:24px; display:inline-block; vertical-align:middle; margin-right:8px;"></i> Grammar that you actually use</h2>
+        <p>Learn patterns, then reuse them with new words.</p>
+    </div>
+
+    <div class="info-box">
+        <h3>1. Who is speaking?</h3>
+        Telugu changes with respect. <b>Nuvvu</b> = you (friends, younger). <b>Meeru</b> = you (elders, strangers, polite).
+    </div>
+    <div class="info-box ok" style="margin-top:8px;">
+        <h3><i data-lucide="lightbulb"></i> Sociolinguistic Tip</h3>
+        <b>When in doubt, use మీరు (meeru)!</b> Using informal నువ్వు (nuvvu) with elders/strangers is considered rude. But using formal with friends? Just extra polite. Safe choice = మీరు.<br>
+        <b>Real scenario:</b> Meeting Telugu speaker? "మీరు ఎలా ఉన్నారు?" (formal) always works!
+    </div>
+    <table class="g-table">
+        <tr><th>English</th><th>Telugu</th><th>Say it</th></tr>
+        <tr><td>I</td><td class="te">నేను nenu</td><td>NEH-noo</td></tr>
+        <tr><td>you (informal)</td><td class="te">నువ్వు nuvvu</td><td>NOOV-voo</td></tr>
+        <tr><td>you (formal / plural)</td><td class="te">మీరు meeru</td><td>MEE-roo</td></tr>
+        <tr><td>he</td><td class="te">అతను athanu</td><td>AH-thah-noo</td></tr>
+        <tr><td>she</td><td class="te">ఆమె aame</td><td>AA-meh</td></tr>
+        <tr><td>we (including you)</td><td class="te">మనం manam</td><td>MAH-nahm</td></tr>
+        <tr><td>we (excluding you)</td><td class="te">మేము memu</td><td>MEH-moo</td></tr>
+        <tr><td>they</td><td class="te">వాళ్లు vaallu</td><td>VAAL-loo</td></tr>
+    </table>
+
+    <div class="info-box ok">
+        <h3>2. “To be” — the glue</h3>
+        Use <b>unnanu / unnav / unnaru / undi</b> like English “am / are / is”.
+    </div>
+    <table class="g-table">
+        <tr><th>English</th><th>Telugu</th></tr>
+        <tr><td>I am</td><td class="te">నేను ఉన్నాను — nenu unnanu</td></tr>
+        <tr><td>You are (I)</td><td class="te">నువ్వు ఉన్నావు — nuvvu unnavu</td></tr>
+        <tr><td>You are (F)</td><td class="te">మీరు ఉన్నారు — meeru unnaru</td></tr>
+        <tr><td>It / she (thing) is</td><td class="te">ఉంది — undi</td></tr>
+        <tr><td>They are</td><td class="te">వాళ్లు ఉన్నారు — vaallu unnaru</td></tr>
+        <tr><td>I am not</td><td class="te">నేను లేను — nenu lenu</td></tr>
+        <tr><td>It is not there</td><td class="te">లేదు — ledu</td></tr>
+    </table>
+
+    <div class="info-box tip">
+        <h3>3. One verb, three tenses</h3>
+        Learn <b>tinu</b> (eat). Swap the ending, keep the pattern for other verbs.
+    </div>
+    <table class="g-table">
+        <tr><th></th><th>Past</th><th>Now</th><th>Future / will</th></tr>
+        <tr><td>I eat</td><td>tinnanu</td><td>tintunnanu</td><td>tintanu</td></tr>
+        <tr><td>You (I)</td><td>tinnav</td><td>tintunnav</td><td>tintav</td></tr>
+        <tr><td>You (F)</td><td>tinnaru</td><td>tintunnaru</td><td>tintaru</td></tr>
+        <tr><td>He / she (F)</td><td>tinnaru</td><td>tintunnaru</td><td>tintaru</td></tr>
+    </table>
+    <table class="g-table">
+        <tr><th>Verb</th><th>I (now)</th><th>I (past)</th><th>I (will)</th></tr>
+        <tr><td>go — vellu</td><td>veltunnanu</td><td>vellanu</td><td>veltanu</td></tr>
+        <tr><td>come — raa</td><td>vastunnanu</td><td>vacchanu</td><td>vastanu</td></tr>
+        <tr><td>see — chudu</td><td>chustunnanu</td><td>chusanu</td><td>chustanu</td></tr>
+        <tr><td>do — cheyu</td><td>chestunnanu</td><td>chesanu</td><td>chestanu</td></tr>
+        <tr><td>speak — matladu</td><td>matladutunnanu</td><td>matladanu</td><td>matladatanu</td></tr>
+        <tr><td>want (need)</td><td colspan="3">naaku ____ kavali &nbsp;·&nbsp; don’t want: naaku ____ vaddu</td></tr>
+    </table>
+
+    <div class="info-box">
+        <h3>4. Glue words (postpositions)</h3>
+        They come <b>after</b> the noun: house-<b>ki</b> = to the house.
+    </div>
+    <div class="info-box tip" style="margin-top:8px;">
+        <h3><i data-lucide="zap"></i> Common English Error</h3>
+        English speakers say "to home" → ❌ <b>to ఇంటి</b><br>
+        Telugu says "home-to" → ✓ <b>ఇంటికి</b><br>
+        <b>Memory trick:</b> Telugu "glues" the direction ONTO the noun: ఇల్లు (house) + కి (to) = ఇంటికి
+    </div>
+    <table class="g-table">
+        <tr><th>Meaning</th><th>Word</th><th>Example</th></tr>
+        <tr><td>to / for</td><td>ki / ku</td><td>intiki veltunnanu — I am going home</td></tr>
+        <tr><td>in / at</td><td>lo</td><td>illulo unnanu — I am in the house</td></tr>
+        <tr><td>from</td><td>nunchi</td><td>Hyderabad nunchi — from Hyderabad</td></tr>
+        <tr><td>with</td><td>tho</td><td>nanna tho — with dad</td></tr>
+        <tr><td>near</td><td>daggara</td><td>shop daggara — near the shop</td></tr>
+        <tr><td>of / my</td><td>naa / nee / mee</td><td>naa peru — my name</td></tr>
+    </table>
+
+    <div class="info-box ok">
+        <h3>5. Mini sentences to copy</h3>
+        Replace the noun and you can talk today.<br>
+        <b>Naaku neellu kavali.</b> I need water.<br>
+        <b>Idi entha?</b> How much is this?<br>
+        <b>Naaku ardam kaledu.</b> I don’t understand.<br>
+        <b>Koncham nemmadiga matladandi.</b> Please speak slowly.
+    </div>
+</div>
+
 <div class="page" id="page-notes">
     <div class="notes-header">
-        <h2>📖 Word Dictionary</h2>
-        <p>Study these before each checkpoint!</p>
+        <h2><i data-lucide="book-open" style="color:#1cb0f6; width:24px; height:24px; display:inline-block; vertical-align:middle; margin-right:8px;"></i> Word bank</h2>
+        <p>Search and filter by topic.</p>
     </div>
     <div class="info-box">
-        <h3>🗣️ Pronunciation Key</h3>
-        <b>aa</b> = long 'a' (f<u>a</u>ther) &nbsp;·&nbsp;
-        <b>ee</b> = long 'e' (s<u>ee</u>) &nbsp;·&nbsp;
-        <b>oo</b> = long 'o' (f<u>oo</u>d)<br>
-        <b>th/dh</b> = soft dental (tongue touching teeth)<br>
-        <b>ch</b> = '<u>ch</u>air' &nbsp;·&nbsp;
-        <b>sh</b> = '<u>sh</u>ip'<br>
-        Stress the <b>CAPITAL</b> syllables!
+        <h3><i data-lucide="volume-2"></i> Telugu Script & Pronunciation Guide</h3>
+        <b>Vowels (16 total):</b><br>
+        Short: అ (a-cup) ఇ (it) ఉ (put) ఋ (ri)<br>
+        Long: ఆ (aah) ఈ (see) ఊ (food) ౠ (ree)<br>
+        <b>Unique Sounds:</b> ఎ (e-bed) ఏ (ay-say) ఒ (o-go) ఓ (oh) ఐ (ai-aisle) ఔ (ou-house)<br><br>
+        
+        <b>🎯 CRITICAL: Retroflex Sounds</b> (tongue curls back to roof of mouth):<br>
+        <span style="font-size:18px;">ట ఠ డ ఢ ణ ళ</span> vs regular త థ ద ధ న ల<br>
+        <b>Try:</b> "ఆట" (game) - curl tongue back. NOT like English T!<br>
+        <b>Minimal pairs:</b> పట (city) vs పత (song), కడ (story) vs కద (to)<br><br>
+        
+        <b>Aspirated (breathy):</b> Add "h" sound: ఖ (kh) ఘ (gh) ఛ (ch) ఝ (jh) థ (th) ధ (dh) ఫ (ph) భ (bh)<br>
+        <b>Example:</b> "భారతం" (India) - say "bh" like "clubhouse"
     </div>
-    <input type="text" class="search-input" id="search-box" placeholder="🔍 Search any word..." oninput="buildNotes()">
+    <div class="info-box tip" style="margin-top:12px;">
+        <h3><i data-lucide="zap"></i> Research-Backed Learning Tips</h3>
+        📝 <b>Write Telugu script daily</b> (5 min) - Motor learning = 3x faster recognition!<br>
+        🧠 <b>Think in SOV order:</b> "I rice eat" not "I eat rice"<br>
+        🗣️ <b>Use మీరు (meeru)</b> when unsure - formal is always safe<br>
+        ✨ <b>Learn chunks first,</b> grammar rules later (like native speakers!)<br>
+        🎧 <b>Train your ear:</b> Telugu has sounds English doesn't - practice daily
+    </div>
+    <input type="text" class="search-input" id="search-box" placeholder="Search English, Telugu, or sound..." oninput="buildNotes()">
+    <div class="cat-row" id="word-cats"></div>
     <div id="notes-list"></div>
 </div>
 
 <script>
-// ============================================================
-// DICTIONARY — 300 words with phonetics
-// ============================================================
-var W=[
-{en:"I",te:"nenu",p:"NEH-noo"},
-{en:"you",te:"nuvvu",p:"NOOV-voo"},
-{en:"he",te:"athanu",p:"AH-thah-noo"},
-{en:"she",te:"aame",p:"AA-meh"},
-{en:"it",te:"adhi",p:"AH-dhi"},
-{en:"we",te:"manam",p:"MAH-nahm"},
-{en:"they",te:"vaallu",p:"VAAL-loo"},
-{en:"this",te:"idhi",p:"IH-dhi"},
-{en:"that",te:"adhi",p:"AH-dhi"},
-{en:"here",te:"ikkada",p:"IK-kah-dah"},
-{en:"there",te:"akkada",p:"AK-kah-dah"},
-{en:"who",te:"evaru",p:"EH-vah-roo"},
-{en:"what",te:"enti",p:"EN-tee"},
-{en:"where",te:"ekkada",p:"EK-kah-dah"},
-{en:"when",te:"eppudu",p:"EP-poo-doo"},
-{en:"why",te:"enduku",p:"EN-doo-koo"},
-{en:"how",te:"ela",p:"EH-lah"},
-{en:"which",te:"edi",p:"EH-dee"},
-{en:"yes",te:"avunu",p:"AH-voo-noo"},
-{en:"no",te:"kadu",p:"KAA-doo"},
-{en:"one",te:"okati",p:"OH-kah-tee"},
-{en:"two",te:"rendu",p:"REN-doo"},
-{en:"three",te:"moodu",p:"MOO-doo"},
-{en:"four",te:"nalugu",p:"NAH-loo-goo"},
-{en:"five",te:"aidu",p:"AI-doo"},
-{en:"six",te:"aaru",p:"AA-roo"},
-{en:"seven",te:"eedu",p:"EE-doo"},
-{en:"eight",te:"enimidi",p:"EH-nee-mee-dee"},
-{en:"nine",te:"thommidi",p:"THOM-mee-dee"},
-{en:"ten",te:"padi",p:"PAH-dee"},
-// 31-60
-{en:"boy",te:"abbayi",p:"AB-baa-yee"},
-{en:"girl",te:"ammayi",p:"AM-maa-yee"},
-{en:"man",te:"magaadu",p:"MAH-gaa-doo"},
-{en:"woman",te:"aadadi",p:"AA-dah-dee"},
-{en:"father",te:"nanna",p:"NUN-nah"},
-{en:"mother",te:"amma",p:"AM-mah"},
-{en:"brother",te:"anna",p:"AN-nah"},
-{en:"sister",te:"akka",p:"AK-kah"},
-{en:"friend",te:"snehitudu",p:"SNEH-hee-too-doo"},
-{en:"water",te:"neellu",p:"NEEL-loo"},
-{en:"food",te:"annam",p:"AN-nahm"},
-{en:"house",te:"illu",p:"IL-loo"},
-{en:"book",te:"pustakam",p:"POOS-thah-kahm"},
-{en:"pen",te:"kalam",p:"KAH-lahm"},
-{en:"sun",te:"suryudu",p:"SOOR-yoo-doo"},
-{en:"moon",te:"chandrudu",p:"CHAN-droo-doo"},
-{en:"star",te:"nakshatram",p:"NAHK-shah-trahm"},
-{en:"sky",te:"akasam",p:"AA-kaa-sahm"},
-{en:"tree",te:"chettu",p:"CHET-too"},
-{en:"dog",te:"kukka",p:"KOOK-kah"},
-{en:"cat",te:"pilli",p:"PIL-lee"},
-{en:"cow",te:"aavu",p:"AA-voo"},
-{en:"bird",te:"pakshi",p:"PAHK-shee"},
-{en:"fish",te:"chepa",p:"CHEH-pah"},
-{en:"good",te:"manchi",p:"MAN-chee"},
-{en:"bad",te:"chedda",p:"CHED-dah"},
-{en:"big",te:"pedda",p:"PED-dah"},
-{en:"small",te:"chinna",p:"CHIN-nah"},
-{en:"long",te:"podavu",p:"POH-dah-voo"},
-{en:"short",te:"potti",p:"POT-tee"},
-// 61-90
-{en:"hot",te:"vedi",p:"VEH-dee"},
-{en:"cold",te:"chali",p:"CHAH-lee"},
-{en:"new",te:"kotha",p:"KOH-thah"},
-{en:"old",te:"paata",p:"PAA-tah"},
-{en:"happy",te:"santhosham",p:"SAN-thoh-shahm"},
-{en:"sad",te:"badha",p:"BAA-dhah"},
-{en:"come",te:"raa",p:"RAA"},
-{en:"go",te:"vellu",p:"VEL-loo"},
-{en:"eat",te:"tinu",p:"THEE-noo"},
-{en:"drink",te:"taagu",p:"TAA-goo"},
-{en:"sleep",te:"paduko",p:"PAH-doo-koh"},
-{en:"sit",te:"kurcho",p:"KOOR-choh"},
-{en:"stand",te:"nilucho",p:"NIH-loo-choh"},
-{en:"read",te:"chaduvu",p:"CHAH-doo-voo"},
-{en:"write",te:"rayu",p:"RAA-yoo"},
-{en:"speak",te:"matladu",p:"MAHT-laa-doo"},
-{en:"hear",te:"vinu",p:"VEE-noo"},
-{en:"see",te:"chudu",p:"CHOO-doo"},
-{en:"give",te:"ivvu",p:"IV-voo"},
-{en:"take",te:"teesuko",p:"TEE-soo-koh"},
-{en:"do",te:"cheyu",p:"CHEH-yoo"},
-{en:"buy",te:"konu",p:"KOH-noo"},
-{en:"sell",te:"ammu",p:"AM-moo"},
-{en:"run",te:"parigettu",p:"PAH-ree-GET-too"},
-{en:"walk",te:"nadachu",p:"NAH-dah-choo"},
-{en:"play",te:"aadu",p:"AA-doo"},
-{en:"stop",te:"aagu",p:"AA-goo"},
-{en:"know",te:"telusu",p:"TEH-loo-soo"},
-{en:"want",te:"kavali",p:"KAH-vah-lee"},
-{en:"like",te:"ishtam",p:"ISH-tahm"},
-// 91-120
-{en:"love",te:"prema",p:"PREH-mah"},
-{en:"name",te:"peru",p:"PEH-roo"},
-{en:"time",te:"samayam",p:"SAH-mah-yahm"},
-{en:"day",te:"roju",p:"ROH-joo"},
-{en:"night",te:"ratri",p:"RAA-three"},
-{en:"morning",te:"udayam",p:"OO-dah-yahm"},
-{en:"evening",te:"sayantram",p:"SAA-yan-trahm"},
-{en:"today",te:"eroju",p:"EH-roh-joo"},
-{en:"tomorrow",te:"repu",p:"REH-poo"},
-{en:"yesterday",te:"ninna",p:"NIN-nah"},
-{en:"week",te:"vaaram",p:"VAA-rahm"},
-{en:"month",te:"nela",p:"NEH-lah"},
-{en:"year",te:"samvatsaram",p:"sahm-VAT-sah-rahm"},
-{en:"hand",te:"cheyi",p:"CHEH-yee"},
-{en:"leg",te:"kaalu",p:"KAA-loo"},
-{en:"head",te:"thala",p:"THAH-lah"},
-{en:"eye",te:"kannu",p:"KAN-noo"},
-{en:"ear",te:"chevi",p:"CHEH-vee"},
-{en:"nose",te:"mukku",p:"MOOK-koo"},
-{en:"mouth",te:"noru",p:"NOH-roo"},
-{en:"tooth",te:"pannu",p:"PAN-noo"},
-{en:"hair",te:"juttu",p:"JUT-too"},
-{en:"face",te:"mukham",p:"MOO-khahm"},
-{en:"heart",te:"hrudayam",p:"HROO-dah-yahm"},
-{en:"blood",te:"raktham",p:"RAHK-thahm"},
-{en:"body",te:"sareeram",p:"sah-REE-rahm"},
-{en:"mind",te:"manassu",p:"MAH-nahs-soo"},
-{en:"word",te:"padam",p:"PAH-dahm"},
-{en:"work",te:"pani",p:"PAH-nee"},
-{en:"money",te:"dabbu",p:"DAB-boo"},
-// 121-150
-{en:"price",te:"vela",p:"VEH-lah"},
-{en:"color",te:"rangu",p:"RAHN-goo"},
-{en:"red",te:"erupu",p:"EH-roo-poo"},
-{en:"blue",te:"neelam",p:"NEE-lahm"},
-{en:"green",te:"akupacha",p:"AH-koo-PAH-chah"},
-{en:"yellow",te:"pasupu",p:"PAH-soo-poo"},
-{en:"white",te:"telupu",p:"TEH-loo-poo"},
-{en:"black",te:"nalupu",p:"NAH-loo-poo"},
-{en:"door",te:"talupu",p:"TAH-loo-poo"},
-{en:"window",te:"kitiki",p:"KIH-tee-kee"},
-{en:"table",te:"balla",p:"BAL-lah"},
-{en:"chair",te:"kurchi",p:"KOOR-chee"},
-{en:"bed",te:"mancham",p:"MAN-chahm"},
-{en:"room",te:"gadi",p:"GAH-dee"},
-{en:"road",te:"dhaari",p:"DHAA-ree"},
-{en:"street",te:"veedhi",p:"VEE-dhee"},
-{en:"village",te:"ooru",p:"OO-roo"},
-{en:"city",te:"nagaram",p:"NAH-gah-rahm"},
-{en:"country",te:"desam",p:"DEH-shahm"},
-{en:"world",te:"prapancham",p:"prah-PAN-chahm"},
-{en:"light",te:"velugu",p:"VEH-loo-goo"},
-{en:"dark",te:"cheekati",p:"CHEE-kah-tee"},
-{en:"fire",te:"nippu",p:"NIP-poo"},
-{en:"air",te:"gaali",p:"GAA-lee"},
-{en:"earth",te:"bhoomi",p:"BHOO-mee"},
-{en:"animal",te:"jantuvu",p:"JAN-too-voo"},
-{en:"plant",te:"mokka",p:"MOK-kah"},
-{en:"flower",te:"puvvu",p:"POOV-voo"},
-{en:"fruit",te:"pandu",p:"PAN-doo"},
-{en:"leaf",te:"aaku",p:"AA-koo"},
-// 151-180
-{en:"stone",te:"rayi",p:"RAA-yee"},
-{en:"sand",te:"isuka",p:"IH-soo-kah"},
-{en:"mud",te:"matti",p:"MAT-tee"},
-{en:"river",te:"nadi",p:"NAH-dee"},
-{en:"sea",te:"samudram",p:"sah-MOOD-rahm"},
-{en:"mountain",te:"konda",p:"KON-dah"},
-{en:"rain",te:"varsham",p:"VAR-shahm"},
-{en:"cloud",te:"mabbu",p:"MAB-boo"},
-{en:"fast",te:"twaraga",p:"TWAH-rah-gah"},
-{en:"slow",te:"nemmadiga",p:"nem-MAH-dee-gah"},
-{en:"loud",te:"gattiga",p:"GAT-tee-gah"},
-{en:"soft",te:"mettaga",p:"MET-tah-gah"},
-{en:"hard",te:"katinam",p:"KAH-tee-nahm"},
-{en:"easy",te:"sulabham",p:"SOO-lah-bhahm"},
-{en:"difficult",te:"kashtam",p:"KAHSH-tahm"},
-{en:"true",te:"nijam",p:"NEE-jahm"},
-{en:"false",te:"abaddham",p:"ah-BAD-dhahm"},
-{en:"right",te:"kudi",p:"KOO-dee"},
-{en:"left",te:"edama",p:"EH-dah-mah"},
-{en:"near",te:"daggara",p:"DAG-gah-rah"},
-{en:"far",te:"dooram",p:"DOO-rahm"},
-{en:"up",te:"paina",p:"PAI-nah"},
-{en:"down",te:"kinda",p:"KIN-dah"},
-{en:"inside",te:"lopala",p:"LOH-pah-lah"},
-{en:"outside",te:"bayata",p:"BAH-yah-tah"},
-{en:"front",te:"mundu",p:"MOON-doo"},
-{en:"back",te:"venaka",p:"VEH-nah-kah"},
-{en:"middle",te:"madhya",p:"MAHD-yah"},
-{en:"always",te:"ellappudu",p:"EL-lahp-poo-doo"},
-{en:"never",te:"eppuduledu",p:"EP-poo-doo-LEH-doo"},
-// 181-210
-{en:"now",te:"ippudu",p:"IP-poo-doo"},
-{en:"then",te:"appudu",p:"AP-poo-doo"},
-{en:"later",te:"tarvata",p:"TAR-vaa-tah"},
-{en:"soon",te:"twaralo",p:"TWAH-rah-loh"},
-{en:"very",te:"chala",p:"CHAH-lah"},
-{en:"also",te:"kuda",p:"KOO-dah"},
-{en:"only",te:"matrame",p:"MAHT-rah-meh"},
-{en:"all",te:"antha",p:"AN-thah"},
-{en:"some",te:"konni",p:"KON-nee"},
-{en:"many",te:"chala",p:"CHAH-lah"},
-{en:"few",te:"konni",p:"KON-nee"},
-{en:"more",te:"inka",p:"IN-kah"},
-{en:"less",te:"thakkuva",p:"THAK-koo-vah"},
-{en:"enough",te:"chaalu",p:"CHAA-loo"},
-{en:"much",te:"ekkuva",p:"EK-koo-vah"},
-{en:"ask",te:"adugu",p:"AH-doo-goo"},
-{en:"answer",te:"javaabu",p:"jah-VAA-boo"},
-{en:"help",te:"sahayam",p:"sah-HAA-yahm"},
-{en:"fear",te:"bhayam",p:"BHAH-yahm"},
-{en:"anger",te:"kopam",p:"KOH-pahm"},
-{en:"hunger",te:"aakali",p:"AA-kah-lee"},
-{en:"thirst",te:"daham",p:"DAH-hahm"},
-{en:"pain",te:"noppi",p:"NOP-pee"},
-{en:"medicine",te:"mandhu",p:"MAN-dhoo"},
-{en:"sick",te:"jabu",p:"JAH-boo"},
-{en:"healthy",te:"aarogyam",p:"AA-rohg-yahm"},
-{en:"clean",te:"subhram",p:"SHOOB-hrahm"},
-{en:"dirty",te:"muraiki",p:"moo-RAI-kee"},
-{en:"beautiful",te:"andham",p:"AN-dhahm"},
-{en:"ugly",te:"vikrutham",p:"vih-KROO-thahm"},
-// 211-240
-{en:"tall",te:"podugu",p:"POH-doo-goo"},
-{en:"fat",te:"lavvu",p:"LAV-voo"},
-{en:"thin",te:"sannamu",p:"SAN-nah-moo"},
-{en:"strong",te:"balamu",p:"BAH-lah-moo"},
-{en:"weak",te:"balaheenam",p:"bah-lah-HEE-nahm"},
-{en:"rich",te:"dhanavanthudu",p:"dhah-nah-VAN-thoo-doo"},
-{en:"poor",te:"peda",p:"PEH-dah"},
-{en:"full",te:"nimdu",p:"NIM-doo"},
-{en:"empty",te:"khalee",p:"KHAH-lee"},
-{en:"open",te:"terachu",p:"TEH-rah-choo"},
-{en:"close",te:"muyyu",p:"MOOY-yoo"},
-{en:"push",te:"thoyu",p:"THOH-yoo"},
-{en:"pull",te:"laagu",p:"LAA-goo"},
-{en:"cut",te:"kottu",p:"KOT-too"},
-{en:"break",te:"virachu",p:"VEE-rah-choo"},
-{en:"build",te:"kattu",p:"KAT-too"},
-{en:"send",te:"pampu",p:"PAM-poo"},
-{en:"bring",te:"teesukoraa",p:"TEE-soo-koh-raa"},
-{en:"keep",te:"pettu",p:"PET-too"},
-{en:"throw",te:"visuru",p:"VEE-soo-roo"},
-{en:"catch",te:"pattu",p:"PAT-too"},
-{en:"hold",te:"pattukoraa",p:"PAT-too-koh-raa"},
-{en:"search",te:"vetuku",p:"VEH-too-koo"},
-{en:"find",te:"kanugu",p:"KAH-noo-goo"},
-{en:"hide",te:"daagu",p:"DAA-goo"},
-{en:"show",te:"choopinchu",p:"CHOO-pin-choo"},
-{en:"teach",te:"nerpinchu",p:"NER-pin-choo"},
-{en:"learn",te:"nerchuko",p:"NER-choo-koh"},
-{en:"think",te:"aalochinchu",p:"AA-loh-chin-choo"},
-{en:"remember",te:"gurthu",p:"GOOR-thoo"},
-// 241-270
-{en:"forget",te:"marchipovu",p:"MAR-chee-poh-voo"},
-{en:"wait",te:"aagu",p:"AA-goo"},
-{en:"hurry",te:"tondara",p:"TON-dah-rah"},
-{en:"laugh",te:"navvu",p:"NAV-voo"},
-{en:"cry",te:"eadu",p:"EH-doo"},
-{en:"sing",te:"paadu",p:"PAA-doo"},
-{en:"dance",te:"aadu",p:"AA-doo"},
-{en:"cook",te:"vandu",p:"VAN-doo"},
-{en:"wash",te:"utuku",p:"OO-too-koo"},
-{en:"wear",te:"vesuko",p:"VEH-soo-koh"},
-{en:"shirt",te:"chokka",p:"CHOK-kah"},
-{en:"pants",te:"pantu",p:"PAN-too"},
-{en:"shoe",te:"chappal",p:"CHAP-pal"},
-{en:"hat",te:"topi",p:"TOH-pee"},
-{en:"bag",te:"sanchee",p:"SAN-chee"},
-{en:"rice",te:"biyyam",p:"BIY-yahm"},
-{en:"milk",te:"paalu",p:"PAA-loo"},
-{en:"sugar",te:"chakkera",p:"CHAHK-keh-rah"},
-{en:"salt",te:"uppu",p:"OOP-poo"},
-{en:"oil",te:"noone",p:"NOO-neh"},
-{en:"egg",te:"guddu",p:"GOOD-doo"},
-{en:"chicken",te:"kodi",p:"KOH-dee"},
-{en:"vegetable",te:"koora",p:"KOO-rah"},
-{en:"fruit",te:"pandu",p:"PAN-doo"},
-{en:"mango",te:"maamidi",p:"MAA-mee-dee"},
-{en:"banana",te:"arati",p:"AH-rah-tee"},
-{en:"coconut",te:"kobbari",p:"KOB-bah-ree"},
-{en:"chili",te:"mirapa",p:"MEE-rah-pah"},
-{en:"onion",te:"ullipaya",p:"OOL-lee-PAH-yah"},
-{en:"potato",te:"bangaladumpa",p:"BAN-gah-lah-DOOM-pah"},
-// 271-300
-{en:"tomato",te:"tamata",p:"TAH-mah-tah"},
-{en:"school",te:"badi",p:"BAH-dee"},
-{en:"teacher",te:"guruvu",p:"GOO-roo-voo"},
-{en:"student",te:"vidyarthi",p:"vid-YAR-thee"},
-{en:"class",te:"targathu",p:"TAR-gah-thoo"},
-{en:"exam",te:"pareeksha",p:"pah-REEK-shah"},
-{en:"pass",te:"pass",p:"PASS"},
-{en:"fail",te:"fail",p:"FAIL"},
-{en:"win",te:"gelavu",p:"GEH-lah-voo"},
-{en:"lose",te:"odipovu",p:"OH-dee-POH-voo"},
-{en:"fight",te:"godava",p:"GOH-dah-vah"},
-{en:"peace",te:"shanthi",p:"SHAN-thee"},
-{en:"god",te:"bhagavanthudu",p:"BHAH-gah-VAN-thoo-doo"},
-{en:"temple",te:"gudi",p:"GOO-dee"},
-{en:"prayer",te:"prarthana",p:"PRAAR-thah-nah"},
-{en:"story",te:"katha",p:"KAH-thah"},
-{en:"song",te:"paata",p:"PAA-tah"},
-{en:"movie",te:"cinema",p:"SIH-neh-mah"},
-{en:"game",te:"aata",p:"AA-tah"},
-{en:"phone",te:"phone",p:"PHONE"},
-{en:"car",te:"kaaru",p:"KAA-roo"},
-{en:"bus",te:"bus",p:"BUS"},
-{en:"train",te:"raillu",p:"RAIL-loo"},
-{en:"bicycle",te:"cycle",p:"CYCLE"},
-{en:"boat",te:"padava",p:"PAH-dah-vah"},
-{en:"hundred",te:"nooru",p:"NOO-roo"},
-{en:"thousand",te:"veyyi",p:"VEY-yee"},
-{en:"market",te:"bazaar",p:"bah-ZAAR"},
-{en:"shop",te:"kadhu",p:"KAH-dhoo"},
-{en:"king",te:"raju",p:"RAA-joo"}
+var W = [
+{en:"I",te:"nenu",p:"NEH-noo",s:"నేను",c:"basics",ex:"నేను బాగున్నాను",ext:"I am fine",f:1},
+{en:"you (informal)",te:"nuvvu",p:"NOOV-voo",s:"నువ్వు",c:"basics",ex:"నువ్వు ఎలా ఉన్నావ్?",ext:"How are you?",f:1},
+{en:"you (formal)",te:"meeru",p:"MEE-roo",s:"మీరు",c:"basics",ex:"మీరు ఎలా ఉన్నారు?",ext:"How are you? (respectful)",f:1},
+{en:"he",te:"athanu",p:"AH-thah-noo",s:"అతను",c:"basics",ex:"అతను రాలేదు",ext:"He didn't come",f:2},
+{en:"she",te:"aame",p:"AA-meh",s:"ఆమె",c:"basics",ex:"ఆమె టీచర్",ext:"She is a teacher",f:2},
+{en:"it",te:"adhi",p:"AH-dhi",s:"అది",c:"basics",ex:"అది బాగుంది",ext:"That is good",f:1},
+{en:"we (inclusive)",te:"manam",p:"MAH-nahm",s:"మనం",c:"basics",ex:"మనం వెళ్దాం",ext:"Let's go",f:2},
+{en:"we (exclusive)",te:"memu",p:"MEH-moo",s:"మేము",c:"basics",ex:"మేము ఇంట్లో ఉన్నాం",ext:"We are at home",f:2},
+{en:"they",te:"vaallu",p:"VAAL-loo",s:"వాళ్లు",c:"basics",ex:"వాళ్లు ఎక్కడ?",ext:"Where are they?",f:2},
+{en:"this",te:"idhi",p:"IH-dhi",s:"ఇది",c:"basics",ex:"ఇది ఎంత?",ext:"How much is this?",f:1},
+{en:"that",te:"adhi",p:"AH-dhi",s:"అది",c:"basics",ex:"అది నా పుస్తకం",ext:"That is my book",f:1},
+{en:"here",te:"ikkada",p:"IK-kah-dah",s:"ఇక్కడ",c:"basics",ex:"ఇక్కడ రండి",ext:"Come here",f:1},
+{en:"there",te:"akkada",p:"AK-kah-dah",s:"అక్కడ",c:"basics",ex:"అక్కడ ఏముంది?",ext:"What's there?",f:1},
+{en:"who",te:"evaru",p:"EH-vah-roo",s:"ఎవరు",c:"basics",ex:"ఆయన ఎవరు?",ext:"Who is he?",f:1},
+{en:"what",te:"enti",p:"EN-tee",s:"ఏంటి",c:"basics",ex:"ఇది ఏంటి?",ext:"What is this?",f:1},
+{en:"where",te:"ekkada",p:"EK-kah-dah",s:"ఎక్కడ",c:"basics",ex:"మీ ఇల్లు ఎక్కడ?",ext:"Where is your house?",f:1},
+{en:"when",te:"eppudu",p:"EP-poo-doo",s:"ఎప్పుడు",c:"basics",ex:"మీరు ఎప్పుడు వస్తారు?",ext:"When will you come?",f:1},
+{en:"why",te:"enduku",p:"EN-doo-koo",s:"ఎందుకు",c:"basics",ex:"మీరు ఎందుకు వెళ్తున్నారు?",ext:"Why are you going?",f:1},
+{en:"how",te:"ela",p:"EH-lah",s:"ఎలా",c:"basics",ex:"ఇది ఎలా చేయాలి?",ext:"How to do this?",f:1},
+{en:"which",te:"edi",p:"EH-dee",s:"ఏది",c:"basics",ex:"ఏది మంచిది?",ext:"Which is better?",f:2},
+{en:"yes",te:"avunu",p:"AH-voo-noo",s:"అవును",c:"basics",ex:"అవును, నాకు కావాలి",ext:"Yes, I want it",f:1},
+{en:"no",te:"kaadu",p:"KAA-doo",s:"కాదు",c:"basics",ex:"కాదు, నాకు వద్దు",ext:"No, I don't want",f:1},
+{en:"please",te:"dayachesi",p:"DAH-yah-CHEH-see",s:"దయచేసి",c:"basics",ex:"దయచేసి సహాయం చేయండి",ext:"Please help me",f:1},
+{en:"sorry",te:"kshaminchandi",p:"kshah-MIN-chahn-dee",s:"క్షమించండి",c:"basics",ex:"క్షమించండి, ఆలస్యమైంది",ext:"Sorry, I'm late",f:1},
+{en:"thank you",te:"dhanyavadalu",p:"DHAN-yah-VAA-dah-loo",s:"ధన్యవాదాలు",c:"basics",ex:"చాలా ధన్యవాదాలు",ext:"Thank you very much",f:1},
+{en:"welcome",te:"swagatham",p:"SVAH-gah-thahm",s:"స్వాగతం",c:"basics",ex:"మీకు స్వాగతం",ext:"Welcome to you",f:2},
+{en:"ok",te:"sare",p:"SAH-reh",s:"సరే",c:"basics",ex:"సరే, వస్తాను",ext:"OK, I'll come",f:1},
+{en:"a little",te:"koncham",p:"KON-chahm",s:"కొంచెం",c:"basics",ex:"కొంచెం ఆగండి",ext:"Wait a little",f:1},
+{en:"and",te:"mariyu",p:"MAH-ree-yoo",s:"మరియు",c:"basics",ex:"నేను మరియు నువ్వు",ext:"You and I",f:2},
+{en:"or",te:"leda",p:"LEH-dah",s:"లేదా",c:"basics",ex:"టీ లేదా కాఫీ?",ext:"Tea or coffee?",f:2},
+{en:"but",te:"kaani",p:"KAA-nee",s:"కానీ",c:"basics",ex:"మంచిది కానీ ఖరీదు",ext:"Good but expensive",f:2},
+{en:"because",te:"endukante",p:"EN-doo-kahn-teh",s:"ఎందుకంటే",c:"basics",ex:"ఎందుకంటే నాకు సమయం లేదు",ext:"Because I don't have time",f:3},
+{en:"one",te:"okati",p:"OH-kah-tee",s:"ఒకటి",c:"numbers"},
+{en:"two",te:"rendu",p:"REN-doo",s:"రెండు",c:"numbers"},
+{en:"three",te:"moodu",p:"MOO-doo",s:"మూడు",c:"numbers"},
+{en:"four",te:"nalugu",p:"NAH-loo-goo",s:"నాలుగు",c:"numbers"},
+{en:"five",te:"aidu",p:"AI-doo",s:"ఐదు",c:"numbers"},
+{en:"six",te:"aaru",p:"AA-roo",s:"ఆరు",c:"numbers"},
+{en:"seven",te:"eedu",p:"EE-doo",s:"ఏడు",c:"numbers"},
+{en:"eight",te:"enimidi",p:"EH-nee-mee-dee",s:"ఎనిమిది",c:"numbers"},
+{en:"nine",te:"thommidi",p:"THOM-mee-dee",s:"తొమ్మిది",c:"numbers"},
+{en:"ten",te:"padi",p:"PAH-dee",s:"పది",c:"numbers"},
+{en:"eleven",te:"padakondu",p:"PAH-dah-KON-doo",s:"పదకొండు",c:"numbers"},
+{en:"twelve",te:"pannendu",p:"PAN-nen-doo",s:"పన్నెండు",c:"numbers"},
+{en:"twenty",te:"iravai",p:"IH-rah-vai",s:"ఇరవై",c:"numbers"},
+{en:"thirty",te:"muppai",p:"MOOP-pai",s:"ముప్పై",c:"numbers"},
+{en:"fifty",te:"yaabhai",p:"YAA-bhai",s:"యాభై",c:"numbers"},
+{en:"hundred",te:"nooru",p:"NOO-roo",s:"నూరు",c:"numbers"},
+{en:"thousand",te:"veyyi",p:"VEY-yee",s:"వెయ్యి",c:"numbers"},
+{en:"boy",te:"abbayi",p:"AB-baa-yee",s:"అబ్బాయి",c:"people"},
+{en:"girl",te:"ammayi",p:"AM-maa-yee",s:"అమ్మాయి",c:"people"},
+{en:"man",te:"manishi",p:"MAH-nee-shee",s:"మనిషి",c:"people"},
+{en:"woman",te:"aadadi",p:"AA-dah-dee",s:"ఆడది",c:"people"},
+{en:"child",te:"pillavadu",p:"PIL-lah-vah-doo",s:"పిల్లవాడు",c:"people"},
+{en:"friend",te:"snehitudu",p:"SNEH-hee-too-doo",s:"స్నేహితుడు",c:"people"},
+{en:"person",te:"vyakthi",p:"VYAK-thee",s:"వ్యక్తి",c:"people"},
+{en:"people",te:"prajalu",p:"PRAH-jah-loo",s:"ప్రజలు",c:"people"},
+{en:"father",te:"nanna",p:"NUN-nah",s:"నాన్న",c:"family"},
+{en:"mother",te:"amma",p:"AM-mah",s:"అమ్మ",c:"family"},
+{en:"elder brother",te:"anna",p:"AN-nah",s:"అన్న",c:"family"},
+{en:"younger brother",te:"thammudu",p:"THAM-moo-doo",s:"తమ్ముడు",c:"family"},
+{en:"elder sister",te:"akka",p:"AK-kah",s:"అక్క",c:"family"},
+{en:"younger sister",te:"chelli",p:"CHEL-lee",s:"చెల్లి",c:"family"},
+{en:"husband",te:"bhartha",p:"BHAR-thah",s:"భర్త",c:"family"},
+{en:"wife",te:"bharya",p:"BHAR-yah",s:"భార్య",c:"family"},
+{en:"son",te:"koduku",p:"KOH-doo-koo",s:"కొడుకు",c:"family"},
+{en:"daughter",te:"kuthuru",p:"KOO-thoo-roo",s:"కూతురు",c:"family"},
+{en:"uncle",te:"babai",p:"BAH-bai",s:"బాబాయి",c:"family"},
+{en:"aunt",te:"pinni",p:"PIN-nee",s:"పిన్ని",c:"family"},
+{en:"grandfather",te:"thatha",p:"THAA-thah",s:"తాత",c:"family"},
+{en:"grandmother",te:"ammamma",p:"AM-mam-mah",s:"అమ్మమ్మ",c:"family"},
+{en:"water",te:"neellu",p:"NEEL-loo",s:"నీళ్లు",c:"food",ex:"నాకు నీళ్లు కావాలి",ext:"I need water",f:1},
+{en:"food",te:"annam",p:"AN-nahm",s:"అన్నం",c:"food",ex:"అన్నం తిన్నావా?",ext:"Did you eat?",f:1},
+{en:"rice (grain)",te:"biyyam",p:"BIY-yahm",s:"బియ్యం",c:"food"},
+{en:"milk",te:"paalu",p:"PAA-loo",s:"పాలు",c:"food"},
+{en:"tea",te:"tee",p:"TEE",s:"టీ",c:"food"},
+{en:"coffee",te:"kaafi",p:"KAA-fee",s:"కాఫీ",c:"food"},
+{en:"sugar",te:"chakkera",p:"CHAHK-keh-rah",s:"చక్కెర",c:"food"},
+{en:"salt",te:"uppu",p:"OOP-poo",s:"ఉప్పు",c:"food"},
+{en:"oil",te:"noone",p:"NOO-neh",s:"నూనె",c:"food"},
+{en:"chili",te:"mirapakaya",p:"MEE-rah-pah-KAA-yah",s:"మిరపకాయ",c:"food"},
+{en:"onion",te:"ullipaya",p:"OOL-lee-PAH-yah",s:"ఉల్లిపాయ",c:"food"},
+{en:"tomato",te:"tamata",p:"TAH-mah-tah",s:"టమాట",c:"food"},
+{en:"potato",te:"bangaladumpa",p:"BAN-gah-lah-DOOM-pah",s:"బంగాళదుంప",c:"food"},
+{en:"mango",te:"maamidi",p:"MAA-mee-dee",s:"మామిడి",c:"food"},
+{en:"banana",te:"aratipandu",p:"AH-rah-tee-PAN-doo",s:"అరటిపండు",c:"food"},
+{en:"coconut",te:"kobbari",p:"KOB-bah-ree",s:"కొబ్బరి",c:"food"},
+{en:"curd",te:"perugu",p:"PEH-roo-goo",s:"పెరుగు",c:"food"},
+{en:"sambar",te:"pappu",p:"PAP-poo",s:"పప్పు",c:"food"},
+{en:"egg",te:"guddu",p:"GOOD-doo",s:"గుడ్డు",c:"food"},
+{en:"chicken",te:"kodi",p:"KOH-dee",s:"కోడి",c:"food"},
+{en:"vegetable",te:"koora",p:"KOO-rah",s:"కూర",c:"food"},
+{en:"fruit",te:"pandu",p:"PAN-doo",s:"పండు",c:"food"},
+{en:"spicy",te:"karam",p:"KAH-rahm",s:"కారం",c:"food"},
+{en:"sweet",te:"theepi",p:"THEE-pee",s:"తీపి",c:"food"},
+{en:"breakfast",te:"tiffin",p:"TIF-fin",s:"టిఫిన్",c:"food"},
+{en:"lunch / meal",te:"bhojanam",p:"BHO-jah-nahm",s:"భోజనం",c:"food"},
+{en:"house",te:"illu",p:"IL-loo",s:"ఇల్లు",c:"home"},
+{en:"door",te:"talupu",p:"TAH-loo-poo",s:"తలుపు",c:"home"},
+{en:"window",te:"kitiki",p:"KIH-tee-kee",s:"కిటికీ",c:"home"},
+{en:"table",te:"balla",p:"BAL-lah",s:"బల్ల",c:"home"},
+{en:"chair",te:"kurchi",p:"KOOR-chee",s:"కుర్చీ",c:"home"},
+{en:"bed",te:"mancham",p:"MAN-chahm",s:"మంచం",c:"home"},
+{en:"room",te:"gadi",p:"GAH-dee",s:"గది",c:"home"},
+{en:"kitchen",te:"vantillu",p:"VAN-til-loo",s:"వంటిల్లు",c:"home"},
+{en:"bathroom",te:"snanala gadi",p:"SNAH-nah-lah GAH-dee",s:"స్నానాల గది",c:"home"},
+{en:"book",te:"pustakam",p:"POOS-thah-kahm",s:"పుస్తకం",c:"school"},
+{en:"pen",te:"kalam",p:"KAH-lahm",s:"కలం",c:"school"},
+{en:"school",te:"badi",p:"BAH-dee",s:"బడి",c:"school"},
+{en:"teacher",te:"guruvu",p:"GOO-roo-voo",s:"గురువు",c:"school"},
+{en:"student",te:"vidyarthi",p:"vid-YAR-thee",s:"విద్యార్థి",c:"school"},
+{en:"exam",te:"pareeksha",p:"pah-REEK-shah",s:"పరీక్ష",c:"school"},
+{en:"word",te:"padam",p:"PAH-dahm",s:"పదం",c:"school"},
+{en:"language",te:"bhasha",p:"BHAA-shah",s:"భాష",c:"school"},
+{en:"sun",te:"suryudu",p:"SOOR-yoo-doo",s:"సూర్యుడు",c:"nature"},
+{en:"moon",te:"chandrudu",p:"CHAN-droo-doo",s:"చంద్రుడు",c:"nature"},
+{en:"star",te:"nakshatram",p:"NAHK-shah-trahm",s:"నక్షత్రం",c:"nature"},
+{en:"sky",te:"akasam",p:"AA-kaa-sahm",s:"ఆకాశం",c:"nature"},
+{en:"tree",te:"chettu",p:"CHET-too",s:"చెట్టు",c:"nature"},
+{en:"flower",te:"puvvu",p:"POOV-voo",s:"పువ్వు",c:"nature"},
+{en:"leaf",te:"aaku",p:"AA-koo",s:"ఆకు",c:"nature"},
+{en:"rain",te:"varsham",p:"VAR-shahm",s:"వర్షం",c:"nature"},
+{en:"cloud",te:"mabbu",p:"MAB-boo",s:"మబ్బు",c:"nature"},
+{en:"river",te:"nadi",p:"NAH-dee",s:"నది",c:"nature"},
+{en:"sea",te:"samudram",p:"sah-MOOD-rahm",s:"సముద్రం",c:"nature"},
+{en:"mountain",te:"konda",p:"KON-dah",s:"కొండ",c:"nature"},
+{en:"fire",te:"nippu",p:"NIP-poo",s:"నిప్పు",c:"nature"},
+{en:"air / wind",te:"gaali",p:"GAA-lee",s:"గాలి",c:"nature"},
+{en:"earth",te:"bhoomi",p:"BHOO-mee",s:"భూమి",c:"nature"},
+{en:"dog",te:"kukka",p:"KOOK-kah",s:"కుక్క",c:"animals"},
+{en:"cat",te:"pilli",p:"PIL-lee",s:"పిల్లి",c:"animals"},
+{en:"cow",te:"aavu",p:"AA-voo",s:"ఆవు",c:"animals"},
+{en:"bird",te:"pakshi",p:"PAHK-shee",s:"పక్షి",c:"animals"},
+{en:"fish",te:"chepa",p:"CHEH-pah",s:"చేప",c:"animals"},
+{en:"animal",te:"jantuvu",p:"JAN-too-voo",s:"జంతువు",c:"animals"},
+{en:"good",te:"manchi",p:"MAN-chee",s:"మంచి",c:"adjectives"},
+{en:"bad",te:"chedda",p:"CHED-dah",s:"చెడ్డ",c:"adjectives"},
+{en:"big",te:"pedda",p:"PED-dah",s:"పెద్ద",c:"adjectives"},
+{en:"small",te:"chinna",p:"CHIN-nah",s:"చిన్న",c:"adjectives"},
+{en:"hot",te:"vedi",p:"VEH-dee",s:"వేడి",c:"adjectives"},
+{en:"cold",te:"chali",p:"CHAH-lee",s:"చలి",c:"adjectives"},
+{en:"new",te:"kotha",p:"KOH-thah",s:"కొత్త",c:"adjectives"},
+{en:"old",te:"paata",p:"PAA-tah",s:"పాత",c:"adjectives"},
+{en:"fast",te:"twaraga",p:"TWAH-rah-gah",s:"త్వరగా",c:"adjectives"},
+{en:"slow",te:"nemmadiga",p:"nem-MAH-dee-gah",s:"నెమ్మదిగా",c:"adjectives"},
+{en:"easy",te:"sulabham",p:"SOO-lah-bhahm",s:"సులభం",c:"adjectives"},
+{en:"difficult",te:"kashtam",p:"KAHSH-tahm",s:"కష్టం",c:"adjectives"},
+{en:"true",te:"nijam",p:"NEE-jahm",s:"నిజం",c:"adjectives"},
+{en:"beautiful",te:"andham",p:"AN-dhahm",s:"అందం",c:"adjectives"},
+{en:"clean",te:"subhram",p:"SHOOB-hrahm",s:"శుభ్రం",c:"adjectives"},
+{en:"dirty",te:"mala",p:"MAH-lah",s:"మలినం",c:"adjectives"},
+{en:"right (side)",te:"kudi",p:"KOO-dee",s:"కుడి",c:"adjectives"},
+{en:"left",te:"edama",p:"EH-dah-mah",s:"ఎడమ",c:"adjectives"},
+{en:"near",te:"daggara",p:"DAG-gah-rah",s:"దగ్గర",c:"adjectives"},
+{en:"far",te:"dooram",p:"DOO-rahm",s:"దూరం",c:"adjectives"},
+{en:"come",te:"raa",p:"RAA",s:"రా",c:"verbs",ex:"ఇక్కడికి రా",ext:"Come here",f:1},
+{en:"go",te:"vellu",p:"VEL-loo",s:"వెళ్లు",c:"verbs",ex:"నేను ఇంటికి వెళ్తున్నాను",ext:"I'm going home",f:1},
+{en:"eat",te:"tinu",p:"THEE-noo",s:"తిను",c:"verbs",ex:"నేను అన్నం తింటున్నాను",ext:"I am eating",f:1},
+{en:"drink",te:"taagu",p:"TAA-goo",s:"తాగు",c:"verbs"},
+{en:"sleep",te:"paduko",p:"PAH-doo-koh",s:"పడుకో",c:"verbs"},
+{en:"sit",te:"kurcho",p:"KOOR-choh",s:"కూర్చో",c:"verbs"},
+{en:"stand",te:"nilucho",p:"NIH-loo-choh",s:"నిలబడు",c:"verbs"},
+{en:"read",te:"chaduvu",p:"CHAH-doo-voo",s:"చదువు",c:"verbs"},
+{en:"write",te:"rayu",p:"RAA-yoo",s:"రాయి",c:"verbs"},
+{en:"speak",te:"matladu",p:"MAHT-laa-doo",s:"మాట్లాడు",c:"verbs"},
+{en:"hear",te:"vinu",p:"VEE-noo",s:"విను",c:"verbs"},
+{en:"see",te:"chudu",p:"CHOO-doo",s:"చూడు",c:"verbs"},
+{en:"give",te:"ivvu",p:"IV-voo",s:"ఇవ్వు",c:"verbs"},
+{en:"take",te:"teesuko",p:"TEE-soo-koh",s:"తీసుకో",c:"verbs"},
+{en:"do",te:"cheyu",p:"CHEH-yoo",s:"చేయి",c:"verbs"},
+{en:"buy",te:"konu",p:"KOH-noo",s:"కొను",c:"verbs"},
+{en:"want",te:"kavali",p:"KAH-vah-lee",s:"కావాలి",c:"verbs"},
+{en:"know",te:"telusu",p:"TEH-loo-soo",s:"తెలుసు",c:"verbs"},
+{en:"understand",te:"ardam",p:"AR-dahm",s:"అర్థం",c:"verbs"},
+{en:"wait",te:"aagu",p:"AA-goo",s:"ఆగు",c:"verbs"},
+{en:"call",te:"piluvu",p:"PIH-loo-voo",s:"పిలువు",c:"verbs"},
+{en:"help",te:"sahayam",p:"sah-HAA-yahm",s:"సహాయం",c:"verbs"},
+{en:"learn",te:"nerchuko",p:"NER-choo-koh",s:"నేర్చుకో",c:"verbs"},
+{en:"teach",te:"nerpinchu",p:"NER-pin-choo",s:"నేర్పించు",c:"verbs"},
+{en:"think",te:"aalochinchu",p:"AA-loh-chin-choo",s:"ఆలోచించు",c:"verbs"},
+{en:"remember",te:"gurthu",p:"GOOR-thoo",s:"గుర్తు",c:"verbs"},
+{en:"forget",te:"marchipovu",p:"MAR-chee-poh-voo",s:"మర్చిపోవు",c:"verbs"},
+{en:"open",te:"teruchu",p:"TEH-roo-choo",s:"తెరుచు",c:"verbs"},
+{en:"close",te:"muyyu",p:"MOOY-yoo",s:"మూయు",c:"verbs"},
+{en:"cook",te:"vandu",p:"VAN-doo",s:"వండు",c:"verbs"},
+{en:"walk",te:"naduchu",p:"NAH-doo-choo",s:"నడుచు",c:"verbs"},
+{en:"run",te:"parigettu",p:"PAH-ree-GET-too",s:"పరిగెత్తు",c:"verbs"},
+{en:"play",te:"aadu",p:"AA-doo",s:"ఆడు",c:"verbs"},
+{en:"work (verb)",te:"pani cheyu",p:"PAH-nee CHEH-yoo",s:"పని చేయి",c:"verbs"},
+{en:"happy",te:"santhosham",p:"SAN-thoh-shahm",s:"సంతోషం",c:"feelings"},
+{en:"sad",te:"badha",p:"BAA-dhah",s:"బాధ",c:"feelings"},
+{en:"love",te:"prema",p:"PREH-mah",s:"ప్రేమ",c:"feelings"},
+{en:"like",te:"ishtam",p:"ISH-tahm",s:"ఇష్టం",c:"feelings"},
+{en:"anger",te:"kopam",p:"KOH-pahm",s:"కోపం",c:"feelings"},
+{en:"fear",te:"bhayam",p:"BHAH-yahm",s:"భయం",c:"feelings"},
+{en:"hunger",te:"aakali",p:"AA-kah-lee",s:"ఆకలి",c:"feelings"},
+{en:"thirst",te:"daham",p:"DAH-hahm",s:"దాహం",c:"feelings"},
+{en:"pain",te:"noppi",p:"NOP-pee",s:"నొప్పి",c:"feelings"},
+{en:"tired",te:"alupu",p:"AH-loo-poo",s:"అలుపు",c:"feelings"},
+{en:"name",te:"peru",p:"PEH-roo",s:"పేరు",c:"time"},
+{en:"time",te:"samayam",p:"SAH-mah-yahm",s:"సమయం",c:"time"},
+{en:"day",te:"roju",p:"ROH-joo",s:"రోజు",c:"time"},
+{en:"night",te:"ratri",p:"RAA-three",s:"రాత్రి",c:"time"},
+{en:"morning",te:"udayam",p:"OO-dah-yahm",s:"ఉదయం",c:"time"},
+{en:"evening",te:"sayantram",p:"SAA-yan-trahm",s:"సాయంత్రం",c:"time"},
+{en:"today",te:"eroju",p:"EH-roh-joo",s:"ఈరోజు",c:"time"},
+{en:"tomorrow",te:"repu",p:"REH-poo",s:"రేపు",c:"time"},
+{en:"yesterday",te:"ninna",p:"NIN-nah",s:"నిన్న",c:"time"},
+{en:"now",te:"ippudu",p:"IP-poo-doo",s:"ఇప్పుడు",c:"time"},
+{en:"later",te:"tarvata",p:"TAR-vaa-tah",s:"తర్వాత",c:"time"},
+{en:"always",te:"ellappudu",p:"EL-lahp-poo-doo",s:"ఎల్లప్పుడూ",c:"time"},
+{en:"never",te:"eppudu ledu",p:"EP-poo-doo LEH-doo",s:"ఎప్పుడూ లేదు",c:"time"},
+{en:"week",te:"vaaram",p:"VAA-rahm",s:"వారం",c:"time"},
+{en:"month",te:"nela",p:"NEH-lah",s:"నెల",c:"time"},
+{en:"year",te:"samvatsaram",p:"sahm-VAT-sah-rahm",s:"సంవత్సరం",c:"time"},
+{en:"Sunday",te:"aadivaram",p:"AA-dee-vaa-rahm",s:"ఆదివారం",c:"time"},
+{en:"Monday",te:"somavaram",p:"SOH-mah-vaa-rahm",s:"సోమవారం",c:"time"},
+{en:"Tuesday",te:"mangalavaram",p:"MAN-gah-lah-vaa-rahm",s:"మంగళవారం",c:"time"},
+{en:"Wednesday",te:"budhavaram",p:"BOO-dhah-vaa-rahm",s:"బుధవారం",c:"time"},
+{en:"Thursday",te:"guruvaram",p:"GOO-roo-vaa-rahm",s:"గురువారం",c:"time"},
+{en:"Friday",te:"shukravaram",p:"SHOOK-rah-vaa-rahm",s:"శుక్రవారం",c:"time"},
+{en:"Saturday",te:"shanivaram",p:"SHAH-nee-vaa-rahm",s:"శనివారం",c:"time"},
+{en:"hand",te:"cheyi",p:"CHEH-yee",s:"చెయ్యి",c:"body"},
+{en:"leg",te:"kaalu",p:"KAA-loo",s:"కాలు",c:"body"},
+{en:"head",te:"thala",p:"THAH-lah",s:"తల",c:"body"},
+{en:"eye",te:"kannu",p:"KAN-noo",s:"కన్ను",c:"body"},
+{en:"ear",te:"chevi",p:"CHEH-vee",s:"చెవి",c:"body"},
+{en:"nose",te:"mukku",p:"MOOK-koo",s:"ముక్కు",c:"body"},
+{en:"mouth",te:"noru",p:"NOH-roo",s:"నోరు",c:"body"},
+{en:"face",te:"mukham",p:"MOO-khahm",s:"ముఖం",c:"body"},
+{en:"body",te:"sareeram",p:"sah-REE-rahm",s:"శరీరం",c:"body"},
+{en:"medicine",te:"mandhu",p:"MAN-dhoo",s:"మందు",c:"body"},
+{en:"sick",te:"jabbu",p:"JAB-boo",s:"జబ్బు",c:"body"},
+{en:"red",te:"erupu",p:"EH-roo-poo",s:"ఎరుపు",c:"colors"},
+{en:"blue",te:"neelam",p:"NEE-lahm",s:"నీలం",c:"colors"},
+{en:"green",te:"akupacha",p:"AH-koo-PAH-chah",s:"ఆకుపచ్చ",c:"colors"},
+{en:"yellow",te:"pasupu",p:"PAH-soo-poo",s:"పసుపు",c:"colors"},
+{en:"white",te:"telupu",p:"TEH-loo-poo",s:"తెలుపు",c:"colors"},
+{en:"black",te:"nalupu",p:"NAH-loo-poo",s:"నలుపు",c:"colors"},
+{en:"color",te:"rangu",p:"RAHN-goo",s:"రంగు",c:"colors"},
+{en:"road",te:"dhaari",p:"DHAA-ree",s:"దారి",c:"places"},
+{en:"street",te:"veedhi",p:"VEE-dhee",s:"వీధి",c:"places"},
+{en:"village",te:"ooru",p:"OO-roo",s:"ఊరు",c:"places"},
+{en:"city",te:"nagaram",p:"NAH-gah-rahm",s:"నగరం",c:"places"},
+{en:"country",te:"desam",p:"DEH-shahm",s:"దేశం",c:"places"},
+{en:"shop",te:"kottu",p:"KOT-too",s:"కొట్టు",c:"places"},
+{en:"market",te:"santha",p:"SAN-thah",s:"సంత",c:"places"},
+{en:"temple",te:"gudi",p:"GOO-dee",s:"గుడి",c:"places"},
+{en:"hospital",te:"aasupatri",p:"AA-soo-pah-tree",s:"ఆసుపత్రి",c:"places"},
+{en:"station",te:"station",p:"STAY-shun",s:"స్టేషన్",c:"places"},
+{en:"money",te:"dabbu",p:"DAB-boo",s:"డబ్బు",c:"daily"},
+{en:"price",te:"vela",p:"VEH-lah",s:"వెల",c:"daily"},
+{en:"work",te:"pani",p:"PAH-nee",s:"పని",c:"daily"},
+{en:"phone",te:"phone",p:"PHONE",s:"ఫోన్",c:"daily"},
+{en:"car",te:"kaaru",p:"KAA-roo",s:"కారు",c:"daily"},
+{en:"bus",te:"bus",p:"BUS",s:"బస్సు",c:"daily"},
+{en:"train",te:"raillu",p:"RAIL-loo",s:"రైలు",c:"daily"},
+{en:"ticket",te:"ticket",p:"TICK-et",s:"టికెట్",c:"daily"},
+{en:"bag",te:"sanchee",p:"SAN-chee",s:"సంచి",c:"daily"},
+{en:"shirt",te:"chokka",p:"CHOK-kah",s:"చొక్కా",c:"daily"},
+{en:"very",te:"chala",p:"CHAH-lah",s:"చాలా",c:"basics"},
+{en:"also",te:"kuda",p:"KOO-dah",s:"కూడా",c:"basics"},
+{en:"only",te:"matrame",p:"MAHT-rah-meh",s:"మాత్రమే",c:"basics"},
+{en:"all",te:"anni",p:"AN-nee",s:"అన్నీ",c:"basics"},
+{en:"some",te:"konni",p:"KON-nee",s:"కొన్ని",c:"basics"},
+{en:"more",te:"inka",p:"IN-kah",s:"ఇంకా",c:"basics"},
+{en:"enough",te:"chaalu",p:"CHAA-loo",s:"చాలు",c:"basics"},
+{en:"inside",te:"lopala",p:"LOH-pah-lah",s:"లోపల",c:"basics"},
+{en:"outside",te:"bayata",p:"BAH-yah-tah",s:"బయట",c:"basics"},
+{en:"up",te:"paina",p:"PAI-nah",s:"పైన",c:"basics"},
+{en:"down",te:"kinda",p:"KIN-dah",s:"కింద",c:"basics"},
+{en:"front",te:"mundu",p:"MOON-doo",s:"ముందు",c:"basics"},
+{en:"back",te:"venaka",p:"VEH-nah-kah",s:"వెనక",c:"basics"},
+{en:"don't want",te:"vaddu",p:"VAD-doo",s:"వద్దు",c:"verbs"},
+{en:"is / there is",te:"undi",p:"OON-dee",s:"ఉంది",c:"verbs"},
+{en:"is not / no",te:"ledu",p:"LEH-doo",s:"లేదు",c:"verbs"},
+{en:"I am (present)",te:"unnanu",p:"OON-naa-noo",s:"ఉన్నాను",c:"verbs"},
+{en:"how much",te:"entha",p:"EN-thah",s:"ఎంత",c:"basics"},
+{en:"slowly",te:"nemmadiga",p:"nem-MAH-dee-gah",s:"నెమ్మదిగా",c:"adjectives"},
+{en:"quickly",te:"twaraga",p:"TWAH-rah-gah",s:"త్వరగా",c:"adjectives"}
 ];
 
 var PHRASES = [
-    // Level 1: Greetings & Basics
-    {level: "Level 1: Greetings & Basics", en: "Hello / Namaste", te: "Namaskaram", p: "nah-mahs-KAA-rahm"},
-    {level: "Level 1: Greetings & Basics", en: "How are you?", te: "Meeru ela unnaru?", p: "MEE-roo EH-lah OON-naa-roo"},
-    {level: "Level 1: Greetings & Basics", en: "I am fine", te: "Nenu bagunnanu", p: "NEH-noo BAA-goon-naa-noo"},
-    {level: "Level 1: Greetings & Basics", en: "What is your name?", te: "Mee peru enti?", p: "MEE PEH-roo EN-tee"},
-    {level: "Level 1: Greetings & Basics", en: "My name is John", te: "Naa peru John", p: "NAA PEH-roo John"},
-    {level: "Level 1: Greetings & Basics", en: "Where are you from?", te: "Meeru ekkadi nunchi vacharu?", p: "MEE-roo EK-kah-dee NOON-chee VAH-chaa-roo"},
-    {level: "Level 1: Greetings & Basics", en: "Thank you", te: "Dhanyavadalu", p: "DHAN-yah-vaa-daa-loo"},
-    {level: "Level 1: Greetings & Basics", en: "Sorry", te: "Kshamimchandi", p: "kshah-MIN-chahn-dee"},
-    {level: "Level 1: Greetings & Basics", en: "Do you know English?", te: "Meeku English telusa?", p: "MEE-koo English TEH-loo-saa"},
-    {level: "Level 1: Greetings & Basics", en: "I don't know Telugu", te: "Naaku Telugu teleedu", p: "NAA-koo Telugu teh-LEE-doo"},
-    {level: "Level 1: Greetings & Basics", en: "Please speak slowly", te: "Koncham nemmadiga matladandi", p: "KON-chahm nem-MAH-dee-gah MAAT-laa-dahn-dee"},
-    
-    // Level 2: Actions & Directions
-    {level: "Level 2: Actions & Directions", en: "What happened?", te: "Emaindi?", p: "EH-main-dee"},
-    {level: "Level 2: Actions & Directions", en: "Come here", te: "Ikkadaki raa", p: "IK-kah-dah-kee RAA"},
-    {level: "Level 2: Actions & Directions", en: "Go there", te: "Akkadiki vellu", p: "AK-kah-dah-kee VEL-loo"},
-    {level: "Level 2: Actions & Directions", en: "What are you doing?", te: "Meeru em chestunnaru?", p: "MEE-roo EM CHEHS-toon-naa-roo"},
-    {level: "Level 2: Actions & Directions", en: "Where are you going?", te: "Meeru ekkadiki veltunnaru?", p: "MEE-roo EK-kah-dee-kee VEL-toon-naa-roo"},
-    {level: "Level 2: Actions & Directions", en: "I am going home", te: "Nenu intiki veltunnanu", p: "NEH-noo IN-tee-kee VEL-toon-naa-noo"},
-    {level: "Level 2: Actions & Directions", en: "Stop the vehicle", te: "Bandi aapu", p: "BAHN-dee AA-poo"},
-    {level: "Level 2: Actions & Directions", en: "Go straight", te: "Tinnaga vellu", p: "TIN-nah-gah VEL-loo"},
-    {level: "Level 2: Actions & Directions", en: "Turn left", te: "Edamavaipu tirugu", p: "EH-dah-mah-vai-poo TEE-roo-goo"},
-    {level: "Level 2: Actions & Directions", en: "Turn right", te: "Kudivaipu tirugu", p: "KOO-dee-vai-poo TEE-roo-goo"},
-    
-    // Level 3: Shopping & Needs
-    {level: "Level 3: Shopping & Needs", en: "How much is this?", te: "Idi entha?", p: "IH-dee EN-thah"},
-    {level: "Level 3: Shopping & Needs", en: "I want this", te: "Naaku idi kavali", p: "NAA-koo IH-dee KAA-vaa-lee"},
-    {level: "Level 3: Shopping & Needs", en: "I don't want this", te: "Naaku idi vaddu", p: "NAA-koo IH-dee VAD-doo"},
-    {level: "Level 3: Shopping & Needs", en: "Give me that", te: "Naaku adhi ivvu", p: "NAA-koo AH-dhee IV-voo"},
-    {level: "Level 3: Shopping & Needs", en: "It is too expensive", te: "Idi chala ekkuva", p: "IH-dee CHAA-lah EK-koo-vah"},
-    {level: "Level 3: Shopping & Needs", en: "Reduce the price", te: "Dhara tagginchandi", p: "DHAH-rah tag-GIN-chahn-dee"},
-    {level: "Level 3: Shopping & Needs", en: "I need water", te: "Naaku neellu kavali", p: "NAA-koo NEEL-loo KAA-vaa-lee"},
-    {level: "Level 3: Shopping & Needs", en: "Where is the shop?", te: "Shop ekkada undi?", p: "Shop EK-kah-dah OON-dee"},
-    
-    // Level 4: Food & Dining
-    {level: "Level 4: Food & Dining", en: "Did you eat?", te: "Bhojanam chesara?", p: "BHO-jah-nahm CHEH-saa-raa"},
-    {level: "Level 4: Food & Dining", en: "I am hungry", te: "Naaku aakaliga undi", p: "NAA-koo AA-kah-lee-gah OON-dee"},
-    {level: "Level 4: Food & Dining", en: "The food is very good", te: "Annam chala bagundi", p: "AN-nahm CHAA-lah BAA-goon-dee"},
-    {level: "Level 4: Food & Dining", en: "I want to eat", te: "Nenu tinali", p: "NEH-noo TEE-naa-lee"},
-    {level: "Level 4: Food & Dining", en: "Drink water", te: "Neellu taagu", p: "NEEL-loo TAA-goo"},
-    {level: "Level 4: Food & Dining", en: "It is spicy", te: "Idi karamga undi", p: "IH-dee KAA-rahm-gah OON-dee"},
-    {level: "Level 4: Food & Dining", en: "Give me some more", te: "Inkoncham ivvandi", p: "IN-kon-chahm IV-vahn-dee"},
-    {level: "Level 4: Food & Dining", en: "I don't eat meat", te: "Nenu mamsam tinanu", p: "NEH-noo MAAM-sahm TEE-nah-noo"},
-
-    // Level 5: Time, Work & Complex
-    {level: "Level 5: Time & Work", en: "What time is it?", te: "Time entha ayindi?", p: "Time EN-thah ah-YIN-dee"},
-    {level: "Level 5: Time & Work", en: "Come tomorrow", te: "Repu raa", p: "REH-poo RAA"},
-    {level: "Level 5: Time & Work", en: "I have work", te: "Naaku pani undi", p: "NAA-koo PAH-nee OON-dee"},
-    {level: "Level 5: Time & Work", en: "Are you busy?", te: "Meeru busy ga unnara?", p: "MEE-roo busy gah OON-naa-raa"},
-    {level: "Level 5: Time & Work", en: "Call me later", te: "Tarvata call cheyu", p: "TAR-vaa-tah call CHEH-yoo"},
-    {level: "Level 5: Time & Work", en: "I forgot", te: "Nenu marchipoyanu", p: "NEH-noo MAR-chee-poh-yaa-noo"},
-    {level: "Level 5: Time & Work", en: "I remember", te: "Naaku gurthundi", p: "NAA-koo GOOR-thoon-dee"},
-    {level: "Level 5: Time & Work", en: "I understand", te: "Naaku ardam ayindi", p: "NAA-koo AR-dahm ah-YIN-dee"},
-    {level: "Level 5: Time & Work", en: "I don't understand", te: "Naaku ardam kaledu", p: "NAA-koo AR-dahm kaa-LEH-doo"},
-    {level: "Level 5: Time & Work", en: "See you later", te: "Malli kaluddam", p: "MAL-lee KAH-lood-daam"}
+{level:"Greetings",en:"Hello",te:"Namaskaram",p:"nah-mahs-KAA-rahm",s:"నమస్కారం"},
+{level:"Greetings",en:"How are you? (F)",te:"Meeru ela unnaru?",p:"MEE-roo EH-lah OON-naa-roo",s:"మీరు ఎలా ఉన్నారు?"},
+{level:"Greetings",en:"How are you? (I)",te:"Ela unnav?",p:"EH-lah OON-nav",s:"ఎలా ఉన్నావ్?"},
+{level:"Greetings",en:"I am fine",te:"Nenu bagunnanu",p:"NEH-noo BAA-goon-naa-noo",s:"నేను బాగున్నాను"},
+{level:"Greetings",en:"What is your name? (F)",te:"Mee peru enti?",p:"MEE PEH-roo EN-tee",s:"మీ పేరు ఏంటి?"},
+{level:"Greetings",en:"My name is...",te:"Naa peru...",p:"NAA PEH-roo",s:"నా పేరు..."},
+{level:"Greetings",en:"Nice to meet you",te:"Mimmallni kalavadam santhosham",p:"mim-MAL-nee kah-lah-VAH-dahm SAN-thoh-shahm",s:"మిమ్మల్ని కలవడం సంతోషం"},
+{level:"Greetings",en:"Thank you",te:"Dhanyavadalu",p:"DHAN-yah-vaa-daa-loo",s:"ధన్యవాదాలు"},
+{level:"Greetings",en:"Sorry",te:"Kshaminchandi",p:"kshah-MIN-chahn-dee",s:"క్షమించండి"},
+{level:"Greetings",en:"Please speak slowly (F)",te:"Koncham nemmadiga matladandi",p:"KON-chahm nem-MAH-dee-gah MAAT-laa-dahn-dee",s:"కొంచెం నెమ్మదిగా మాట్లాడండి"},
+{level:"Greetings",en:"I don't know Telugu",te:"Naaku Telugu teliyadu",p:"NAA-koo teh-LOO-goo teh-LEE-yah-doo",s:"నాకు తెలుగు తెలియదు"},
+{level:"Greetings",en:"I am learning Telugu",te:"Nenu Telugu nerchukuntunnanu",p:"NEH-noo teh-LOO-goo NER-choo-koon-toon-naa-noo",s:"నేను తెలుగు నేర్చుకుంటున్నాను"},
+{level:"Survival",en:"I don't understand",te:"Naaku ardam kaledu",p:"NAA-koo AR-dahm kaa-LEH-doo",s:"నాకు అర్థం కాలేదు"},
+{level:"Survival",en:"I understand",te:"Naaku ardam ayindi",p:"NAA-koo AR-dahm ah-YIN-dee",s:"నాకు అర్థం అయింది"},
+{level:"Survival",en:"Please say it again (F)",te:"Malli cheppandi",p:"MAL-lee CHEP-pahn-dee",s:"మళ్లీ చెప్పండి"},
+{level:"Survival",en:"What is this called?",te:"Dini peru enti?",p:"DIH-nee PEH-roo EN-tee",s:"దీని పేరు ఏంటి?"},
+{level:"Survival",en:"Do you know English? (F)",te:"Meeku English telusa?",p:"MEE-koo English TEH-loo-saa",s:"మీకు ఇంగ్లీష్ తెలుసా?"},
+{level:"Survival",en:"Help me",te:"Naaku sahayam cheyandi",p:"NAA-koo sah-HAA-yahm CHEH-yahn-dee",s:"నాకు సహాయం చేయండి"},
+{level:"Survival",en:"I forgot",te:"Nenu marchipoyanu",p:"NEH-noo MAR-chee-poh-yaa-noo",s:"నేను మర్చిపోయాను"},
+{level:"Moving",en:"Come here (I)",te:"Ikkadaki raa",p:"IK-kah-dah-kee RAA",s:"ఇక్కడికి రా"},
+{level:"Moving",en:"Come here (F)",te:"Ikkadaki randi",p:"IK-kah-dah-kee RAHN-dee",s:"ఇక్కడికి రండి"},
+{level:"Moving",en:"Go there (I)",te:"Akkadiki vellu",p:"AK-kah-dah-kee VEL-loo",s:"అక్కడికి వెళ్లు"},
+{level:"Moving",en:"Where are you going? (I)",te:"Ekkadiki veltunnav?",p:"EK-kah-dee-kee VEL-toon-nav",s:"ఎక్కడికి వెళ్తున్నావ్?"},
+{level:"Moving",en:"I am going home",te:"Nenu intiki veltunnanu",p:"NEH-noo IN-tee-kee VEL-toon-naa-noo",s:"నేను ఇంటికి వెళ్తున్నాను"},
+{level:"Moving",en:"Go straight",te:"Tinnaga vellu",p:"TIN-nah-gah VEL-loo",s:"తిన్నగా వెళ్లు"},
+{level:"Moving",en:"Turn left",te:"Edamavaipu tirugu",p:"EH-dah-mah-vai-poo TEE-roo-goo",s:"ఎడమవైపు తిరుగు"},
+{level:"Moving",en:"Turn right",te:"Kudivaipu tirugu",p:"KOO-dee-vai-poo TEE-roo-goo",s:"కుడివైపు తిరుగు"},
+{level:"Moving",en:"Stop",te:"Aagu",p:"AA-goo",s:"ఆగు"},
+{level:"Needs",en:"How much is this?",te:"Idi entha?",p:"IH-dee EN-thah",s:"ఇది ఎంత?"},
+{level:"Needs",en:"I want this",te:"Naaku idi kavali",p:"NAA-koo IH-dee KAA-vaa-lee",s:"నాకు ఇది కావాలి"},
+{level:"Needs",en:"I don't want this",te:"Naaku idi vaddu",p:"NAA-koo IH-dee VAD-doo",s:"నాకు ఇది వద్దు"},
+{level:"Needs",en:"Give me that (F)",te:"Adhi ivvandi",p:"AH-dhee IV-vahn-dee",s:"అది ఇవ్వండి"},
+{level:"Needs",en:"It is expensive",te:"Idi chala ekkuva",p:"IH-dee CHAA-lah EK-koo-vah",s:"ఇది చాలా ఎక్కువ"},
+{level:"Needs",en:"Reduce the price (F)",te:"Koncham tagginchandi",p:"KON-chahm tag-GIN-chahn-dee",s:"కొంచెం తగ్గించండి"},
+{level:"Needs",en:"I need water",te:"Naaku neellu kavali",p:"NAA-koo NEEL-loo KAA-vaa-lee",s:"నాకు నీళ్లు కావాలి"},
+{level:"Needs",en:"Where is the bathroom?",te:"Bathroom ekkada undi?",p:"Bathroom EK-kah-dah OON-dee",s:"బాత్రూమ్ ఎక్కడ ఉంది?"},
+{level:"Food",en:"Did you eat? (I)",te:"Tinnava?",p:"TIN-naa-vaa",s:"తిన్నావా?"},
+{level:"Food",en:"I am hungry",te:"Naaku aakaliga undi",p:"NAA-koo AA-kah-lee-gah OON-dee",s:"నాకు ఆకలిగా ఉంది"},
+{level:"Food",en:"The food is good",te:"Annam chala bagundi",p:"AN-nahm CHAA-lah BAA-goon-dee",s:"అన్నం చాలా బాగుంది"},
+{level:"Food",en:"I want to eat",te:"Nenu tinali",p:"NEH-noo TEE-naa-lee",s:"నేను తినాలి"},
+{level:"Food",en:"It is spicy",te:"Idi karamga undi",p:"IH-dee KAA-rahm-gah OON-dee",s:"ఇది కారంగా ఉంది"},
+{level:"Food",en:"I don't eat meat",te:"Nenu mamsam tinanu",p:"NEH-noo MAAM-sahm TEE-nah-noo",s:"నేను మాంసం తినను"},
+{level:"Food",en:"Give me some more (F)",te:"Inkoncham ivvandi",p:"IN-kon-chahm IV-vahn-dee",s:"ఇంకొంచెం ఇవ్వండి"},
+{level:"Daily",en:"What time is it?",te:"Time entha ayindi?",p:"Time EN-thah ah-YIN-dee",s:"టైమ్ ఎంత అయింది?"},
+{level:"Daily",en:"Come tomorrow (F)",te:"Repu randi",p:"REH-poo RAHN-dee",s:"రేపు రండి"},
+{level:"Daily",en:"I have work",te:"Naaku pani undi",p:"NAA-koo PAH-nee OON-dee",s:"నాకు పని ఉంది"},
+{level:"Daily",en:"Call me later (I)",te:"Tarvata call cheyu",p:"TAR-vaa-tah call CHEH-yoo",s:"తర్వాత కాల్ చేయి"},
+{level:"Daily",en:"See you later",te:"Malli kaluddam",p:"MAL-lee KAH-lood-daam",s:"మళ్లీ కలుద్దాం"},
+{level:"Daily",en:"I am coming",te:"Nenu vastunnanu",p:"NEH-noo VAS-toon-naa-noo",s:"నేను వస్తున్నాను"},
+{level:"Daily",en:"Wait a little",te:"Koncham aagu",p:"KON-chahm AA-goo",s:"కొంచెం ఆగు"},
+{level:"Home",en:"I am at home",te:"Nenu intlo unnanu",p:"NEH-noo INT-loh OON-naa-noo",s:"నేను ఇంట్లో ఉన్నాను"},
+{level:"Home",en:"Where is mom?",te:"Amma ekkada unnaru?",p:"AM-mah EK-kah-dah OON-naa-roo",s:"అమ్మ ఎక్కడ ఉన్నారు?"},
+{level:"Home",en:"Sit down (F)",te:"Kurchondi",p:"KOOR-chohn-dee",s:"కూర్చోండి"},
+{level:"Home",en:"Eat food",te:"Annam tinu",p:"AN-nahm THEE-noo",s:"అన్నం తిను"},
+{level:"Feelings",en:"I am happy",te:"Naaku santhoshamga undi",p:"NAA-koo SAN-thoh-shahm-gah OON-dee",s:"నాకు సంతోషంగా ఉంది"},
+{level:"Feelings",en:"I am tired",te:"Naaku alupuga undi",p:"NAA-koo AH-loo-poo-gah OON-dee",s:"నాకు అలుపుగా ఉంది"},
+{level:"Feelings",en:"I like this",te:"Naaku idi ishtam",p:"NAA-koo IH-dee ISH-tahm",s:"నాకు ఇది ఇష్టం"},
+{level:"Feelings",en:"I love you",te:"Nenu ninnu premisthunnanu",p:"NEH-noo NIN-noo PREH-mis-toon-naa-noo",s:"నేను నిన్ను ప్రేమిస్తున్నాను"}
 ];
 
 var TOTAL = W.length;
-var PER_SET = 10;
-var PER_CP = 30;
-var PASS = 20;
+var PER_SET = 8;
+var PER_CP = 24;
+var PASS = 16;
+var CATS = ["all","basics","numbers","people","family","food","home","verbs","adjectives","time","feelings","body","places","daily","nature","animals","colors","school"];
+
+// Sentence building templates for SOV practice
+var SENTENCE_TEMPLATES = [
+    {en:"I am eating rice", parts:["నేను","అన్నం","తింటున్నాను"], rom:["nenu","annam","tintunnanu"], eng:["I","rice","am eating"], hint:"Subject + Object + Verb"},
+    {en:"You are going home", parts:["నువ్వు","ఇంటికి","వెళ్తున్నావ్"], rom:["nuvvu","intiki","veltunnav"], eng:["you","home-to","are going"], hint:"Remember: -కి means 'to'"},
+    {en:"I need water", parts:["నాకు","నీళ్లు","కావాలి"], rom:["naaku","neellu","kavali"], eng:["to me","water","needed"], hint:"నాకు = 'to me' (I need)"},
+    {en:"She is a teacher", parts:["ఆమె","టీచర్"], rom:["aame","teacher"], eng:["she","teacher"], hint:"Simple: Subject + Noun"},
+    {en:"We are going to the market", parts:["మనం","మార్కెట్‌కి","వెళ్తున్నాం"], rom:["manam","marketki","veltunnaam"], eng:["we","market-to","are going"], hint:"Notice -కి again (to)"},
+    {en:"I don't understand", parts:["నాకు","అర్థం","కాలేదు"], rom:["naaku","artham","kaledu"], eng:["to me","understanding","didn't happen"], hint:"Essential phrase!"},
+    {en:"How much is this?", parts:["ఇది","ఎంత?"], rom:["idi","entha?"], eng:["this","how much"], hint:"Shopping essential"},
+    {en:"I am learning Telugu", parts:["నేను","తెలుగు","నేర్చుకుంటున్నాను"], rom:["nenu","Telugu","nerchukuntunnanu"], eng:["I","Telugu","am learning"], hint:"SOV: I + Telugu + learning"},
+    {en:"He didn't come", parts:["అతను","రాలేదు"], rom:["athanu","raledu"], eng:["he","didn't come"], hint:"Past negative"},
+    {en:"Where is your house?", parts:["మీ","ఇల్లు","ఎక్కడ?"], rom:["mee","illu","ekkada?"], eng:["your","house","where"], hint:"Question at end"},
+    {en:"I am fine", parts:["నేను","బాగున్నాను"], rom:["nenu","bagunnanu"], eng:["I","am fine"], hint:"Common greeting response"},
+    {en:"Please help me", parts:["దయచేసి","నాకు","సహాయం","చేయండి"], rom:["dayachesi","naaku","sahayam","cheyandi"], eng:["please","to me","help","do"], hint:"Polite request"},
+    {en:"The food is good", parts:["అన్నం","బాగుంది"], rom:["annam","bagundi"], eng:["food","is good"], hint:"Adjective comes with verb"},
+    {en:"I want tea", parts:["నాకు","టీ","కావాలి"], rom:["naaku","tea","kavali"], eng:["to me","tea","wanted"], hint:"Same as 'I need'"},
+    {en:"Come here", parts:["ఇక్కడికి","రా"], rom:["ikkadiki","raa"], eng:["here-to","come"], hint:"Command form"}
+];
 
 var mode = "en2te";
+var qStyle = "mc";
 var wi = 0;
 var checked = false;
 var cpScore = 0;
 var cpDone = 0;
+var mcIndex = 0;
+var mcQueue = [];
+var mcLocked = false;
+var typeSet = [];
+var deck = W;
+var phrasePractice = false;
 
-// Flashcards state
+var buildIndex = 0;
+var buildSequence = [];
+var buildAttempt = [];
+var buildLocked = false;
+
 var fcIndex = 0;
-var fcMode = "en"; // "en" or "te"
+var fcMode = "en";
+var fcCat = "all";
+var fcList = W;
+var noteCat = "all";
+var reviewQueue = [];
+var reviewI = 0;
+var reviewFlipped = false;
 
-// LOAD PROGRESS FROM LOCALSTORAGE
+var srs = {};
+var weak = {};
+var streak = 0;
+var lastDay = "";
+var todayXP = 0;
+
+function todayStr() {
+    var d = new Date();
+    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+}
+function dayStart(ts) {
+    var d = new Date(ts); d.setHours(0,0,0,0); return d.getTime();
+}
+
 function loadProgress() {
-    if (localStorage.getItem("tc_wi")) {
-        wi = parseInt(localStorage.getItem("tc_wi")) || 0;
-        cpScore = parseInt(localStorage.getItem("tc_cpScore")) || 0;
-        cpDone = parseInt(localStorage.getItem("tc_cpDone")) || 0;
-    }
+    try {
+        var raw = localStorage.getItem("tc_v2");
+        if (raw) {
+            var o = JSON.parse(raw);
+            wi = o.wi || 0;
+            cpScore = o.cpScore || 0;
+            cpDone = o.cpDone || 0;
+            srs = o.srs || {};
+            weak = o.weak || {};
+            streak = o.streak || 0;
+            lastDay = o.lastDay || "";
+            todayXP = o.todayXP || 0;
+        } else if (localStorage.getItem("tc_wi")) {
+            wi = parseInt(localStorage.getItem("tc_wi"),10) || 0;
+        }
+        var t = todayStr();
+        if (lastDay && lastDay !== t) {
+            var y = new Date(); y.setDate(y.getDate()-1);
+            var ys = y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");
+            if (lastDay !== ys) streak = 0;
+            todayXP = 0;
+        }
+    } catch (e) {}
 }
 function saveProgress() {
-    localStorage.setItem("tc_wi", wi);
-    localStorage.setItem("tc_cpScore", cpScore);
-    localStorage.setItem("tc_cpDone", cpDone);
+    localStorage.setItem("tc_v2", JSON.stringify({wi:wi,cpScore:cpScore,cpDone:cpDone,srs:srs,weak:weak,streak:streak,lastDay:lastDay,todayXP:todayXP}));
+}
+function bumpStreak() {
+    var t = todayStr();
+    if (lastDay !== t) {
+        var y = new Date(); y.setDate(y.getDate()-1);
+        var ys = y.getFullYear()+"-"+String(y.getMonth()+1).padStart(2,"0")+"-"+String(y.getDate()).padStart(2,"0");
+        streak = (lastDay === ys) ? streak+1 : 1;
+        lastDay = t;
+    }
+    todayXP++;
+    saveProgress();
+    updateStats();
 }
 function resetProgress() {
-    wi = 0; cpScore = 0; cpDone = 0;
+    wi = 0; cpScore = 0; cpDone = 0; phrasePractice = false; deck = W;
     saveProgress();
 }
 
-// ---- NAV ----
+function wordKey(w) { return w.en+"|"+w.te; }
+function dueCount() {
+    var n = 0, now = Date.now();
+    for (var i=0;i<W.length;i++) {
+        var k = wordKey(W[i]);
+        if (!srs[k] || srs[k].due <= now) n++;
+        else if (weak[k] && weak[k] >= 2) n++;
+    }
+    return n;
+}
+function weakCount() {
+    var n = 0;
+    for (var k in weak) if (weak[k] >= 2) n++;
+    return n;
+}
+function updateStats() {
+    document.getElementById("stat-streak").textContent = streak;
+    document.getElementById("stat-due").textContent = dueCount();
+    document.getElementById("stat-weak").textContent = weakCount();
+}
+
+function markResult(w, ok) {
+    var k = wordKey(w);
+    var now = Date.now();
+    var card = srs[k] || {box:0, due:now, iv:0};
+    if (ok) {
+        card.box = Math.min(5, (card.box||0)+1);
+        var days = [0,1,2,4,9,16][card.box] || 16;
+        card.iv = days;
+        card.due = now + days*86400000;
+        if (weak[k]) weak[k] = Math.max(0, weak[k]-1);
+    } else {
+        card.box = 0;
+        card.iv = 0;
+        card.due = now;
+        weak[k] = (weak[k]||0)+1;
+    }
+    srs[k] = card;
+    bumpStreak();
+}
+
 function showPage(n) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
-    
-    document.getElementById("page-" + n).classList.add('active');
-    document.getElementById("nav-" + n).classList.add('active');
-    
-    if (n === "notes") buildNotes();
-    if (n === "phrases") buildPhrases();
-    if (n === "flash") updateFC();
+    document.querySelectorAll(".page").forEach(function(p){ p.classList.remove("active"); });
+    document.querySelectorAll(".nav button").forEach(function(b){ b.classList.remove("active"); });
+    document.getElementById("page-"+n).classList.add("active");
+    document.getElementById("nav-"+n).classList.add("active");
+    if (n==="notes") buildNotes();
+    if (n==="phrases") buildPhrases();
+    if (n==="flash") { buildFcCats(); updateFC(); }
+    if (n==="review") startReview();
+    if (n==="quiz") updateStats();
+    setTimeout(function(){ if(window.lucide) lucide.createIcons(); }, 100);
 }
 
 function setMode(m) {
     mode = m;
     document.getElementById("mode-en").className = "mode-pill"+(m==="en2te"?" active":"");
     document.getElementById("mode-te").className = "mode-pill"+(m==="te2en"?" active":"");
-    if (!checked) renderSet();
+    if (qStyle!=="type" || !checked) beginLesson();
+}
+function setQStyle(s) {
+    qStyle = s;
+    document.getElementById("qstyle-mc").className = "mode-pill"+(s==="mc"?" active":"");
+    document.getElementById("qstyle-type").className = "mode-pill"+(s==="type"?" active":"");
+    document.getElementById("qstyle-build").className = "mode-pill"+(s==="build"?" active":"");
+    beginLesson();
+}
+
+function fillBlockJump() {
+    var sel = document.getElementById("block-jump");
+    sel.innerHTML = "";
+    var blocks = Math.ceil(TOTAL/PER_CP);
+    for (var i=0;i<blocks;i++) {
+        var o = document.createElement("option");
+        o.value = i;
+        var a = i*PER_CP+1, b = Math.min((i+1)*PER_CP, TOTAL);
+        o.textContent = "Jump to block "+(i+1)+"  ·  words "+a+"–"+b;
+        sel.appendChild(o);
+    }
+    var weakOpt = document.createElement("option");
+    weakOpt.value = "weak";
+    weakOpt.textContent = "Practice weak words only";
+    sel.appendChild(weakOpt);
+    var dueOpt = document.createElement("option");
+    dueOpt.value = "due";
+    dueOpt.textContent = "Practice due reviews";
+    sel.appendChild(dueOpt);
+    sel.value = String(Math.min(Math.floor(wi/PER_CP), blocks-1));
+}
+function jumpBlock(v) {
+    phrasePractice = false;
+    if (v==="weak") {
+        deck = W.filter(function(w){ return (weak[wordKey(w)]||0) >= 1; });
+        if (!deck.length) deck = W.slice(0, PER_SET);
+        wi = 0; cpScore = 0; cpDone = 0;
+        beginLesson(); return;
+    }
+    if (v==="due") {
+        var now = Date.now();
+        deck = W.filter(function(w){ var c=srs[wordKey(w)]; return !c || c.due<=now; });
+        if (!deck.length) deck = W.slice(0, PER_SET);
+        wi = 0; cpScore = 0; cpDone = 0;
+        beginLesson(); return;
+    }
+    deck = W;
+    wi = parseInt(v,10)*PER_CP;
+    cpScore = 0; cpDone = 0;
+    saveProgress();
+    beginLesson();
 }
 
 function updateProgress() {
-    var pct = Math.min(100, Math.round((wi/TOTAL)*100));
+    var tot = deck===W ? TOTAL : deck.length;
+    var pct = Math.min(100, Math.round((wi/Math.max(1,tot))*100));
     document.getElementById("pbar").style.width = pct+"%";
-    document.getElementById("plabel-l").innerText = wi+" / "+TOTAL+" words";
-    var cn = Math.floor(wi/PER_CP)+1;
-    document.getElementById("plabel-r").innerText = "Checkpoint "+cn+" / "+Math.ceil(TOTAL/PER_CP);
+    document.getElementById("plabel-l").innerText = Math.min(wi,tot)+" / "+tot+(deck===W?" words":" in this mix");
+    if (deck===W) {
+        var cn = Math.floor(wi/PER_CP)+1;
+        document.getElementById("plabel-r").innerText = "Block "+cn+" / "+Math.ceil(TOTAL/PER_CP);
+    } else document.getElementById("plabel-r").innerText = "Custom practice";
 }
 
-// ---- RENDER SET ----
-function renderSet() {
+function shuffle(a) {
+    var b = a.slice();
+    for (var i=b.length-1;i>0;i--) {
+        var j = Math.floor(Math.random()*(i+1));
+        var t=b[i]; b[i]=b[j]; b[j]=t;
+    }
+    return b;
+}
+function pickChoices(correct, key) {
+    var pool = W.filter(function(w){ return w[key] !== correct[key] && (!correct.c || w.c===correct.c); });
+    if (pool.length < 3) pool = W.filter(function(w){ return w[key] !== correct[key]; });
+    pool = shuffle(pool).slice(0,3);
+    return shuffle(pool.concat([correct]));
+}
+
+function beginLesson() {
+    checked = false;
+    mcLocked = false;
+    buildLocked = false;
+    if (deck !== W && !deck.length) deck = W;
+    if (wi >= deck.length) { showFinish(); return; }
+    if (qStyle === "type" && !phrasePractice) { renderTypeSet(); return; }
+    if (qStyle === "build") { startBuildMode(); return; }
+    startMcSet();
+}
+
+function startMcSet() {
+    var end = Math.min(wi+PER_SET, deck.length);
+    mcQueue = deck.slice(wi, end);
+    mcIndex = 0;
+    updateProgress();
+    renderMc();
+}
+
+function renderMc() {
     var area = document.getElementById("quiz-area");
     area.innerHTML = "";
-    if (wi >= TOTAL) { showFinish(); return; }
-
-    var end = Math.min(wi+PER_SET, TOTAL);
-    var words = W.slice(wi, end);
-    updateProgress();
-
-    for (var i=0; i<words.length; i++) {
-        var w = words[i];
-        var isEn2Te = (mode==="en2te");
-        var label = isEn2Te ? w.en : w.te;
-        var answer = isEn2Te ? w.te : w.en;
-        var ph = isEn2Te ? "" : w.p;
-        var phInput = isEn2Te ? "Type Telugu..." : "Type English...";
-
-        var card = document.createElement("div");
-        card.className = "quiz-card";
-
-        var num = document.createElement("span");
-        num.className = "num";
-        num.textContent = wi+i+1;
-
-        var col = document.createElement("div");
-        col.className = "word-col";
-
-        var main = document.createElement("div");
-        main.className = "word-main";
-        main.textContent = label;
-        col.appendChild(main);
-
-        if (!isEn2Te) {
-            var phEl = document.createElement("div");
-            phEl.className = "word-phonetic";
-            phEl.textContent = w.p;
-            col.appendChild(phEl);
-        }
-
-        var hint = document.createElement("div");
-        hint.className = "answer-hint";
-        hint.id = "hint-"+i;
-        hint.textContent = answer;
-        col.appendChild(hint);
-
-        var inp = document.createElement("input");
-        inp.type = "text";
-        inp.id = "inp-"+i;
-        inp.placeholder = phInput;
-        inp.autocomplete = "off";
-
-        card.appendChild(num);
-        card.appendChild(col);
-        card.appendChild(inp);
-        area.appendChild(card);
+    if (mcIndex >= mcQueue.length) {
+        wi = Math.min(wi+mcQueue.length, deck.length);
+        saveProgress();
+        if (deck===W && wi>0 && wi%PER_CP===0) { showCP(); return; }
+        if (wi >= deck.length) { showFinish(); return; }
+        beginLesson();
+        return;
     }
+    var w = mcQueue[mcIndex];
+    var askTe = mode==="te2en";
+    var card = document.createElement("div");
+    card.className = "prompt-card";
+    var meta = document.createElement("div");
+    meta.className = "prompt-meta";
+    meta.textContent = (mcIndex+1)+" / "+mcQueue.length+"  ·  "+(w.c||"word");
+    card.appendChild(meta);
+    if (askTe) {
+        var te = document.createElement("div");
+        te.className = "prompt-te te";
+        te.textContent = w.s || w.te;
+        card.appendChild(te);
+        var ph = document.createElement("div");
+        ph.className = "prompt-ph";
+        ph.textContent = w.te+"  ·  "+w.p;
+        card.appendChild(ph);
+    } else {
+        var en = document.createElement("div");
+        en.className = "prompt-en";
+        en.textContent = w.en;
+        card.appendChild(en);
+    }
+    area.appendChild(card);
 
-    var btnRow = document.createElement("div");
-    btnRow.className = "btn-row";
+    var key = askTe ? "en" : "te";
+    var opts = pickChoices(w, key);
+    var box = document.createElement("div");
+    box.className = "choices";
+    opts.forEach(function(opt, idx){
+        var b = document.createElement("button");
+        b.className = "choice";
+        b.dataset.ok = (opt.en===w.en && opt.te===w.te) ? "1" : "0";
+        if (key==="te") {
+            b.innerHTML = "<span class='te'>"+(opt.s||opt.te)+"</span><span class='sub'>"+opt.te+" · "+opt.p+"</span>";
+        } else {
+            b.textContent = opt.en;
+        }
+        b.onclick = function(){ chooseMc(opt, w, b, box); };
+        box.appendChild(b);
+    });
+    area.appendChild(box);
 
-    var bc = document.createElement("button");
-    bc.className = "duo-btn duo-btn-orange";
-    bc.id = "bc";
-    bc.textContent = "CHECK";
-    bc.onclick = doCheck;
-
-    var bn = document.createElement("button");
-    bn.className = "duo-btn duo-btn-green";
-    bn.id = "bn";
-    bn.textContent = "NEXT →";
-    bn.disabled = true;
-    bn.onclick = doNext;
-
-    btnRow.appendChild(bc);
-    btnRow.appendChild(bn);
-    area.appendChild(btnRow);
-
-    checked = false;
-    var f = document.getElementById("inp-0");
-    if (f) f.focus();
+    var skip = document.createElement("button");
+    skip.className = "duo-btn duo-btn-white";
+    skip.textContent = "I DON'T KNOW";
+    skip.onclick = function(){ chooseMc(null, w, null, box); };
+    area.appendChild(skip);
+    mcLocked = false;
 }
 
-function norm(s) { return s.toLowerCase().trim().replace(/[^a-z]/g,""); }
+function chooseMc(opt, w, btn, box) {
+    if (mcLocked) return;
+    mcLocked = true;
+    var ok = opt && opt.en===w.en && opt.te===w.te;
+    markResult(w, ok);
+    cpScore += ok ? 1 : 0;
+    cpDone += 1;
+    var nodes = box.querySelectorAll(".choice");
+    nodes.forEach(function(n){
+        if (n.dataset.ok === "1") n.classList.add("correct");
+        else n.classList.add("dim");
+    });
+    if (btn && !ok) btn.classList.add("wrong");
+    if (!ok) {
+        var reveal = document.createElement("div");
+        reveal.className = "info-box ok";
+        reveal.style.marginTop = "10px";
+        var answerText = "<b>✓ Correct Answer:</b> "+w.en+" → <span class='te'>"+(w.s||"")+"</span> "+w.te+" <i>("+w.p+")</i>";
+        if (w.ex) {
+            answerText += "<br><b>In context:</b> <span class='te'>"+w.ex+"</span> = <i>"+w.ext+"</i>";
+        }
+        
+        // Add "Why?" explanation based on category
+        var why = getWhyExplanation(w, opt);
+        if (why) {
+            answerText += "<br><br><b>💡 Why this answer?</b> " + why;
+        }
+        
+        reveal.innerHTML = answerText;
+        box.parentNode.appendChild(reveal);
+    }
+    setTimeout(function(){ mcIndex++; renderMc(); }, ok ? 550 : 10000);
+}
+
+function getWhyExplanation(correctWord, chosenWord) {
+    var c = correctWord.c;
+    var explanations = {
+        "verbs": "Telugu verbs change endings based on who's doing the action and when. Listen for the ending: -తున్నాను (I'm doing now), -తాను (I will do), -ను (I did).",
+        "family": "Telugu family terms are specific! Unlike English, there are different words for elder/younger siblings and maternal/paternal relatives.",
+        "basics": "These high-frequency words are the building blocks. Use them in sentences daily: '"+correctWord.te+"' appears in everyday conversation constantly.",
+        "food": "Food words are essential for daily life! Try ordering: 'నాకు "+correctWord.te+" కావాలి' (I want "+correctWord.en+").",
+        "adjectives": "Telugu adjectives often come before nouns OR with the verb. Example: "+correctWord.te+" + noun, or 'ఇది "+correctWord.te+" ఉంది' (this is "+correctWord.en+").",
+        "time": "Time expressions help you schedule and plan. Practice: 'నేను "+correctWord.te+" వస్తాను' (I will come "+correctWord.en+").",
+        "numbers": "Telugu numbers follow a pattern. 1-10 are unique, then combinations form larger numbers. Master 1-10 first!",
+        "people": "These words describe people you'll meet daily. Context matters: '"+correctWord.te+"' changes with respect level.",
+        "home": "Home vocabulary = comfort! Practice room names when you see them: 'నేను "+correctWord.te+" లో ఉన్నాను' (I'm in the "+correctWord.en+").",
+        "body": "Body part words are crucial for health and directions. Telugu uses these in idioms too!",
+        "places": "Location words use postpositions: '"+correctWord.te+"'+ కి (to), లో (in), దగ్గర (near). The marker comes AFTER!",
+        "colors": "Color words in Telugu can describe mood and culture. 'ఎరుపు' (red) appears in weddings, 'తెలుపు' (white) in festivals.",
+        "feelings": "Emotion words are often nouns in Telugu: 'నాకు "+correctWord.te+" గా ఉంది' (I am "+correctWord.en+") - literally 'to me "+correctWord.en+" exists'."
+    };
+    
+    var base = explanations[c] || "This word belongs to '"+c+"' category. Keep practicing words in context to strengthen memory!";
+    
+    // Add confusion explanation if words are similar
+    if (chosenWord && chosenWord.te) {
+        var sim = checkSimilarity(correctWord.te, chosenWord.te);
+        if (sim) {
+            base += " <b>Confusing '"+correctWord.te+"' with '"+chosenWord.te+"'?</b> Focus on the different sounds, especially retroflex vs dental consonants.";
+        }
+    }
+    
+    return base;
+}
+
+function checkSimilarity(w1, w2) {
+    // Check if words share similar structure (could be confused)
+    if (!w1 || !w2 || w1.length < 2 || w2.length < 2) return false;
+    var common = 0;
+    var minLen = Math.min(w1.length, w2.length);
+    for (var i = 0; i < minLen; i++) {
+        if (w1[i] === w2[i]) common++;
+    }
+    return common >= minLen * 0.5; // 50% similarity
+}
+
+
+function renderTypeSet() {
+    var area = document.getElementById("quiz-area");
+    area.innerHTML = "";
+    var end = Math.min(wi+PER_SET, deck.length);
+    typeSet = deck.slice(wi, end);
+    updateProgress();
+    typeSet.forEach(function(w, i){
+        var isEn2Te = mode==="en2te";
+        var card = document.createElement("div");
+        card.className = "quiz-card";
+        var num = document.createElement("span"); num.className="num"; num.textContent=wi+i+1;
+        var col = document.createElement("div"); col.className="word-col";
+        var main = document.createElement("div"); main.className="word-main";
+        main.textContent = isEn2Te ? w.en : (w.s+"  "+w.te);
+        col.appendChild(main);
+        if (!isEn2Te) {
+            var ph = document.createElement("div"); ph.className="word-phonetic"; ph.textContent=w.p; col.appendChild(ph);
+        }
+        var hint = document.createElement("div"); hint.className="answer-hint"; hint.id="hint-"+i; col.appendChild(hint);
+        var inp = document.createElement("input");
+        inp.id="inp-"+i; inp.placeholder = isEn2Te ? "romanized Telugu..." : "English..."; inp.autocomplete="off";
+        card.appendChild(num); card.appendChild(col); card.appendChild(inp);
+        area.appendChild(card);
+    });
+    var row = document.createElement("div"); row.className="btn-row";
+    var show = document.createElement("button"); show.className="duo-btn duo-btn-white"; show.textContent="SHOW";
+    show.onclick = function(){
+        typeSet.forEach(function(w,i){
+            var h=document.getElementById("hint-"+i);
+            h.className="answer-hint wrong";
+            var hintText = w.te+"  ("+w.p+")  ·  "+w.en;
+            if (w.ex) hintText += " · Ex: "+w.ext;
+            h.textContent = hintText;
+            h.style.display="block";
+        });
+    };
+    var bc = document.createElement("button"); bc.className="duo-btn duo-btn-orange"; bc.id="bc"; bc.textContent="CHECK"; bc.onclick=doCheck;
+    var bn = document.createElement("button"); bn.className="duo-btn duo-btn-green"; bn.id="bn"; bn.textContent="NEXT →"; bn.disabled=true; bn.onclick=doNext;
+    row.appendChild(show); row.appendChild(bc); row.appendChild(bn);
+    area.appendChild(row);
+    checked=false;
+    var f=document.getElementById("inp-0"); if (f) f.focus();
+}
+
+function norm(s) {
+    return (s||"").toLowerCase().trim().replace(/[^a-z0-9]/g,"");
+}
+function dist(a,b) {
+    if (a===b) return 0;
+    var m=[], i, j;
+    for (i=0;i<=a.length;i++) { m[i]=[i]; }
+    for (j=0;j<=b.length;j++) m[0][j]=j;
+    for (i=1;i<=a.length;i++) {
+        for (j=1;j<=b.length;j++) {
+            m[i][j] = Math.min(m[i-1][j]+1, m[i][j-1]+1, m[i-1][j-1]+(a[i-1]===b[j-1]?0:1));
+        }
+    }
+    return m[a.length][b.length];
+}
+function closeEnough(uv, cv) {
+    var ncv = norm(cv);
+    if (!uv) return false;
+    if (uv===ncv) return true;
+    if (ncv.length>=4 && dist(uv,ncv)<=1) return true;
+    var alts = cv.toLowerCase().split("/");
+    for (var i=0;i<alts.length;i++) if (norm(alts[i])===uv) return true;
+    return false;
+}
 
 function doCheck() {
     if (checked) return;
-    var end = Math.min(wi+PER_SET, TOTAL);
-    var words = W.slice(wi, end);
-    var sc = 0;
-
-    for (var i=0; i<words.length; i++) {
-        var w = words[i];
-        var inp = document.getElementById("inp-"+i);
-        var uv = norm(inp.value);
-        var cv = (mode==="en2te") ? w.te : w.en;
-        var acc = cv.toLowerCase().split("/");
-        inp.readOnly = true;
-        var ok = false;
-        for (var j=0; j<acc.length; j++) {
-            if (uv!=="" && norm(acc[j])===uv) { ok=true; break; }
-        }
-        var hint = document.getElementById("hint-"+i);
+    var sc=0;
+    typeSet.forEach(function(w,i){
+        var inp=document.getElementById("inp-"+i);
+        var uv=norm(inp.value);
+        var cv = mode==="en2te" ? w.te : w.en;
+        inp.readOnly=true;
+        var ok = closeEnough(uv, cv) || (mode==="en2te" && closeEnough(uv, w.p));
+        markResult(w, ok);
+        var hint=document.getElementById("hint-"+i);
         if (ok) {
             inp.classList.add("correct");
-            hint.className = "answer-hint correct";
-            hint.textContent = "✓ " + cv;
-            if (mode==="en2te") hint.textContent = "✓ " + cv + "  (" + w.p + ")";
+            hint.className="answer-hint correct";
+            hint.textContent="✓ "+w.te+"  ("+w.p+")";
             sc++;
         } else {
             inp.classList.add("incorrect");
-            hint.className = "answer-hint wrong";
-            hint.textContent = "✗ " + cv;
-            if (mode==="en2te") hint.textContent = "✗ " + cv + "  (" + w.p + ")";
+            hint.className="answer-hint wrong";
+            var errorMsg = "✗ "+w.en+" → "+w.te+"  ("+w.p+")";
+            
+            // Add specific error feedback
+            if (uv.length === 0) {
+                errorMsg += " · 💡 Don't skip! Typing strengthens memory";
+            } else if (mode === "en2te" && uv.length > 0) {
+                var d = dist(uv, norm(w.te));
+                if (d <= 2) errorMsg += " · 💡 Close! Check each syllable";
+                else if (closeEnough(uv, w.p)) errorMsg += " · 💡 Sound right! Spelling: "+w.te;
+                else errorMsg += " · 💡 Say it slowly: "+w.p;
+            }
+            hint.textContent = errorMsg;
         }
-    }
-
-    cpScore += sc;
-    cpDone += words.length;
-    saveProgress();
-    checked = true;
-    document.getElementById("bc").disabled = true;
-    document.getElementById("bn").disabled = false;
+    });
+    cpScore += sc; cpDone += typeSet.length; saveProgress();
+    checked=true;
+    document.getElementById("bc").disabled=true;
+    document.getElementById("bn").disabled=false;
 }
 
 function doNext() {
-    wi = Math.min(wi+PER_SET, TOTAL);
+    wi = Math.min(wi+typeSet.length, deck.length);
     saveProgress();
-    if (cpDone >= PER_CP) { showCP(); }
-    else if (wi >= TOTAL) { if (cpDone>0) showCP(); else showFinish(); }
-    else renderSet();
+    if (deck===W && cpDone>=PER_CP) showCP();
+    else if (wi>=deck.length) showFinish();
+    else beginLesson();
 }
 
 function showCP() {
-    var area = document.getElementById("quiz-area");
-    area.innerHTML = "";
+    var area=document.getElementById("quiz-area"); area.innerHTML="";
     updateProgress();
-
     var passed = cpScore >= PASS;
-    var cpN = Math.ceil((wi - 1) / PER_CP);
-    if(cpN < 1) cpN = 1;
-    var div = document.createElement("div");
-    div.className = "checkpoint";
-
-    var emoji = document.createElement("div");
-    emoji.className = "emoji";
-    emoji.textContent = passed ? "🎉" : "📚";
-
-    var h2 = document.createElement("h2");
-    h2.textContent = "Checkpoint " + cpN;
-
-    var sc = document.createElement("div");
-    sc.className = "score-big " + (passed?"pass":"fail");
-    sc.textContent = cpScore + " / " + cpDone;
-
-    var p = document.createElement("p");
-    var btn;
-
-    if (passed) {
-        p.innerHTML = "Amazing! You scored <b>"+cpScore+"</b> out of "+cpDone+"!<br>You need "+PASS+" to pass. You crushed it! 💪";
-        btn = document.createElement("button");
-        btn.className = "duo-btn duo-btn-green";
-        if (wi>=TOTAL) { btn.textContent = "🏆 SEE RESULTS"; btn.onclick = showFinish; }
-        else { btn.textContent = "CONTINUE →"; btn.onclick = function(){ cpScore=0; cpDone=0; saveProgress(); renderSet(); }; }
-    } else {
-        p.innerHTML = "You scored <b>"+cpScore+"</b> out of "+cpDone+".<br>You need <b>"+PASS+"</b> to continue.<br>Study the words in <b>📖 Notes</b> tab, then retry!";
-        btn = document.createElement("button");
-        btn.className = "duo-btn duo-btn-red";
-        btn.textContent = "RETRY THIS BLOCK";
-        btn.onclick = function(){ wi-=cpDone; cpScore=0; cpDone=0; saveProgress(); renderSet(); };
-    }
-
-    div.appendChild(emoji);
-    div.appendChild(h2);
-    div.appendChild(sc);
+    var cpN = Math.max(1, Math.ceil(wi/PER_CP));
+    var div=document.createElement("div"); div.className="checkpoint";
+    div.innerHTML = '<div class="emoji">'+(passed?'<i class="fas fa-trophy" style="color:#ffd700;"></i>':'<i class="fas fa-book-open" style="color:#1cb0f6;"></i>')+'</div><h2>Block '+cpN+' check</h2><div class="score-big '+(passed?"pass":"fail")+'">'+cpScore+' / '+cpDone+'</div>';
+    var p=document.createElement("p");
+    p.innerHTML = passed
+        ? "Nice. Keep going — or jump to any block from the menu."
+        : "Not fluent yet on this block. You can retry, review weak words, or continue anyway. No lock.";
     div.appendChild(p);
+    
+    // Add learning insight for failed checkpoint
+    if (!passed && cpScore > 0) {
+        var insight = document.createElement("div");
+        insight.className = "info-box tip";
+        insight.style.margin = "16px 0";
+        var accuracy = Math.round((cpScore/cpDone)*100);
+        var advice = "";
+        if (accuracy < 40) {
+            advice = "Under 40%? These words are new to your brain. <b>Tip:</b> Use 'Build Sentence' mode to see them in context, then retry. Context = stronger memory!";
+        } else if (accuracy < 60) {
+            advice = "You're recognizing words but not recalling them fluently. <b>Tip:</b> Try 'Type It' mode—production practice strengthens retrieval pathways 3x more than recognition.";
+        } else {
+            advice = "You're close! Just need more exposure. <b>Tip:</b> Review these words tomorrow (spaced repetition). Your brain needs sleep to consolidate new memories.";
+        }
+        insight.innerHTML = "<b>💡 Learning Insight ("+accuracy+"% accuracy):</b><br>"+advice;
+        div.appendChild(insight);
+    }
+    
+    var btn=document.createElement("button");
+    btn.className="duo-btn "+(passed?"duo-btn-green":"duo-btn-orange");
+    btn.textContent = wi>=TOTAL ? "SEE RESULTS" : "CONTINUE →";
+    btn.onclick = function(){ cpScore=0; cpDone=0; saveProgress(); if (wi>=TOTAL) showFinish(); else beginLesson(); };
     div.appendChild(btn);
+    if (!passed) {
+        var r=document.createElement("button");
+        r.className="duo-btn duo-btn-red";
+        r.textContent="RETRY BLOCK";
+        r.onclick=function(){ wi=Math.max(0, wi-cpDone); cpScore=0; cpDone=0; saveProgress(); beginLesson(); };
+        var wbtn=document.createElement("button");
+        wbtn.className="duo-btn duo-btn-white";
+        wbtn.textContent="REVIEW WEAK WORDS";
+        wbtn.onclick=function(){ document.getElementById("block-jump").value="weak"; jumpBlock("weak"); };
+        div.appendChild(r); div.appendChild(wbtn);
+    }
     area.appendChild(div);
 }
 
 function showFinish() {
-    var area = document.getElementById("quiz-area");
-    area.innerHTML = "";
-    var div = document.createElement("div");
-    div.className = "finish";
-
-    var emoji = document.createElement("div");
-    emoji.className = "emoji";
-    emoji.textContent = "🏆";
-
-    var h2 = document.createElement("h2");
-    h2.textContent = "Congratulations!";
-
-    var p = document.createElement("p");
-    p.textContent = "You completed all "+TOTAL+" words!";
-
-    var btn = document.createElement("button");
-    btn.className = "duo-btn duo-btn-green";
-    btn.textContent = "START OVER";
-    btn.onclick = function(){ resetProgress(); renderSet(); };
-
-    div.appendChild(emoji);
-    div.appendChild(h2);
-    div.appendChild(p);
+    var area=document.getElementById("quiz-area"); area.innerHTML="";
+    var div=document.createElement("div"); div.className="finish";
+    div.innerHTML = '<div class="emoji">🏆</div><h2>'+(phrasePractice?"Phrases done":"Block complete")+'</h2><p>Keep using Review every day. That is how words stick.</p>';
+    var btn=document.createElement("button"); btn.className="duo-btn duo-btn-green"; btn.textContent="KEEP GOING";
+    btn.onclick=function(){ phrasePractice=false; deck=W; if (wi>=TOTAL) resetProgress(); beginLesson(); };
     div.appendChild(btn);
     area.appendChild(div);
 }
 
-// ---- FLASHCARDS ----
+function buildReviewQueue() {
+    var now=Date.now();
+    var due=[], fresh=[];
+    W.forEach(function(w){
+        var k=wordKey(w);
+        var c=srs[k];
+        if ((weak[k]||0)>=1 || !c || c.due<=now) due.push(w);
+        else fresh.push(w);
+    });
+    due = shuffle(due);
+    if (due.length < 8) due = due.concat(shuffle(fresh).slice(0, 8-due.length));
+    return due.slice(0, 16);
+}
+function startReview() {
+    reviewQueue = buildReviewQueue();
+    reviewI = 0;
+    reviewFlipped = false;
+    renderReview();
+}
+function renderReview() {
+    var area=document.getElementById("review-area");
+    area.innerHTML="";
+    if (!reviewQueue.length || reviewI>=reviewQueue.length) {
+        area.innerHTML = '<div class="info-box ok"><h3>Queue clear</h3>Do a Learn set, then come back. Weak words will show up here automatically.</div><button class="duo-btn duo-btn-green" onclick="startReview()">REVIEW AGAIN</button>';
+        return;
+    }
+    var w=reviewQueue[reviewI];
+    var lab=document.createElement("div");
+    lab.className="progress-labels";
+    lab.innerHTML="<span>"+(reviewI+1)+" / "+reviewQueue.length+"</span><span>due + weak first</span>";
+    area.appendChild(lab);
+    var wrap=document.createElement("div"); wrap.className="fc-container";
+    var card=document.createElement("div"); card.className="fc-card"+(reviewFlipped?" is-flipped":""); card.id="rv-card";
+    card.onclick=function(){ reviewFlipped=!reviewFlipped; renderReview(); };
+    card.innerHTML = '<div class="fc-face fc-front"><div class="fc-cat">'+w.c+'</div><div class="fc-word">'+w.en+'</div><div class="fc-hint">Tap to see Telugu</div></div>'+
+        '<div class="fc-face fc-back"><div class="fc-word te">'+(w.s||w.te)+'</div><div class="fc-phonetic">'+w.te+' · '+w.p+'</div><div class="fc-hint">Grade yourself below</div></div>';
+    wrap.appendChild(card); area.appendChild(wrap);
+    var row=document.createElement("div"); row.className="btn-row";
+    var again=document.createElement("button"); again.className="duo-btn duo-btn-red"; again.textContent="AGAIN";
+    again.onclick=function(){ markResult(w,false); reviewI++; reviewFlipped=false; renderReview(); };
+    var good=document.createElement("button"); good.className="duo-btn duo-btn-green"; good.textContent="GOT IT";
+    good.onclick=function(){ markResult(w,true); reviewI++; reviewFlipped=false; renderReview(); };
+    row.appendChild(again); row.appendChild(good);
+    area.appendChild(row);
+}
+
+function fcDeck() {
+    return fcCat==="all" ? W : W.filter(function(w){ return w.c===fcCat; });
+}
+function buildFcCats() {
+    var row=document.getElementById("fc-cats"); row.innerHTML="";
+    CATS.forEach(function(c){
+        var b=document.createElement("button");
+        b.className="cat-chip"+(fcCat===c?" active":"");
+        b.textContent=c;
+        b.onclick=function(){ fcCat=c; fcIndex=0; fcList=fcDeck(); updateFC(); buildFcCats(); };
+        row.appendChild(b);
+    });
+}
 function setFCMode(m) {
-    fcMode = m;
-    document.getElementById("fc-mode-en").className = "mode-pill"+(m==="en"?" active":"");
-    document.getElementById("fc-mode-te").className = "mode-pill"+(m==="te"?" active":"");
-    document.getElementById("fc-card").classList.remove('is-flipped');
-    setTimeout(updateFC, 150);
+    fcMode=m;
+    document.getElementById("fc-mode-en").className="mode-pill"+(m==="en"?" active":"");
+    document.getElementById("fc-mode-te").className="mode-pill"+(m==="te"?" active":"");
+    document.getElementById("fc-card").classList.remove("is-flipped");
+    setTimeout(updateFC,150);
 }
-
 function updateFC() {
-    var w = W[fcIndex];
-    document.getElementById("fc-counter").innerText = (fcIndex+1) + " / " + TOTAL;
-    var frontWord = fcMode==="en" ? w.en : w.te;
-    var frontPh = fcMode==="en" ? "" : w.p;
-    var backWord = fcMode==="en" ? w.te : w.en;
-    var backPh = fcMode==="en" ? w.p : "";
-
-    document.getElementById("fc-front-word").innerText = frontWord;
-    document.getElementById("fc-front-ph").innerText = frontPh;
-    document.getElementById("fc-back-word").innerText = backWord;
-    document.getElementById("fc-back-ph").innerText = backPh;
+    fcList = fcDeck();
+    if (fcIndex>=fcList.length) fcIndex=0;
+    var w=fcList[fcIndex];
+    document.getElementById("fc-counter").innerText=(fcIndex+1)+" / "+fcList.length;
+    document.getElementById("fc-cat").innerText=w.c||"";
+    var front = fcMode==="en" ? w.en : (w.s+" ");
+    document.getElementById("fc-front-word").innerText = fcMode==="en" ? w.en : (w.s||w.te);
+    document.getElementById("fc-front-word").className = "fc-word"+(fcMode==="te"?" te":"");
+    document.getElementById("fc-front-ph").innerText = fcMode==="en" ? "" : (w.te+" · "+w.p);
+    document.getElementById("fc-back-word").innerText = fcMode==="en" ? (w.s||w.te) : w.en;
+    document.getElementById("fc-back-ph").innerText = fcMode==="en" ? (w.te+" · "+w.p) : "";
 }
+function flipCard(){ document.getElementById("fc-card").classList.toggle("is-flipped"); }
+function nextCard(){ if (fcIndex<fcList.length-1){ document.getElementById("fc-card").classList.remove("is-flipped"); fcIndex++; setTimeout(updateFC,150);} }
+function prevCard(){ if (fcIndex>0){ document.getElementById("fc-card").classList.remove("is-flipped"); fcIndex--; setTimeout(updateFC,150);} }
+function gradeBrowse(ok){ markResult(fcList[fcIndex], ok); nextCard(); }
 
-function flipCard() {
-    document.getElementById("fc-card").classList.toggle('is-flipped');
+var phraseTopics=[], currentTopicIndex=0;
+function initPhraseTopics(){
+    phraseTopics=[];
+    PHRASES.forEach(function(p){ if (phraseTopics.indexOf(p.level)===-1) phraseTopics.push(p.level); });
 }
-
-function nextCard() {
-    if (fcIndex < TOTAL - 1) {
-        document.getElementById("fc-card").classList.remove('is-flipped');
-        fcIndex++;
-        setTimeout(updateFC, 150);
-    }
-}
-
-function prevCard() {
-    if (fcIndex > 0) {
-        document.getElementById("fc-card").classList.remove('is-flipped');
-        fcIndex--;
-        setTimeout(updateFC, 150);
-    }
-}
-
-// ---- PHRASES ----
-var phraseTopics = [];
-var currentTopicIndex = 0;
-
-function initPhraseTopics() {
-    for (var i=0; i<PHRASES.length; i++) {
-        if (phraseTopics.indexOf(PHRASES[i].level) === -1) {
-            phraseTopics.push(PHRASES[i].level);
-        }
-    }
-}
-
-function buildPhrases() {
-    if (phraseTopics.length === 0) initPhraseTopics();
-    var list = document.getElementById("phrases-list");
-    list.innerHTML = "";
-    
-    var topic = phraseTopics[currentTopicIndex];
-    document.getElementById("phrase-topic-label").innerText = topic + " (" + (currentTopicIndex+1) + "/" + phraseTopics.length + ")";
-    
-    document.getElementById("phrase-prev").disabled = (currentTopicIndex === 0);
-    document.getElementById("phrase-next").disabled = (currentTopicIndex === phraseTopics.length - 1);
-    
-    for (var i=0; i<PHRASES.length; i++) {
-        var w = PHRASES[i];
-        if (w.level !== topic) continue;
-        
-        var row = document.createElement("div");
-        row.className = "note-row";
-
-        var en = document.createElement("span");
-        en.className = "n-en";
-        en.textContent = w.en;
-
-        var right = document.createElement("div");
-        right.className = "n-right";
-
-        var te = document.createElement("div");
-        te.className = "n-te";
-        te.textContent = w.te;
-
-        var ph = document.createElement("div");
-        ph.className = "n-ph";
-        ph.textContent = w.p;
-
-        right.appendChild(te);
-        right.appendChild(ph);
-        row.appendChild(en);
-        row.appendChild(right);
+function buildPhrases(){
+    if (!phraseTopics.length) initPhraseTopics();
+    var list=document.getElementById("phrases-list"); list.innerHTML="";
+    var topic=phraseTopics[currentTopicIndex];
+    document.getElementById("phrase-topic-label").innerText=topic+" ("+(currentTopicIndex+1)+"/"+phraseTopics.length+")";
+    document.getElementById("phrase-prev").disabled = currentTopicIndex===0;
+    document.getElementById("phrase-next").disabled = currentTopicIndex===phraseTopics.length-1;
+    PHRASES.forEach(function(w){
+        if (w.level!==topic) return;
+        var row=document.createElement("div"); row.className="note-row";
+        var en=document.createElement("span"); en.className="n-en"; en.textContent=w.en;
+        var right=document.createElement("div"); right.className="n-right";
+        var te=document.createElement("div"); te.className="n-te te"; te.textContent=w.s||w.te;
+        var ph=document.createElement("div"); ph.className="n-ph"; ph.textContent=w.te+" · "+w.p;
+        right.appendChild(te); right.appendChild(ph);
+        row.appendChild(en); row.appendChild(right);
         list.appendChild(row);
-    }
+    });
+}
+function nextPhraseTopic(){ if (currentTopicIndex<phraseTopics.length-1){ currentTopicIndex++; buildPhrases(); } }
+function prevPhraseTopic(){ if (currentTopicIndex>0){ currentTopicIndex--; buildPhrases(); } }
+function practicePhrases(){
+    if (!phraseTopics.length) initPhraseTopics();
+    var topic=phraseTopics[currentTopicIndex];
+    deck = PHRASES.filter(function(p){ return p.level===topic; }).map(function(p){ return {en:p.en,te:p.te,p:p.p,s:p.s,c:p.level}; });
+    wi=0; cpScore=0; cpDone=0; phrasePractice=true; qStyle="mc";
+    document.getElementById("qstyle-mc").className="mode-pill active";
+    document.getElementById("qstyle-type").className="mode-pill";
+    document.getElementById("qstyle-build").className="mode-pill";
+    showPage("quiz");
+    beginLesson();
 }
 
-function nextPhraseTopic() {
-    if (currentTopicIndex < phraseTopics.length - 1) {
-        currentTopicIndex++;
-        buildPhrases();
+function buildNotes(){
+    var list=document.getElementById("notes-list");
+    var q=norm(document.getElementById("search-box").value);
+    list.innerHTML="";
+    var cats=document.getElementById("word-cats");
+    if (!cats.dataset.ready) {
+        CATS.forEach(function(c){
+            var b=document.createElement("button");
+            b.className="cat-chip"+(noteCat===c?" active":"");
+            b.textContent=c;
+            b.onclick=function(){ noteCat=c; cats.dataset.ready=""; buildNotes(); };
+            cats.appendChild(b);
+        });
+        cats.dataset.ready="1";
+    } else {
+        Array.prototype.forEach.call(cats.children, function(b){
+            b.className="cat-chip"+(noteCat===b.textContent?" active":"");
+        });
     }
-}
-
-function prevPhraseTopic() {
-    if (currentTopicIndex > 0) {
-        currentTopicIndex--;
-        buildPhrases();
-    }
-}
-
-// ---- NOTES ----
-function buildNotes() {
-    var list = document.getElementById("notes-list");
-    var q = norm(document.getElementById("search-box").value);
-    list.innerHTML = "";
-
-    var grid = document.createElement("div");
-    grid.className = "notes-grid";
-    var bn = 0;
-
-    for (var i=0; i<W.length; i++) {
-        if (i % PER_CP === 0) {
-            bn++;
-            var hdr = document.createElement("div");
-            hdr.className = "block-header";
-            hdr.textContent = "Block "+bn+"  ·  Words "+(i+1)+"–"+Math.min(i+PER_CP,TOTAL);
-            grid.appendChild(hdr);
+    var grid=document.createElement("div"); grid.className="notes-grid";
+    var n=0;
+    W.forEach(function(w,i){
+        if (noteCat!=="all" && w.c!==noteCat) return;
+        var hay = norm(w.en+w.te+w.p+(w.s||""));
+        if (q && hay.indexOf(q)===-1 && (w.s||"").indexOf(document.getElementById("search-box").value)===-1) return;
+        n++;
+        var row=document.createElement("div"); row.className="note-row";
+        var idx=document.createElement("span"); idx.className="n-idx"; idx.textContent=i+1;
+        var en=document.createElement("span"); en.className="n-en"; en.textContent=w.en;
+        var right=document.createElement("div"); right.className="n-right";
+        var te=document.createElement("div"); te.className="n-te te"; te.textContent=w.s||w.te;
+        var ph=document.createElement("div"); ph.className="n-ph"; ph.textContent=w.te+" · "+w.p;
+        right.appendChild(te); right.appendChild(ph);
+        if (w.ex) {
+            var exDiv=document.createElement("div");
+            exDiv.style.fontSize="11px";
+            exDiv.style.color="#58a700";
+            exDiv.style.marginTop="3px";
+            exDiv.innerHTML="<b>"+w.ex+"</b> = "+w.ext;
+            right.appendChild(exDiv);
         }
-        var w = W[i];
-        if (q && norm(w.en).indexOf(q)===-1 && norm(w.te).indexOf(q)===-1) continue;
-
-        var row = document.createElement("div");
-        row.className = "note-row";
-
-        var idx = document.createElement("span");
-        idx.className = "n-idx";
-        idx.textContent = i+1;
-
-        var en = document.createElement("span");
-        en.className = "n-en";
-        en.textContent = w.en;
-
-        var right = document.createElement("div");
-        right.className = "n-right";
-
-        var te = document.createElement("div");
-        te.className = "n-te";
-        te.textContent = w.te;
-
-        var ph = document.createElement("div");
-        ph.className = "n-ph";
-        ph.textContent = w.p;
-
-        right.appendChild(te);
-        right.appendChild(ph);
-
-        row.appendChild(idx);
-        row.appendChild(en);
-        row.appendChild(right);
+        if (w.f === 1) {
+            var badge=document.createElement("span");
+            badge.style.background="#ffd700";
+            badge.style.color="#8b6914";
+            badge.style.fontSize="9px";
+            badge.style.fontWeight="900";
+            badge.style.padding="2px 6px";
+            badge.style.borderRadius="6px";
+            badge.style.marginLeft="4px";
+            badge.textContent="★ TOP 100";
+            te.appendChild(badge);
+        }
+        row.appendChild(idx); row.appendChild(en); row.appendChild(right);
         grid.appendChild(row);
+    });
+    if (!n) {
+        var empty=document.createElement("div"); empty.className="info-box"; empty.textContent="No matches.";
+        list.appendChild(empty); return;
     }
     list.appendChild(grid);
 }
 
-window.onload = function(){ 
+function startBuildMode() {
+    buildSequence = shuffle(SENTENCE_TEMPLATES).slice(0, Math.min(5, SENTENCE_TEMPLATES.length));
+    buildIndex = 0;
+    updateProgress();
+    renderBuildSentence();
+}
+
+function renderBuildSentence() {
+    var area = document.getElementById("quiz-area");
+    area.innerHTML = "";
+    
+    if (buildIndex >= buildSequence.length) {
+        wi = Math.min(wi + buildSequence.length, deck.length);
+        saveProgress();
+        if (wi >= deck.length) { showFinish(); return; }
+        beginLesson();
+        return;
+    }
+    
+    var sent = buildSequence[buildIndex];
+    buildAttempt = [];
+    buildLocked = false;
+    
+    var meta = document.createElement("div");
+    meta.className = "prompt-meta";
+    meta.textContent = (buildIndex+1)+" / "+buildSequence.length+"  ·  SOV word order practice";
+    area.appendChild(meta);
+    
+    var promptCard = document.createElement("div");
+    promptCard.className = "prompt-card";
+    var enText = document.createElement("div");
+    enText.className = "prompt-en";
+    enText.textContent = sent.en;
+    promptCard.appendChild(enText);
+    
+    var hintDiv = document.createElement("div");
+    hintDiv.className = "prompt-ph";
+    hintDiv.textContent = sent.hint;
+    promptCard.appendChild(hintDiv);
+    
+    var engOrder = document.createElement("div");
+    engOrder.style.marginTop = "8px";
+    engOrder.style.fontSize = "13px";
+    engOrder.style.color = "#afafaf";
+    engOrder.textContent = "English order: " + sent.eng.join(" + ");
+    promptCard.appendChild(engOrder);
+    area.appendChild(promptCard);
+    
+    var buildZone = document.createElement("div");
+    buildZone.className = "build-zone";
+    buildZone.id = "build-zone";
+    buildZone.innerHTML = '<div style="color:#afafaf;font-size:14px;">Tap words below to build the sentence</div>';
+    area.appendChild(buildZone);
+    
+    var bankDiv = document.createElement("div");
+    bankDiv.className = "word-bank";
+    bankDiv.id = "word-bank";
+    var shuffledParts = shuffle(sent.rom.map(function(_,i){return i;}));
+    shuffledParts.forEach(function(idx) {
+        var chip = document.createElement("div");
+        chip.className = "word-chip";
+        chip.innerHTML = '<div style="font-size:18px;font-weight:800;">'+sent.rom[idx]+'</div><div style="font-size:11px;color:#888;margin-top:2px;">'+sent.eng[idx]+'</div>';
+        chip.dataset.index = idx;
+        chip.onclick = function() { addWordToBuild(idx, chip); };
+        bankDiv.appendChild(chip);
+    });
+    area.appendChild(bankDiv);
+    
+    var btnRow = document.createElement("div");
+    btnRow.className = "btn-row";
+    btnRow.style.marginTop = "16px";
+    
+    var clearBtn = document.createElement("button");
+    clearBtn.className = "duo-btn duo-btn-white";
+    clearBtn.textContent = "CLEAR";
+    clearBtn.onclick = clearBuild;
+    
+    var checkBtn = document.createElement("button");
+    checkBtn.className = "duo-btn duo-btn-orange";
+    checkBtn.id = "build-check";
+    checkBtn.textContent = "CHECK";
+    checkBtn.onclick = checkBuildSentence;
+    
+    btnRow.appendChild(clearBtn);
+    btnRow.appendChild(checkBtn);
+    area.appendChild(btnRow);
+}
+
+function addWordToBuild(wordIndex, chipElem) {
+    if (buildLocked) return;
+    buildAttempt.push(wordIndex);
+    chipElem.classList.add("disabled");
+    
+    var sent = buildSequence[buildIndex];
+    var zone = document.getElementById("build-zone");
+    zone.innerHTML = "";
+    buildAttempt.forEach(function(idx) {
+        var chip = document.createElement("div");
+        chip.className = "word-chip placed";
+        chip.innerHTML = '<div style="font-size:18px;font-weight:800;">'+sent.rom[idx]+'</div><div style="font-size:11px;opacity:0.8;margin-top:2px;">'+sent.eng[idx]+'</div>';
+        chip.onclick = function() { removeWordFromBuild(buildAttempt.indexOf(idx)); };
+        zone.appendChild(chip);
+    });
+}
+
+function removeWordFromBuild(index) {
+    if (buildLocked) return;
+    buildAttempt.splice(index, 1);
+    
+    var sent = buildSequence[buildIndex];
+    var zone = document.getElementById("build-zone");
+    zone.innerHTML = "";
+    
+    if (buildAttempt.length === 0) {
+        zone.innerHTML = '<div style="color:#afafaf;font-size:14px;">Tap words below to build the sentence</div>';
+    } else {
+        buildAttempt.forEach(function(idx) {
+            var chip = document.createElement("div");
+            chip.className = "word-chip placed";
+            chip.innerHTML = '<div style="font-size:18px;font-weight:800;">'+sent.rom[idx]+'</div><div style="font-size:11px;opacity:0.8;margin-top:2px;">'+sent.eng[idx]+'</div>';
+            chip.onclick = function() { removeWordFromBuild(buildAttempt.indexOf(idx)); };
+            zone.appendChild(chip);
+        });
+    }
+    
+    var bankChips = document.querySelectorAll(".word-bank .word-chip");
+    bankChips.forEach(function(chip) {
+        var idx = parseInt(chip.dataset.index);
+        if (buildAttempt.indexOf(idx) === -1) {
+            chip.classList.remove("disabled");
+        }
+    });
+}
+
+function clearBuild() {
+    if (buildLocked) return;
+    buildAttempt = [];
+    var zone = document.getElementById("build-zone");
+    zone.innerHTML = '<div style="color:#afafaf;font-size:14px;">Tap words below to build the sentence</div>';
+    zone.className = "build-zone";
+    
+    var bankChips = document.querySelectorAll(".word-bank .word-chip");
+    bankChips.forEach(function(chip) {
+        chip.classList.remove("disabled");
+    });
+}
+
+function checkBuildSentence() {
+    if (buildLocked) return;
+    if (buildAttempt.length === 0) return;
+    
+    buildLocked = true;
+    var sent = buildSequence[buildIndex];
+    var correct = buildAttempt.length === sent.rom.length && 
+                  buildAttempt.every(function(idx, i) { return idx === i; });
+    
+    var zone = document.getElementById("build-zone");
+    zone.className = "build-zone " + (correct ? "correct" : "wrong");
+    
+    var area = document.getElementById("quiz-area");
+    var feedback = document.createElement("div");
+    feedback.className = "info-box " + (correct ? "ok" : "tip");
+    feedback.style.marginTop = "12px";
+    
+    if (correct) {
+        feedback.innerHTML = "<b>✓ Perfect!</b> You built the sentence correctly.<br>Romanized: <b>" + sent.rom.join(" ") + "</b><br>Telugu script: <span class='te'>" + sent.parts.join(" ") + "</span><br>Word order: " + sent.eng.join(" → ");
+        cpScore++;
+    } else {
+        var yourAnswer = buildAttempt.map(function(idx){return sent.rom[idx];}).join(" ");
+        feedback.innerHTML = "<b>✗ Not quite.</b><br>You wrote: <b>" + yourAnswer + "</b><br>Correct: <b>" + sent.rom.join(" ") + "</b><br>" +
+            "Telugu script: <span class='te'>" + sent.parts.join(" ") + "</span><br>Remember: " + sent.hint + "<br>Word-by-word: " + sent.eng.join(" + ");
+    }
+    cpDone++;
+    
+    area.appendChild(feedback);
+    
+    var nextBtn = document.createElement("button");
+    nextBtn.className = "duo-btn duo-btn-green";
+    nextBtn.textContent = "NEXT →";
+    nextBtn.style.marginTop = "12px";
+    nextBtn.onclick = function() { buildIndex++; renderBuildSentence(); };
+    area.appendChild(nextBtn);
+    
+    saveProgress();
+}
+
+window.onload = function(){
     loadProgress();
-    renderSet(); 
+    fillBlockJump();
+    updateStats();
+    beginLesson();
+    lucide.createIcons();
 };
 </script>
 </body>
